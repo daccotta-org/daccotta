@@ -34,7 +34,7 @@ export default {
         "warning": "#00ff00",
 
         "error": "#ff0000",
-                  },
+                },
                 },
               ],
             },
