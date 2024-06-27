@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.2.5",
+    "@clerk/themes": "^2.1.10",
     "client": ".",
+    "framer-motion": "^11.2.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.2.1",
     "react-router-dom": "^6.24.0"
   },
   "devDependencies": {
@@ -23,7 +26,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
-    "daisyui": "^4.12.8",
+    "daisyui": "^4.12.10",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
