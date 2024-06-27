@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 import Navbar from '../components/Navbar/Navbar';
 
