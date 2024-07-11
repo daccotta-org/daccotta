@@ -5,7 +5,7 @@ import GetStarted from './GetStarted';
 import { motion } from "framer-motion";
 const Navbar:FC = () => {
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 w-[100vw]">
     <div className="navbar-start">
       <div className="dropdown">
         <button className='btn btn-secondary'><LuList /></button>

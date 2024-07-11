@@ -1,14 +1,4 @@
-import React from 'react'
-import {
 
-    SignedIn,
-    SignIn,
-    SignUp,
-    UserButton,
-    SignInButton,
-    SignUpButton
-  } from "@clerk/clerk-react";
-import Navbar from '../../components/Navbar/Navbar';
 import MovieCarousel from '../../components/MovieCarousel/MovieCarousel';
 import { MovieList } from '../../data/Movies';
 const HomePage = () => {
@@ -17,11 +7,11 @@ const HomePage = () => {
     const SignUpRedirectUrl= import.meta.env.CLERK_SIGN_UP_FORCE_REDIRECT_URL;
   return (
     <>
-    <main>
+    <main className='px-8 w-[100vw]'>
    
-    <div className='section-1 w-[100vw]'>
-      <h1 className='text-6xl font-bold flex justify-center mt-16 '>Your Social Network For Movies</h1>
-      <h1>Top Movies In Your Area</h1>
+    <div className='section-1 w-[100vw] p-2 flex flex-col '>
+      <h1 className='sm: text-3xl md:text-4xl lg:text-6xl font-bold flex  mt-16 '>Your Social Network For Movies</h1>
+      <h1 className=' lg:text-xl mt-6 font-bold '>Top Movies In Your Area</h1>
       <div>
         <MovieCarousel movie={MovieList}/>
 
