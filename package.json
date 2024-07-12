@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "express": "^4.19.2"
+  },
+  "scripts": {
+    "client": "bunx --bun vite --prefix client",
+    "server": "bun --watch main.ts --prefix server",
+    "dev": "concurrently \" cd client && bun dev\" \"cd server && bun dev\" ",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.1.0",
+    "@eslint/js": "^9.5.0",
+    "eslint": "^9.5.0",
+    "eslint-plugin-react": "^7.34.3",
+    "globals": "^15.6.0",
+    "typescript-eslint": "^7.14.1"
+  }
+}
