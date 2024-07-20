@@ -8,12 +8,12 @@ import { CgProfile } from "react-icons/cg";
 import { motion } from "framer-motion";
 const Navbar: FC = () => {
   return (
-    <div className="navbar bg-base-100">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <button className='btn btn-secondary bg-[#5e5d5d] border-0'><LuList /></button>
+    <div className="navbar bg-base-100 w-[100vw]">
+    <div className="navbar-start">
+      <div className="dropdown">
+        <button className='btn btn-secondary'><LuList /></button>
+        
 
-        </div>
       </div>
       <div className="navbar-center">
         <a className="btn btn-ghost text-xl" href='/'>
