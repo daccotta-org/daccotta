@@ -1,12 +1,15 @@
 
+
 import MovieCarousel from '../../components/MovieCarousel/MovieCarousel';
 import { MovieList } from '../../data/Movies';
+
 const HomePage = () => {
-    //fix this import issue
-    const SignInRedirectUrl= import.meta.env.CLERK_SIGN_IN_FORCE_REDIRECT_URL;
-    const SignUpRedirectUrl= import.meta.env.CLERK_SIGN_UP_FORCE_REDIRECT_URL;
+  //fix this import issue
+  // const SignInRedirectUrl= import.meta.env.CLERK_SIGN_IN_FORCE_REDIRECT_URL;
+  // const SignUpRedirectUrl= import.meta.env.CLERK_SIGN_UP_FORCE_REDIRECT_URL;
   return (
     <>
+
     <main className='px-8 w-[100vw]'>
    
     <div className='section-1 w-[100vw] p-2 flex flex-col '>
@@ -21,8 +24,8 @@ const HomePage = () => {
     </div>
     </main>
     </>
-    
-    
+
+
   )
 }
 
