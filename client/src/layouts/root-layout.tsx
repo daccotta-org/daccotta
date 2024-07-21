@@ -26,7 +26,7 @@ export default function RootLayout() {
       }}
     >
       <header className="header mt-2 ml-2 mr-2"> 
-        <Navbar/>
+        {/* <Navbar/> */}
       </header>
       <main>
         <Outlet />
