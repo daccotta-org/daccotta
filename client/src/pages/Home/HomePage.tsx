@@ -14,9 +14,9 @@ const HomePage = () => {
    
     <div className='section-1 w-[100vw] p-2 flex flex-col '>
       <h1 className='sm: text-3xl md:text-4xl lg:text-6xl font-bold flex  mt-16 '>Your Social Network For Movies</h1>
-      <h1 className=' lg:text-xl mt-6 font-bold '>Top Movies In Your Area</h1>
+      <h1 className=' lg:text-xl mt-6 font-bold text-secondary'>Top Movies In Your Area</h1>
       <div>
-        <MovieCarousel movie={MovieList}/>
+        {/* <MovieCarousel movie={MovieList}/> */}
 
       </div>
 
