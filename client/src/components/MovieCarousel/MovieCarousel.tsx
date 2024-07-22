@@ -10,7 +10,7 @@ const MovieCarousel:FC<Movies> = ({movie}) => {
     <div className='carousel carousel-end bg-neutral rounded-box w-[100vw] space-x-4 mt-2'>
         {movie.map((mov)=>
             <div className="carousel-item">
-            <MovieCard  imdbRating={mov.imdbRating} Year={mov.Year} Title={mov.Title} Poster={mov.Poster}/>
+            <MovieCard  key={mov.Title} imdbRating={mov.imdbRating} Year={mov.Year} Title={mov.Title} Poster={mov.Poster}/>
             </div>
             )}
     </div>
