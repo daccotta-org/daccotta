@@ -48,7 +48,7 @@ const Navbar: FC = () => {
         </div>
       </div>
     </div>
-  </>
+ 
   );
 };  
 
