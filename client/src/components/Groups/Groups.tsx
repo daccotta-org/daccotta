@@ -1,5 +1,3 @@
-import { useAuth } from '@clerk/clerk-react'
-import React from 'react'
 import { IGroup } from '../../Types/Group'
 import Group from './Group';
 type GroupListProps = {

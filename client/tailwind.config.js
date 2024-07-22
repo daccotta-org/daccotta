@@ -14,7 +14,7 @@ export default {
   },
   daisyui: {
    
-    themes: [
+    themes: ["light", "dark", "retro", "cyberpunk", "valentine", "aqua",
      
       {
          Ashu: {
