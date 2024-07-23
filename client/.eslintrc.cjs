@@ -17,9 +17,9 @@ module.exports = {
   },
 
   "rules": {
-        "semi": ["error", "always"],
-        "quotes": ["error", "double"]
-    }
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-unused-vars": "off"
+  }
 }
 
 

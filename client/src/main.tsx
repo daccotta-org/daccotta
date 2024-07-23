@@ -5,6 +5,8 @@ import RootLayout from './layouts/root-layout.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import HomePage from './pages/Home/HomePage.tsx'
 import ProfilePage from './pages/Profile/ProfilePage.tsx'
+import SignInPage from './pages/auth/SignInPage.tsx'
+import SignUpPage from './pages/auth/SignUpPage.tsx'
 
 
 const router = createBrowserRouter([
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
         path: "profile",
         element: <ProfilePage /> ,
         
+      },
+      {
+        path:"/signin",
+        element: <SignInPage />
+      },
+      {
+        path:"/signup",
+        element: <SignUpPage />
       }
     ]
   }
