@@ -1,24 +1,28 @@
-import { FC } from 'react'
-import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
-import { Link } from 'react-router-dom'
+import { FC } from "react";
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { IoLogInOutline } from "react-icons/io5";
-import ThemeController from './ThemeController';
+import ThemeController from "./ThemeController";
 
-const Bottom:FC = () => {
+const Bottom: FC = () => {
   return (
     <>
       <SignedIn>
-    <div className=' p-2 h-full w-full flex flex-col items-center justify-start gap-4 ' >
-        
-      <UserButton afterSignOutUrl='/' />
-      <ThemeController/>
-    </div>
+        <div className=" p-2 h-full w-full flex flex-col items-center justify-center gap-10 ">
+          <UserButton 
+          afterSignOutUrl="/" 
+           appearance={{
+            elements: {
+              formButtonPrimary: "bg-slate-500 hover:bg-slate-400",
+            },
+          }}/>          
+          <ThemeController />
+        </div>
       </SignedIn>
       <SignedOut>
-        <IoLogInOutline/>
+        <IoLogInOutline />
       </SignedOut>
     </>
-  )
-}
+  );
+};
 
-export default Bottom
+export default Bottom;

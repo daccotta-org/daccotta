@@ -1,7 +1,7 @@
-import { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { FC } from "react";
+import { Link } from "react-router-dom";
 import { RiSearch2Fill } from "react-icons/ri";
-import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { LuList } from "react-icons/lu";
 import { CgProfile } from "react-icons/cg";
 
@@ -29,25 +29,27 @@ const Navbar: FC = () => {
           > <RiSearch2Fill color='#fbdc6a' />
           </motion.button>
 
-          <span className='text-2xl font-bold'>tta</span>
-        </a>
-      </div>
-      <div className="navbar-end ">
-        <button className='btn btn-secondary bg-[#5e5d5d] border-0'>
-          <SignedIn>
-            <UserButton afterSignOutUrl='/' />
-          </SignedIn>
-          <SignedOut>
-            <button><Link to={"/sign-up"}><CgProfile/></Link></button>
-          </SignedOut>
-        </button>
-
-
-
+            <span className="text-2xl font-bold">tta</span>
+          </a>
+        </div>
+        <div className="navbar-end ">
+          <button className="btn btn-secondary bg-[#5e5d5d] border-0">
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <button>
+                <Link to={"/sign-up"}>
+                  <CgProfile />
+                </Link>
+              </button>
+            </SignedOut>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  )
-}
+ 
+  );
+};  
 
-export default Navbar
+export default Navbar;

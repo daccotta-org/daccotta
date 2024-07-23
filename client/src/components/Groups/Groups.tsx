@@ -7,7 +7,7 @@ type GroupListProps = {
 const Groups = ({ groups }: GroupListProps) => {
    
     return (
-      <div className='w-full h-full flex flex-col justify-start items-center p-2 gap-2 overflow-y-auto overflow-x-hidden scrollbar-hide' >
+      <div className='w-full h-full flex flex-col justify-start items-center p-2 gap-10 overflow-y-auto overflow-x-hidden scrollbar-hide' >
         {groups.map(({id,name,icon}) => (
          <Group key={id} id={id} name={name} icon={icon}/>
         ))}
