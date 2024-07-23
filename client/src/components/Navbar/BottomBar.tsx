@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
-import { Link } from 'react-router-dom'
 import { IoLogInOutline } from "react-icons/io5";
 import ThemeController from './ThemeController';
 
