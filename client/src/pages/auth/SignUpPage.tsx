@@ -18,8 +18,10 @@ const SignUp: React.FC = () => {
     mutationFn: async (data: SignUpFormData) => {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const idToken = await userCredential.user.getIdToken();
+      console.log("header authariation ")
+      console.log(`Bearer ${idToken}`)
 
-      return axios.post('http://localhost:3000/api/users', {
+      return axios.post('http://localhost:8080/api/users', {
         uid: userCredential.user.uid,
         email: data.email,
         userName: data.userName,
@@ -28,7 +30,9 @@ const SignUp: React.FC = () => {
         headers: {
           'Authorization': `Bearer ${idToken}`,
         },
+        
       });
+      
     },
     onSuccess: () => {
 // Handle successful sign-up
@@ -97,9 +101,9 @@ const SignUp: React.FC = () => {
               {errors.age && <span className="text-error">{errors.age.message}</span>}
             </div>
             <div className="form-control mt-6">
-              {/* <button className="btn btn-primary" type="submit" disabled={signUpMutation.isLoading}>
-                {signUpMutation.isLoading ? 'Signing Up...' : 'Sign Up'}
-              </button> */}
+              <button className="btn btn-primary" type="submit" disabled={signUpMutation.isPending }>
+                {signUpMutation.isPending  ? 'Signing Up...' : 'Sign Up'}
+              </button>
             </div>
           </form>
         </div>

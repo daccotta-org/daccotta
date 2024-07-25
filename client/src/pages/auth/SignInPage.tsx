@@ -78,9 +78,9 @@ const SignIn: React.FC = () => {
               {errors.password && <span className="text-error">{errors.password.message}</span>}
             </div>
             <div className="form-control mt-6">
-              {/* <button className="btn btn-primary" type="submit" disabled={signInMutation.isLoading}>
-                {signInMutation.isLoading ? 'Signing In...' : 'Sign In'}
-              </button> */}
+              <button className="btn btn-primary" type="submit" disabled={signInMutation.isPending}>
+                {signInMutation.isPending ? 'Signing In...' : 'Sign In'}
+              </button>
             </div>
           </form>
           <div className="divider">OR</div>
