@@ -1,6 +1,6 @@
 node_modules
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
-
+firebases.json
 # Logs
 
 logs
