@@ -4,47 +4,32 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signUpSchema, SignUpFormData } from '../../Types/validationSchema';
-import { auth } from './firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom';
+
+import { useSignUp } from '../../services/queries';
+import { z } from 'zod';
+
 
 const SignUp: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<SignUpFormData>({
+  const navigate = useNavigate();
+  const { register,handleSubmit, formState: { errors } } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
+  const createUser = useSignUp();
 
-  const signUpMutation = useMutation({
-    mutationFn: async (data: SignUpFormData) => {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      const idToken = await userCredential.user.getIdToken();
-      console.log("header authariation ")
-      console.log(`Bearer ${idToken}`)
+  const onSubmit=async(values: z.infer<typeof signUpSchema>)=>
+  {
+    console.log("hello");
+    
+     createUser.mutate(values);
+   
+  
 
-      return axios.post('http://localhost:8080/api/users', {
-        uid: userCredential.user.uid,
-        email: data.email,
-        userName: data.userName,
-        age: data.age,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${idToken}`,
-        },
-        
-      });
-      
-    },
-    onSuccess: () => {
-// Handle successful sign-up
-    },
-    onError: (error) => {
-      console.error('Failed to sign up:', error);
-    },
-  });
+  }
 
-  const onSubmit = (data: SignUpFormData) => {
-    signUpMutation.mutate(data);
-  };
+
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-base-200">
@@ -101,8 +86,8 @@ const SignUp: React.FC = () => {
               {errors.age && <span className="text-error">{errors.age.message}</span>}
             </div>
             <div className="form-control mt-6">
-              <button className="btn btn-primary" type="submit" disabled={signUpMutation.isPending }>
-                {signUpMutation.isPending  ? 'Signing Up...' : 'Sign Up'}
+              <button className="btn btn-primary" type="submit" disabled={createUser.isPending }>
+                {createUser.isPending  ? 'Signing Up...' : 'Sign Up'}
               </button>
             </div>
           </form>

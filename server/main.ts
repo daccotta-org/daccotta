@@ -6,23 +6,41 @@ import admin from 'firebase-admin';
 import User from './models/User';
 import connectDatabase from "./connections/connectToDB";
 import { PORT } from "./config";
+import * as fs from 'fs';
+import * as path from 'path';
 
 dotenv.config();
 
 const app = express();
+const FIREBASE_SERVICE_ACCOUNT_KEY = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
 connectDatabase();
+console.log("console log ho bhi rha h ya nhi ?");
 
 app.use(cors());
 app.use(express.json());
 
-if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-  throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY is not defined in the environment');
+// if (!FIREBASE_SERVICE_ACCOUNT_KEY) {
+//   throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY is not defined in the environment');
+// }
+// // Initialize Firebase Admin SDK
+// admin.initializeApp({
+//   credential: admin.credential.cert(JSON.parse(FIREBASE_SERVICE_ACCOUNT_KEY)),
+// });
+try {
+  console.log("hello");
+  
+  const serviceAccount = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'firebase.json'), 'utf8')
+  );
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+  console.log('Firebase Admin SDK initialized successfully');
+} catch (error) {
+  console.error('Error initializing Firebase Admin SDK:', error);
 }
-// Initialize Firebase Admin SDK
-admin.initializeApp({
-  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY || '2749b84b3f82734f0e54b7b3b8236f2afdabde3b')),
-});
 
 interface CreateUserRequest {
   uid: string;
@@ -32,27 +50,36 @@ interface CreateUserRequest {
 }
 
 // Route to create a new user
-app.post('/api/users', async (req: Request<{}, {}, CreateUserRequest>, res: Response) => {
+app.post('/api/users', async (req:Request, res: Response) => {
+
+  console.log("call aa rhi h yaha");
   try {
     const { uid, email, userName, age } = req.body;
+    console.log(uid, email, userName, age);
 
     // Verify the Firebase ID token
     const authHeader = req.headers.authorization;
     const idToken = authHeader && authHeader.split('Bearer ')[1];
     
     if (!idToken) {
+      console.log('No token provided');
       return res.status(401).json({ error: 'No token provided' });
     }
-
+    
+    console.log("token ko decode kr rha h ")
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-
+   
+     console.log("user tho h hi glt")
     if (decodedToken.uid !== uid) {
+       console.log('Unauthorized');
       return res.status(403).json({ error: 'Unauthorized' });
     }
 
     // Check if username is already taken
+    console.log("username check kr rha h")
     const existingUser = await User.findOne({ userName });
     if (existingUser) {
+      console.log('Username is already taken');
       return res.status(400).json({ error: 'Username is already taken' });
     }
 

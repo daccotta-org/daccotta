@@ -7,7 +7,7 @@ import { groups } from "../data/Groups";
 import Bottom from "../components/Navbar/BottomBar";
 import logo from "../assets/temp_logo.png"
 import SignIn from "../components/Auth/SignIn"; // You'll need to create this component
-
+import Toaster from "sonner"
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -33,6 +33,7 @@ function AuthenticatedLayout() {
         </div>
       </div>
     </main>
+    
   );
 }
 
