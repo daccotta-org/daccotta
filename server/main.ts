@@ -31,7 +31,7 @@ try {
   console.log("hello");
   
   const serviceAccount = JSON.parse(
-    fs.readFileSync(path.join(__dirname, 'firebase.json'), 'utf8')
+    fs.readFileSync(path.join(__dirname, 'firebases.json'), 'utf8')
   );
 
   admin.initializeApp({
