@@ -7,6 +7,8 @@ import HomePage from './pages/Home/HomePage.tsx'
 import ProfilePage from './pages/Profile/ProfilePage.tsx'
 import SignInPage from './pages/auth/SignInPage.tsx'
 import SignUpPage from './pages/auth/SignUpPage.tsx'
+import Friends from './pages/friends/FriendsPage.tsx'
+import FriendsPage from './pages/friends/FriendsPage.tsx'
 
 
 const router = createBrowserRouter([
@@ -29,6 +31,10 @@ const router = createBrowserRouter([
       {
         path:"/signup",
         element: <SignUpPage />
+      },
+      {
+        path:"/friends",
+        element: <FriendsPage />
       }
     ]
   }

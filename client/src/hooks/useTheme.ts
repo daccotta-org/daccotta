@@ -1,13 +1,13 @@
 // hooks/useTheme.ts
 import { useState, useEffect } from 'react';
 
-const themes = ['light', 'dark', 'retro', 'cyberpunk', 'valentine', 'aqua'];
+const themes = ['retro', 'cyberpunk', 'valentine','Ashu'];
 
 export const useTheme = () => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('Ashu');
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('theme') || 'Ashu';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);

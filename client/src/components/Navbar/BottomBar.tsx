@@ -9,13 +9,14 @@ const Bottom: FC = () => {
     <>
       <SignedIn>
         <div className=" p-2 h-full w-full flex flex-col items-center justify-center gap-10 ">
-          <UserButton 
-          afterSignOutUrl="/" 
-           appearance={{
-            elements: {
-              formButtonPrimary: "bg-slate-500 hover:bg-slate-400",
-            },
-          }}/>          
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                formButtonPrimary: "bg-slate-500 hover:bg-slate-400",
+              },
+            }}
+          />
           <ThemeController />
         </div>
       </SignedIn>
