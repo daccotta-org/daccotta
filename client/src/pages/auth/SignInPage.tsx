@@ -6,7 +6,7 @@ import { auth } from './firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { useMutation } from '@tanstack/react-query';
 
-const SignIn: React.FC = () => {
+const SignInPage: React.FC = () => {
   
   const { register, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -92,4 +92,4 @@ const SignIn: React.FC = () => {
   );
 };
 
-export default SignIn;
+export default SignInPage;
