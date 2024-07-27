@@ -1,11 +1,11 @@
-import React from 'react';
+
 import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import NewNavbar from "../components/Navbar/NewNavbar";
 import Groups from "../components/Groups/Groups";
 import { groups } from "../data/Groups";
 import Bottom from "../components/Navbar/BottomBar";
 import logo from "../assets/temp_logo.png";
-import SignIn from "../components/Auth/SignIn";// Import our new AuthProvider and useAuth hook
+//import SignIn from "../components/Auth/SignIn";// Import our new AuthProvider and useAuth hook
 import { useAuth } from '../hooks/useAuth';
 import { AuthProvider } from '../context/AuthContext';
 import SignInPage from '../pages/auth/SignInPage';
@@ -47,6 +47,16 @@ function LayoutWrapper() {
     return <Navigate to="/" replace />;
   }
 
+  if(user && window.location.pathname === '/signup') {
+    return <Navigate to="/" replace />;
+  }
+
+  if(!user && window.location.pathname === '/onboard') {
+    return <Navigate to="/signin" replace />;
+  }
+
+
+
   return user ? <AuthenticatedLayout /> : <SignInPage/>;
 }
 
@@ -65,3 +75,4 @@ export default function RootLayout() {
     <AuthWrappedApp />
   );
 }
+

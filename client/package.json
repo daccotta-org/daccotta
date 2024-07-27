@@ -21,6 +21,7 @@
     "firebase": "^10.12.4",
     "firebase-admin": "^12.2.0",
     "framer-motion": "^11.2.12",
+    "navigate": "^0.3.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.52.1",

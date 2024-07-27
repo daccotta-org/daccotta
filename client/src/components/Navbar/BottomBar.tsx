@@ -19,9 +19,9 @@ const Bottom: FC = () => {
   };
 
   return (
-    <div className="p-2 h-full w-full flex flex-col items-center justify-center gap-10">
+    <div className="p-2 h-full w-full flex flex-col items-center justify-center gap-6">
       {isSignedIn ? (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-6">
           <FaUser 
             size={24} 
             className="text-white cursor-pointer"

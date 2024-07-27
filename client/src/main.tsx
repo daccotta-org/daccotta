@@ -9,6 +9,8 @@ import HomePage from './pages/Home/HomePage.tsx'
 import ProfilePage from './pages/Profile/ProfilePage.tsx'
 import SignInPage from './pages/auth/SignInPage.tsx'
 import SignUpPage from './pages/auth/SignUpPage.tsx'
+import Onboard from "./pages/Onboard/Onboard.tsx"
+import FriendSearch from './pages/Friends/Friends.tsx'
 
 const queryClient = new QueryClient()
 
@@ -34,6 +36,15 @@ const router = createBrowserRouter([
         path:"/signup",
         //element: <SignUpPage />
         element: <SignUpPage />
+      },
+      
+      {
+        path:"/onboard",
+        element:<Onboard />
+      },
+      {
+        path:"/friends",
+        element: <FriendSearch />
       }
       
     ]
