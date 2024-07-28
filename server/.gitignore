@@ -2,7 +2,7 @@
 
 firebases.json
 # Logs
-
+firebases.json
 logs
 _.log
 npm-debug.log_
@@ -106,6 +106,7 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+firebase-service-account-key.json
 
 # parcel-bundler cache (https://parceljs.org/)
 
@@ -174,3 +175,4 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+

@@ -1,29 +1,50 @@
 import { FC } from "react";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 
 import { IoLogInOutline } from "react-icons/io5";
+import { FaUser } from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
 import ThemeController from "./ThemeController";
+import { Link } from 'react-router-dom';
+import { useAuth } from "../../hooks/useAuth";
 
 const Bottom: FC = () => {
+  const { isSignedIn, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // You can add post-logout actions here, like redirecting to home page
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
   return (
-    <>
-      <SignedIn>
-        <div className=" p-2 h-full w-full flex flex-col items-center justify-center gap-10 ">
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{
-              elements: {
-                formButtonPrimary: "bg-slate-500 hover:bg-slate-400",
-              },
-            }}
+
+    <div className="p-2 h-full w-full flex flex-col items-center justify-center gap-6">
+      {isSignedIn ? (
+        <div className="flex flex-col items-center gap-6">
+          <FaUser 
+            size={24} 
+            className="text-white cursor-pointer"
+            onClick={() => {/* Add user profile action here */}}
           />
-          <ThemeController />
+          <FiLogOut
+            size={24}
+            className="text-white cursor-pointer"
+            onClick={handleSignOut}
+          />
         </div>
-      </SignedIn>
-      <SignedOut>
-        <IoLogInOutline />
-      </SignedOut>
-    </>
+      ) : (
+        <Link to="/signin">
+          <IoLogInOutline 
+            size={24} 
+            className="text-white cursor-pointer"
+          />
+        </Link>
+      )}
+      <ThemeController />
+    </div>
   );
 };
 
