@@ -2,4 +2,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
 
+.bg-gradient
+{
+    background: rgb(131,58,180);
+background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(225,29,72,1) 50%, rgba(252,176,69,1) 100%);
+}

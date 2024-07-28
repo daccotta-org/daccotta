@@ -5,7 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    
     fontFamily:
     {
       "body":["Poppins", "sans-serif"],
@@ -13,17 +13,19 @@ export default {
     }
   },
   daisyui: {
-    themes: [
+   
+    themes: ["light", "dark", "retro", "cyberpunk", "valentine", "aqua",
+     
       {
          Ashu: {
-
+          "custom":"00ff",
         "primary": "#fcd34d",
 
         "secondary": "#e11d48",
 
         "accent": "#00ffff",
 
-        "neutral": "#000",
+        "neutral": "#0000",
 
         "base-100": "#000",
 

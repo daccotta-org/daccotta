@@ -12,13 +12,23 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.2.5",
     "@clerk/themes": "^2.1.10",
+    "@hookform/resolvers": "^3.9.0",
     "@material-tailwind/react": "^2.1.9",
+    "@tanstack/react-query": "^5.51.11",
+    "@tanstack/react-query-devtools": "4",
+    "axios": "^1.7.2",
     "client": ".",
+    "firebase": "^10.12.4",
+    "firebase-admin": "^12.2.0",
     "framer-motion": "^11.2.12",
+    "navigate": "^0.3.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.52.1",
     "react-icons": "^5.2.1",
-    "react-router-dom": "^6.24.0"
+    "react-router-dom": "^6.24.0",
+    "react-toastify": "^10.0.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
