@@ -1,7 +1,7 @@
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 
 # Logs
-firebase.json
+firebases.json
 logs
 _.log
 npm-debug.log_
