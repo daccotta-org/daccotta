@@ -1,4 +1,5 @@
 import { FC } from "react";
+
 import { IoLogInOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
@@ -19,6 +20,7 @@ const Bottom: FC = () => {
   };
 
   return (
+
     <div className="p-2 h-full w-full flex flex-col items-center justify-center gap-6">
       {isSignedIn ? (
         <div className="flex flex-col items-center gap-6">

@@ -6,6 +6,11 @@ import admin from 'firebase-admin';
 import User from './models/User';
 import connectDatabase from "./connections/connectToDB";
 import { PORT } from "./config";
+
+import { userRoutes } from "./routes/userRoutes";
+import { groupRoutes } from "./routes/groupRoutes";
+import { listRoutes } from "./routes/listRoutes";
+
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -105,9 +110,15 @@ app.post('/api/users', async (req:Request, res: Response) => {
   }
 });
 
+
+app.use('/api/user',userRoutes);
+app.use('/api/group',groupRoutes);
+app.use('/api/list',listRoutes);
+
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
+
 
 app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}!`);

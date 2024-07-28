@@ -13,17 +13,19 @@ import SignInPage from '../pages/auth/SignInPage';
 function AuthenticatedLayout() {
   return (
     <main className="flex h-screen w-full items-center justify-center bg-black pr-4 py-4">
-      <div className="grid h-full w-full grid-cols-12 grid-rows-12 gap-2">
-        <div className="mx-4 col-span-1 row-span-3 rounded-xl bg-gradient text-white">
+
+      <div className=" grid h-full w-full grid-cols-12 grid-rows-12 gap-2 text-neutral ">
+        <div className="mx-3 col-span-1 row-span-3 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
+
           <NewNavbar />
         </div>
-        <div className="col-span-11 row-span-12 bg-gradient rounded-3xl text-white">
+        <div className="col-span-11 row-span-12 bg-gradient-to-r from-primary to-secondary rounded-3xl ">
           <Outlet />
         </div>
-        <div className="mx-4 col-span-1 row-span-6 rounded-xl bg-gradient text-white">
+        <div className="mx-3 col-span-1 row-span-6 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
           <Groups groups={groups} />
         </div>
-        <div className="mx-4 col-span-1 row-span-3 rounded-xl bg-gradient text-white">
+        <div className="mx-3 col-span-1 row-span-3 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
           <Bottom />
         </div>
       </div>

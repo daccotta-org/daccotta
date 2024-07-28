@@ -8,10 +8,10 @@ const ThemeController: React.FC = () => {
 
   return (
     <details className="dropdown dropdown-top tooltip tooltip-right" data-tip="theme">
-       <summary className="btn m-1">
+       <summary className="btn  m-1">
         <PiPaintBrushBroadFill/>
         </summary>
-      <ul tabIndex={0} className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl">
+      <ul tabIndex={0} className="dropdown-content text-neutral bg-gradient-to-tr from-primary to-secondary rounded-box z-[1] w-52 p-2 shadow-2xl">
         {themes.map((t) => (
           <li key={t}>
             <input

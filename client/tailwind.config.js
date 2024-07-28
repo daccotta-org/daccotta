@@ -15,23 +15,22 @@ export default {
   daisyui: {
    
     themes: ["light", "dark", "retro", "cyberpunk", "valentine", "aqua",
-     
       {
-         Ashu: {
-          "custom":"00ff",
-        "primary": "#fcd34d",
+         "Ashu": {
+   
+        "primary": "#091CC8",
 
-        "secondary": "#e11d48",
+        "secondary": "#425583",
 
-        "accent": "#00ffff",
+        "accent": "#e11d48",
 
-        "neutral": "#0000",
+        "neutral": "#FAF9F6",
 
         "base-100": "#000",
 
-        "info": "#0000ff",
+        "info": "#425583",
 
-        "success": "#00ff00",
+        "success": "#091CC8",
 
         "warning": "#00ff00",
 
