@@ -9,7 +9,7 @@ const Group:React.FC<IGroup> = ({id,icon,name}) => {
   return (
     <motion.div className='tooltip tooltip-right' data-tip={name} >
       <Link to={`/profile/groups/${id}`}>
-        <Icon size="56px"/>
+        <Icon size="3rem"/>
       </Link>
     </motion.div>
 

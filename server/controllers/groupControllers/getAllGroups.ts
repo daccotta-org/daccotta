@@ -1,5 +1,5 @@
 // controllers/groups/getAllGroups.ts
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import User from '../../models/User';
 import Group from '../../models/Group';
 

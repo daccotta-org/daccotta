@@ -21,16 +21,16 @@ const Bottom: FC = () => {
 
   return (
 
-    <div className="p-2 h-full w-full flex flex-col items-center justify-center gap-6">
+    <div className="p-2 h-100 w-full flex flex-col items-center justify-between  gap-2">
       {isSignedIn ? (
         <div className="flex flex-col items-center gap-6">
           <FaUser 
-            size={24} 
+            size="1.5rem" 
             className="text-white cursor-pointer"
             onClick={() => {/* Add user profile action here */}}
           />
           <FiLogOut
-            size={24}
+            size="1.5rem"
             className="text-white cursor-pointer"
             onClick={handleSignOut}
           />
@@ -38,13 +38,15 @@ const Bottom: FC = () => {
       ) : (
         <Link to="/signin">
           <IoLogInOutline 
-            size={24} 
+            size="1.5rem" 
             className="text-white cursor-pointer"
           />
         </Link>
       )}
-      <ThemeController />
+      <ThemeController /> 
     </div>
+     
+
   );
 };
 

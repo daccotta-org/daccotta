@@ -12,7 +12,7 @@ import SignInPage from '../pages/auth/SignInPage';
 
 function AuthenticatedLayout() {
   return (
-    <main className="flex h-screen w-full items-center justify-center bg-black pr-4 py-4">
+    <main className="flex h-screen w-full items-center justify-center bg-black pr-4 py-2">
 
       <div className=" grid h-full w-full grid-cols-12 grid-rows-12 gap-2 text-neutral ">
         <div className="mx-3 col-span-1 row-span-3 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
