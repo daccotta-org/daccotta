@@ -1,11 +1,11 @@
 // controllers/groups/getAllGroups.ts
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import User from '../../models/User';
 import Group from '../../models/Group';
 
 export const getAllGroups = async (req: Request, res: Response) => {
   try {
-    const userId = req.user._id; // Assuming you have user authentication middleware
+    const userId = req.body._id; // Assuming you have user authentication middleware
     const user = await User.findById(userId).populate('groups');
     
     if (!user) {
