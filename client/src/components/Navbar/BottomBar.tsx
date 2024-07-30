@@ -21,6 +21,7 @@ const Bottom: FC = () => {
 
   return (
 
+    
     <div className="p-2 h-100 w-full flex flex-col items-center justify-between  gap-2">
       {isSignedIn ? (
         <div className="flex flex-col items-center gap-6">

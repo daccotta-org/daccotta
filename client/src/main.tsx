@@ -10,8 +10,8 @@ import ProfilePage from './pages/Profile/ProfilePage.tsx'
 import SignInPage from './pages/auth/SignInPage.tsx'
 import SignUpPage from './pages/auth/SignUpPage.tsx'
 
-import Onboard from "./pages/Onboard/Onboard.tsx"
 import FriendSearch from './pages/Friends/Friends.tsx'
+import OnboardingForm from './pages/Onboard/Onboard.tsx'
 
 
 const queryClient = new QueryClient()
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
       
       {
         path:"/onboard",
-        element:<Onboard />
+        element:<OnboardingForm/>
       },
       {
         path:"/friends",
