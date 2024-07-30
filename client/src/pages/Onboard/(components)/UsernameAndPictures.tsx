@@ -22,21 +22,23 @@ const UsernameAndPicture: React.FC<Props> = ({ onNext }) => {
   };
 
   return (
-    <div>
-      <h2>Set Your Username and Profile Picture</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div className="p-4 bg-gradient-to-tr from-secondary to-primary shadow-lg rounded-lg max-w-md hover:ring-1 ">
+      <h2 className="text-2xl font-bold mb-4">Set Your Username and Profile Picture</h2>
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
         <input
           {...register('username')}
+          className="input input-bordered w-full"
           placeholder="Username"
         />
-        {errors.username && <span>{errors.username.message}</span>}
+        {errors.username && <span className="text-red-500">{errors.username.message}</span>}
         
         {/* <input
           type="file"
           {...register('profilePicture')}
+          className="input input-bordered w-full"
         /> */}
         
-        <button type="submit">Next</button>
+        <button type="button" className="btn btn-primary w-full" onClick={handleSubmit(onSubmit)}>Next</button>
       </form>
     </div>
   );

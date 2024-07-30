@@ -36,24 +36,30 @@ const OnboardingForm: React.FC = () => {
     },
   });
 
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (data: OnboardingData) => updateUserProfile(user?.uid ?? '', data),
+    mutationFn: (data: OnboardingData) => updateUserProfile('1', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      navigate('/home');
+
+      navigate('/');
     },
   });
 
   const onSubmit = (data: OnboardingData) => {
+    console.log("this is user data : ",data);
+    
     mutation.mutate(data);
   };
 
   const handleNext = () => {
+    console.log(step);
     setStep((prevStep) => prevStep + 1);
+   
+    
   };
 
   const handlePrevious = () => {
@@ -78,13 +84,13 @@ const OnboardingForm: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="onboarding-form">
+        <div className="onboarding-form h-[100vh] flex flex-col justify-center items-center">
           <div className="progress-bar">
             {/* Implement progress bar here */}
           </div>
           {renderStep()}
           {step === 3 && (
-            <button type="submit" disabled={mutation.isPending}>
+            <button className='btn btn-secondary mt-2' type="submit" disabled={mutation.isPending}>
               {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
             </button>
           )}

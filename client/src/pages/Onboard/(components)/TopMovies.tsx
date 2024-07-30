@@ -39,36 +39,44 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
   };
 
   return (
-    <div>
-      <h2>Select Your Top 5 Movies</h2>
+    <div className="p-4 bg-gradient-to-tr from-secondary to-primary shadow-lg rounded-lg max-w-md hover:ring-1">
+      <h2 className="text-2xl font-bold mb-4">Select Your Top 5 Movies</h2>
       <input
         type="text"
         placeholder="Search movies"
         onChange={(e) => setSearchTerm(e.target.value)}
+        className="input input-bordered w-full mb-4"
       />
       {isLoading ? (
-        <p>Loading...</p>
+        <p className="text-center">Loading...</p>
       ) : (
-        <ul>
+        <ul className="mb-4">
           {movies?.map((movie) => (
-            <li key={movie.id}>
-              {movie.title}
-              <button onClick={() => handleAddMovie(movie.id)}>Add</button>
+            <li key={movie.id} className="flex justify-between items-center mb-2">
+              <span>{movie.title}</span>
+              <button 
+                  type="button" 
+                  className="btn btn-secondary btn-sm" 
+                  onClick={() => handleAddMovie(movie.id)}>
+                  Add
+             </button>
             </li>
           ))}
         </ul>
       )}
-      <div>
-        <h3>Your Top Movies:</h3>
+      <div className="mb-4">
+        <h3 className="text-xl font-semibold mb-2">Your Top Movies:</h3>
         <ul>
           {topMovies.map((movieId) => (
-            <li key={movieId}>{movieId}</li>
+            <li key={movieId} className="mb-1">{movieId}</li>
           ))}
         </ul>
       </div>
-      {errors.topMovies && <span>{errors.topMovies.message}</span>}
-      <button onClick={onPrevious}>Previous</button>
-      <button onClick={onNext}>Next</button>
+      {errors.topMovies && <span className="text-red-500">{errors.topMovies.message}</span>}
+      <div className="flex justify-between">
+        <button  type="button"  className="btn btn-secondary" onClick={onPrevious}>Previous</button>
+        <button  type="button"  className="btn btn-primary" onClick={onNext}>Next</button>
+      </div>
     </div>
   );
 };

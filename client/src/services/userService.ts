@@ -73,6 +73,8 @@ export const updateUserProfile = async (userId: string, data: Partial<IUser>): P
   }
   
   Object.assign(user, data);
+  console.log("user is : ",user);
+  
   return user;
 };
 
