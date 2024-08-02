@@ -3,12 +3,11 @@ import NewNavbar from "../components/Navbar/NewNavbar";
 import Groups from "../components/Groups/Groups";
 import { groups } from "../data/Groups";
 import Bottom from "../components/Navbar/BottomBar";
-import logo from "../assets/temp_logo.png";
+import logo from "../assets/logo_light.png";
 //import SignIn from "../components/Auth/SignIn";// Import our new AuthProvider and useAuth hook
-import { useAuth } from "../hooks/useAuth";
-import { AuthProvider } from "../context/AuthContext";
-import SignInPage from "../pages/auth/SignInPage";
-import { useQuery } from "@tanstack/react-query";
+import { useAuth } from '../hooks/useAuth';
+import { AuthProvider } from '../context/AuthContext';
+import SignInPage from '../pages/auth/SignInPage';
 import SignUp from "../pages/auth/SignUpPage";
 
 function AuthenticatedLayout() {
@@ -56,8 +55,8 @@ function LayoutWrapper() {
 
   if (!isLoaded || isLoadingOnboardedStatus) {
     return (
-      <div className="flex justify-center align-middle items-center mt-[50vh]">
-        <img className="opacity-70" src={logo} alt="" />
+      <div className="flex flex-col h-[100vh] justify-center items-center  ">
+        <img className="opacity-80" src={logo} alt="" width="100px" />
       </div>
     );
   }
@@ -79,7 +78,7 @@ function LayoutWrapper() {
     return <Navigate to="/onboard" replace />;
   }
 
-  return user ? <AuthenticatedLayout /> : < SignUp/>;
+  return user ? <AuthenticatedLayout /> : <SignUp/>;
 }
 
 function AuthWrappedApp() {
