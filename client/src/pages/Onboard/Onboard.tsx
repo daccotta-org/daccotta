@@ -5,13 +5,13 @@ import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { updateUserProfile } from '../../services/userService';
-
 //import individual screen components
 import UsernameAndPicture from './(components)/UsernameAndPictures';
 import TopMovies from './(components)/TopMovies';
 import TopDirectors from './(components)/TopDirectors';
 import AddFriends from './(components)/AddFriends';
- import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
+import { IUser } from '../../Types/User'; // Make sure to import IUser
 
 // Define Zod schema
 const onboardingSchema = z.object({
@@ -36,30 +36,36 @@ const OnboardingForm: React.FC = () => {
     },
   });
 
-  // const { user } = useAuth();
+  const { user } = useAuth(); // Assuming this gives you the current user's auth info
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (data: OnboardingData) => updateUserProfile('1', data),
+    mutationFn: (data: IUser) => updateUserProfile(user?.uid || '', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-
       navigate('/');
     },
   });
 
   const onSubmit = (data: OnboardingData) => {
-    console.log("this is user data : ",data);
+    console.log("this is user data : ", data);
     
-    mutation.mutate(data);
+    // Construct a complete IUser object to pass to the updateUserProfile function
+    const completeUserData: IUser = {
+      id: user?.uid || '',  // Use UID from auth
+      name: user?.displayName || 'Default Name', // Default or existing name
+      email: user?.email || 'example@example.com', // Default or existing email
+      age: 0, // Default age if not available; replace with actual logic to get age if necessary
+      ...data // Spread onboarding data (username, profilePicture, etc.)
+    };
+
+    mutation.mutate(completeUserData);
   };
 
   const handleNext = () => {
     console.log(step);
     setStep((prevStep) => prevStep + 1);
-   
-    
   };
 
   const handlePrevious = () => {
@@ -84,13 +90,14 @@ const OnboardingForm: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="onboarding-form h-[100vh] flex flex-col justify-center items-center">
+        <div className="onboarding-form">
           <div className="progress-bar">
             {/* Implement progress bar here */}
+            <div style={{ width: `${(step + 1) * 25}%` }} className="progress"></div>
           </div>
           {renderStep()}
           {step === 3 && (
-            <button className='btn btn-secondary mt-2' type="submit" disabled={mutation.isPending}>
+            <button type="submit" disabled={mutation.isPending}>
               {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
             </button>
           )}

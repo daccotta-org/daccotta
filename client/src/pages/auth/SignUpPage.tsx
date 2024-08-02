@@ -21,11 +21,7 @@ const SignUp: React.FC = () => {
   const onSubmit=async(values: z.infer<typeof signUpSchema>)=>
   {
     console.log("hello");
-    
      createUser.mutate(values);
-   
-  
-
   }
 
 

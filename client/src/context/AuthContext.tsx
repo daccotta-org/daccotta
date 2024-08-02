@@ -8,6 +8,7 @@ interface AuthState {
   isLoaded: boolean;
   sessionId: string | null;
 }
+
 interface AuthContextType extends AuthState {
   routerPush: (to: string) => void;
   routerReplace: (to: string) => void;

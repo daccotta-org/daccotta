@@ -11,6 +11,7 @@ interface Users  {
   actor: Schema.Types.ObjectId[];
   directors: Schema.Types.ObjectId[];
   profile_image: string;
+  onboarded: boolean;
 }
 
 const userSchema = new Schema<Users>({
@@ -26,7 +27,8 @@ const userSchema = new Schema<Users>({
   lists: [{ type: Schema.Types.ObjectId, ref: 'List' }],
   actor: [{ type: Schema.Types.ObjectId, ref: 'People' }],
   directors: [{ type: Schema.Types.ObjectId, ref: 'People' }],
-  profile_image: { type: String }
+  profile_image: { type: String },
+  onboarded: { type: Boolean, default: false }, 
 });
 
 const User = model<Users>('User', userSchema);
