@@ -1,17 +1,16 @@
-import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 import { updateUserProfile } from '../../services/userService';
 
 //import individual screen components
-import UsernameAndPicture from './(components)/UsernameAndPictures';
-import TopMovies from './(components)/TopMovies';
-import TopDirectors from './(components)/TopDirectors';
 import AddFriends from './(components)/AddFriends';
- import { useAuth } from '../../hooks/useAuth';
+import TopDirectors from './(components)/TopDirectors';
+import TopMovies from './(components)/TopMovies';
+import UsernameAndPicture from './(components)/UsernameAndPictures';
 
 // Define Zod schema
 const onboardingSchema = z.object({

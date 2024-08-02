@@ -3,6 +3,7 @@ import { getAuth, onAuthStateChanged, User ,signOut} from 'firebase/auth';
 import app, { auth } from '../pages/auth/firebase';
 import { NavigateFunction } from 'react-router-dom';
 // Define the shape of our auth state
+//have to extract user from mongo later so it should be come Iuser type
 interface AuthState {
   user: User | null;
   isLoaded: boolean;

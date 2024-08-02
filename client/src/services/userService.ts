@@ -1,4 +1,5 @@
 import { IUser } from "../Types/User"
+import { MdOutlineGroups3 } from "react-icons/md";
 
 
 const mockUsers: IUser[] = [
@@ -15,6 +16,8 @@ const mockUsers: IUser[] = [
           name: 'Movie Buffs', 
           description: 'A group for serious movie enthusiasts',
           members: [], // Just the ID of John Doe for now
+          icon: MdOutlineGroups3 
+
         }
       ],
       lists: ['Favorite Sci-Fi', 'Must-Watch Classics'],
@@ -34,6 +37,8 @@ const mockUsers: IUser[] = [
           name: 'Indie Film Lovers',
           description: 'Exploring the world of independent cinema',
           members: [], // Just the ID of Jane Smith for now
+          icon:MdOutlineGroups3
+
          
         }
       ],
@@ -54,6 +59,7 @@ const mockUsers: IUser[] = [
           name: 'Thriller Enthusiasts',
           description: 'For those who love edge-of-your-seat movies',
           members: [], // Just the ID of Bob Johnson for now
+          icon: MdOutlineGroups3
          
         }
       ],

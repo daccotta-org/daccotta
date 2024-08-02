@@ -8,7 +8,7 @@ export type IGroup=
 {
     id:string,
     description?:string,
-    icon?:IconType,
+    icon:IconType,
     name?:string,
     members?:IUser[],
 }
