@@ -11,6 +11,6 @@ export type IUser=
     groups?: IGroup[];
     lists?:string[],
     directors?:string[],
-    actors:string[],
+    actors?:string[],
 
 }
