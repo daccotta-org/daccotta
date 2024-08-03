@@ -7,7 +7,8 @@ import { ReactNode } from "react";
 export type IGroup=
 {
     id:string,
+    description?:string,
     icon:IconType,
-    name:string,
+    name?:string,
     members?:IUser[],
 }

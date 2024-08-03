@@ -1,7 +1,5 @@
-import { IconContext } from "react-icons";
-import { IGroup } from "../Types/Group";
 import { FaCircle } from "react-icons/fa6";
-import { IoAccessibilitySharp } from "react-icons/io5";
+import { IGroup } from "../Types/Group";
 
 export const groups:IGroup[] = [
     {id:"1",

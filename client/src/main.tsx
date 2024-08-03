@@ -1,5 +1,5 @@
 import React from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 
 import ReactDOM from 'react-dom/client'
 import './index.css'
@@ -10,8 +10,8 @@ import ProfilePage from './pages/Profile/ProfilePage.tsx'
 import SignInPage from './pages/auth/SignInPage.tsx'
 import SignUpPage from './pages/auth/SignUpPage.tsx'
 
-import Onboard from "./pages/Onboard/Onboard.tsx"
 import FriendSearch from './pages/Friends/Friends.tsx'
+import OnboardingForm from './pages/Onboard/Onboard.tsx'
 
 
 const queryClient = new QueryClient()
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
       
       {
         path:"/onboard",
-        element:<Onboard />
+        element:<OnboardingForm/>
       },
       {
         path:"/friends",

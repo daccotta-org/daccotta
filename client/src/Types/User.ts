@@ -4,12 +4,13 @@ export type IUser=
 {
     id:string,
     name:string,
+    username:string,
+    email:string,
     age:number,
-    badges?:[],
-    groups?:IGroup[
-    ],
-    lists?:[],
-    directors?:[],
-    actors:[],
+    badges?: string[];
+    groups?: IGroup[];
+    lists?:string[],
+    directors?:string[],
+    actors?:string[],
 
 }
