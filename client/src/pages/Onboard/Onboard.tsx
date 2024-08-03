@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { updateUserProfile } from '../../services/userService';
 
+
 //import individual screen components
 import AddFriends from './(components)/AddFriends';
 import TopDirectors from './(components)/TopDirectors';

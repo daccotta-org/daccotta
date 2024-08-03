@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 
+
 // Define the type for each carousel item
 interface CarouselItem {
   title: string;
