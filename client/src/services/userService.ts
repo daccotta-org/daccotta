@@ -1,6 +1,6 @@
 import { IUser } from "../Types/User"
-import { auth } from '../pages/auth/firebase';
-import { User } from 'firebase/auth';
+import { MdOutlineGroups3 } from "react-icons/md";
+
 
 const mockUsers: IUser[] = [
     {
@@ -69,52 +69,19 @@ const mockUsers: IUser[] = [
     },
   ];
 
-  //old update user service
-// export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
-//   // Simulate API call delay
-//   await new Promise(resolve => setTimeout(resolve, 1000));
+export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
+  // Simulate API call delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
   
-//   const user = mockUsers.find(u => u.id === userId);
-//   if (!user) {
-//     throw new Error('User not found');
-//   }
-  
-//   Object.assign(user, data);
-//   console.log("user is : ",user);
-  
-//   return user;
-// };
-
-//new update user profile
-const getIdToken = async (): Promise<string> => {
-  const currentUser: User | null = auth.currentUser;
-
-  if (currentUser) {
-    return await currentUser.getIdToken(/* forceRefresh */ true);
+  const user = mockUsers.find(u => u.id === userId);
+  if (!user) {
+    throw new Error('User not found');
   }
-
-  throw new Error('User is not authenticated');
-};
-
-export const updateUserProfile = async (uid: string, data: IUser): Promise<void> => {
-  try {
-    const idToken = await getIdToken();
-    const response = await fetch(`/api/user/${uid}/complete-onboarding`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${idToken}`, // Use the ID token for authorization
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update user profile');
-    }
-  } catch (error) {
-    console.error("Error updating user profile:", error);
-    throw error;
-  }
+  
+  Object.assign(user, data);
+  console.log("user is : ",user);
+  
+  return user;
 };
 
 export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {

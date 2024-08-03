@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { AuthProvider } from '../context/AuthContext';
 import SignInPage from '../pages/auth/SignInPage';
 import SignUp from "../pages/auth/SignUpPage";
+import { useQuery } from '@tanstack/react-query'
 
 function AuthenticatedLayout() {
   return (

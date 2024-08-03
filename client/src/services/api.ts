@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { SignUpFormData } from "../Types/validationSchema";
 import { auth } from "../pages/auth/firebase";
 
+
 export const createUser = async (data: SignUpFormData) => {
   const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
   const idTokenResult = await userCredential.user.getIdTokenResult();
