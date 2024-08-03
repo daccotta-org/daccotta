@@ -18,7 +18,7 @@ const onboardingSchema = z.object({
   profilePicture: z.any().optional(),
   topMovies: z.array(z.string()).max(5).optional(),
   topDirectors: z.array(z.string()).max(5).optional(),
-  friends?: z.array(z.string()).optional(),
+  friends: z.array(z.string()).optional(),
 });
 
 type OnboardingData = z.infer<typeof onboardingSchema>;
