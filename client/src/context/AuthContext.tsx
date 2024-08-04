@@ -1,13 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged, User ,signOut} from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User, signOut, getIdToken } from 'firebase/auth';
 import app, { auth } from '../pages/auth/firebase';
 import { NavigateFunction } from 'react-router-dom';
-// Define the shape of our auth state
-//have to extract user from mongo later so it should be come Iuser type
+
 interface AuthState {
   user: User | null;
   isLoaded: boolean;
   sessionId: string | null;
+  idToken: string | null;
 }
 
 interface AuthContextType extends AuthState {
@@ -16,19 +16,18 @@ interface AuthContextType extends AuthState {
   signOut: () => Promise<void>;
 }
 
-// Provide an initial value for the context
 const initialAuthState: AuthState = {
   user: null,
   isLoaded: false,
-  sessionId: null
+  sessionId: null,
+  idToken: null,
 };
 
-// Create and export the context
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 interface AuthProviderProps {
   children: React.ReactNode;
   navigate: NavigateFunction;
-
 }
 
 export function AuthProvider({ children, navigate }: AuthProviderProps) {
@@ -36,11 +35,20 @@ export function AuthProvider({ children, navigate }: AuthProviderProps) {
 
   useEffect(() => {
     const auth = getAuth(app);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      let idToken = null;
+      if (user) {
+        try {
+          idToken = await getIdToken(user);
+        } catch (error) {
+          console.error("Error fetching idToken:", error);
+        }
+      }
       setAuthState({
         user,
         isLoaded: true,
-        sessionId: user ? Math.random().toString(36).substr(2, 9) : null
+        sessionId: user ? Math.random().toString(36).substr(2, 9) : null,
+        idToken,
       });
     });
 
@@ -62,4 +70,3 @@ export function AuthProvider({ children, navigate }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
-

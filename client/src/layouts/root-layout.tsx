@@ -1,15 +1,14 @@
-import { Outlet, useNavigate, Navigate } from "react-router-dom";
-import NewNavbar from "../components/Navbar/NewNavbar";
-import Groups from "../components/Groups/Groups";
-import { groups } from "../data/Groups";
-import Bottom from "../components/Navbar/BottomBar";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import logo from "../assets/logo_light.png";
+import Groups from "../components/Groups/Groups";
+import Bottom from "../components/Navbar/BottomBar";
+import NewNavbar from "../components/Navbar/NewNavbar";
+import { groups } from "../data/Groups";
 //import SignIn from "../components/Auth/SignIn";// Import our new AuthProvider and useAuth hook
-import { useAuth } from '../hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext';
-import SignInPage from '../pages/auth/SignInPage';
+import { useAuth } from '../hooks/useAuth';
 import SignUp from "../pages/auth/SignUpPage";
-import { useQuery } from '@tanstack/react-query'
 
 function AuthenticatedLayout() {
   return (
@@ -36,25 +35,9 @@ function LayoutWrapper() {
   const { isLoaded, user } = useAuth();
   const navigate = useNavigate();
 
-  const { data: onboardedStatus, isLoading: isLoadingOnboardedStatus } =
-    useQuery({
-      queryKey: ["onboardedStatus", user?.uid],
-      queryFn: async () => {
-        if (!user) return null;
-        const response = await fetch(`/api/user/${user.uid}/onboarded`, {
-          headers: {
-            Authorization: `Bearer ${await user.getIdToken()}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch onboarded status");
-        }
-        return response.json();
-      },
-      enabled: !!user,
-    });
 
-  if (!isLoaded || isLoadingOnboardedStatus) {
+
+  if (!isLoaded ) {
     return (
       <div className="flex flex-col h-[100vh] justify-center items-center  ">
         <img className="opacity-80" src={logo} alt="" width="100px" />
@@ -75,9 +58,9 @@ function LayoutWrapper() {
   //   return <Navigate to="/signin" replace />;
   // }
 
-  if (user && onboardedStatus && !onboardedStatus.onboarded && window.location.pathname !== '/onboard') {
-    return <Navigate to="/onboard" replace />;
-  }
+  // if (user && onboardedStatus && !onboardedStatus.onboarded && window.location.pathname !== '/onboard') {
+  //   return <Navigate to="/onboard" replace />;
+  // }
 
   return user ? <AuthenticatedLayout /> : <SignUp/>;
 }

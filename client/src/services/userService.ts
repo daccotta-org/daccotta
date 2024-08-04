@@ -1,6 +1,8 @@
 import { IUser } from "../Types/User"
 import { MdOutlineGroups3 } from "react-icons/md";
-
+import axios from 'axios';
+import { useAuth } from "../hooks/useAuth";
+import { auth } from "../pages/auth/firebase";
 
 const mockUsers: IUser[] = [
     {
@@ -69,20 +71,38 @@ const mockUsers: IUser[] = [
     },
   ];
 
-export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      console.log("in profile token is : ",idToken);
+      
   
-  const user = mockUsers.find(u => u.id === userId);
-  if (!user) {
-    throw new Error('User not found');
-  }
+      const response = await axios.put(`http://localhost:8080/api/user/${userId}/profile`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+      console.log("response :: ",response.data);
+      
+      const updatedUser = response.data.user;
+
   
-  Object.assign(user, data);
-  console.log("user is : ",user);
+      // Update local storage if onboarded status changed
+      
+      if (data.onboarded !== undefined) {
+        
+        
+        localStorage.setItem('onboarded', updatedUser.onboarded.toString());
+      }
+      
+      return updatedUser;
+    } catch (error) {
+      throw new Error('Failed to update user profile');
+    }
+  };
   
-  return user;
-};
 
 export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
   // Simulate API call delay

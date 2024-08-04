@@ -3,28 +3,27 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { SignUpFormData } from "../Types/validationSchema";
 import { auth } from "../pages/auth/firebase";
 
-
 export const createUser = async (data: SignUpFormData) => {
   const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
   const idTokenResult = await userCredential.user.getIdTokenResult();
-const idToken = idTokenResult.token;
-console.log("Generated token:", idToken.substring(0, 10) + "...");
-    console.log("header authariation ")
-    console.log(`Bearer ${idToken}`)
+  const idToken = idTokenResult.token;
 
-    const response = await axios.post('http://localhost:8080/api/users', {
-      uid: userCredential.user.uid,
-      email: data.email,
-      userName: data.userName,
-      age: data.age,
-    }, {
-      headers: {
-        'Authorization': `Bearer ${idToken}`,
-      },
-      
-    });
-    return response;
-    
+  const response = await axios.post('http://localhost:8080/api/users', {
+    uid: userCredential.user.uid,
+    email: data.email,
+    userName: data.userName,
+    age: data.age,
+    onboarded: false, // Add this line
+  }, {
+    headers: {
+      'Authorization': `Bearer ${idToken}`,
+    },
+  });
+
+  // Redirect to onboarding page
+  window.location.href = '/onboard';
+
+  return response;
 }
     
 

@@ -5,13 +5,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { updateUserProfile } from '../../services/userService';
+import UsernameAndPicture from './(components)/UsernameAndPictures';
+import TopMovies from './(components)/TopMovies';
+import TopDirectors from './(components)/TopDirectors';
+import AddFriends from './(components)/AddFriends';
+import { useAuth } from '../../hooks/useAuth';
 
 
 //import individual screen components
-import AddFriends from './(components)/AddFriends';
-import TopDirectors from './(components)/TopDirectors';
-import TopMovies from './(components)/TopMovies';
-import UsernameAndPicture from './(components)/UsernameAndPictures';
+// import AddFriends from './(components)/AddFriends';
+// import TopDirectors from './(components)/TopDirectors';
+// import TopMovies from './(components)/TopMovies';
+// import UsernameAndPicture from './(components)/UsernameAndPictures';
 
 // Define Zod schema
 const onboardingSchema = z.object({
@@ -20,6 +25,7 @@ const onboardingSchema = z.object({
   topMovies: z.array(z.string()).max(5).optional(),
   topDirectors: z.array(z.string()).max(5).optional(),
   friends: z.array(z.string()).optional(),
+  onboarded : z.boolean()
 });
 
 type OnboardingData = z.infer<typeof onboardingSchema>;
@@ -33,20 +39,31 @@ const OnboardingForm: React.FC = () => {
       topMovies: [],
       topDirectors: [],
       friends: [],
+      onboarded: false
     },
   });
 
   // const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
+  const { user } = useAuth();
   const mutation = useMutation({
-    mutationFn: (data: OnboardingData) => updateUserProfile('1', data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-
-      navigate('/');
+    mutationFn: (data: OnboardingData) => {
+      
+      if (!user) {
+        throw new Error('User not logged in');
+      }
+      return updateUserProfile(user.uid, { ...data, onboarded: true });
     },
+    onSuccess: (updatedUser) => {
+      console.log(updatedUser);
+      
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      navigate('/profile');
+    },
+    onError: (error) => {
+      console.error('Error updating user profile:', error);
+    }
   });
 
   const onSubmit = (data: OnboardingData) => {
