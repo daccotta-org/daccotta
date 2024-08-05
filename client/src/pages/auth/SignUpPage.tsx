@@ -1,18 +1,20 @@
 
-// SignUp.tsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signUpSchema, SignUpFormData } from '../../Types/validationSchema';
 
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useSignUp } from '../../services/queries';
 import { z } from 'zod';
+import { useAuth } from '../../hooks/useAuth';
 
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
+  const {isOnboarded}= useAuth();
+  console.log(isOnboarded);
   const { register,handleSubmit, formState: { errors } } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
@@ -24,7 +26,8 @@ const SignUp: React.FC = () => {
      createUser.mutate(values);
   }
 
-
+ 
+  
 
 
   return (
@@ -85,6 +88,9 @@ const SignUp: React.FC = () => {
               <button className="btn btn-primary" type="submit" disabled={createUser.isPending }>
                 {createUser.isPending  ? 'Signing Up...' : 'Sign Up'}
               </button>
+              <p className="mt-4 text-center">
+Already have an account? <Link to="/signin" className="link link-primary">Sign In</Link>
+</p>
             </div>
           </form>
         </div>
@@ -94,3 +100,6 @@ const SignUp: React.FC = () => {
 };
 
 export default SignUp;
+
+
+

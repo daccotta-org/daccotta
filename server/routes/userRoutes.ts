@@ -57,6 +57,8 @@ router.put('/:uid/profile', verifyToken, async (req: Request, res: Response) => 
 // Route to check onboarded status
 router.get('/:uid/onboarded', verifyToken, async (req: Request, res: Response) => {
   try {
+    console.log("hek");
+    
     const { uid } = req.params;
     
     if (req.user?.uid !== uid) {

@@ -1,126 +1,97 @@
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
-import logo from "../assets/logo_light.png";
-import Groups from "../components/Groups/Groups";
-import Bottom from "../components/Navbar/BottomBar";
-import NewNavbar from "../components/Navbar/NewNavbar";
-import { groups } from "../data/Groups";
-//import SignIn from "../components/Auth/SignIn";// Import our new AuthProvider and useAuth hook
-import { AuthProvider } from '../context/AuthContext';
+// import React from 'react';
+// import { Navigate, Outlet, useLocation } from 'react-router-dom';
+// import { useAuth } from '../hooks/useAuth';
+// import AuthenticatedLayout from './authenticated-layout';
+
+// const RootLayout: React.FC = () => {
+//   const { user, isOnboarded, isLoaded } = useAuth();
+//   const location = useLocation();
+
+//   if (!isLoaded) {
+//     return <div>Loading...</div>;
+//   }
+
+//   // Paths that don't require authentication
+//   const publicPaths = ['/signin', '/signup'];
+
+//   if (!user) {
+//     // If the user is on a public path, render it
+//     if (publicPaths.includes(location.pathname)) {
+//       return <Outlet />;
+//     }
+//     // Otherwise, redirect to signup
+//     return <Navigate to="/signup" replace />;
+//   }
+
+//   if (!isOnboarded) {
+//     console.log("onboarding ji",isOnboarded);
+    
+//     if (location.pathname === '/onboard') {
+//       return <Outlet />;
+//     }
+//     return <Navigate to="/onboard" replace />;
+//   }
+
+//   // User is authenticated and onboarded
+//   if (publicPaths.includes(location.pathname)) {
+//     // Redirect to home if trying to access signin/signup while authenticated
+//     return <Navigate to="/" replace />;
+//   }
+
+//   return <AuthenticatedLayout />;
+// };
+
+// export default RootLayout;
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import SignUp from "../pages/auth/SignUpPage";
-import { checkOnboardedStatus } from "../services/userService";
-import SignInPage from "../pages/auth/SignInPage";
+import AuthenticatedLayout from './authenticated-layout';
 
+const RootLayout: React.FC = () => {
+  const { user, isOnboarded, isLoaded, checkOnboardingStatus } = useAuth();
+  const location = useLocation();
 
-
-function AuthenticatedLayout() {
-  return (
-    <main className="flex h-screen w-full items-center justify-center bg-black pr-4 py-2">
-      <div className=" grid h-full w-full grid-cols-12 grid-rows-12 gap-2 text-neutral ">
-        <div className="mx-3 col-span-1 row-span-3 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
-          <NewNavbar />
-        </div>
-        <div className="col-span-11 row-span-12 bg-gradient-to-r from-primary to-secondary rounded-3xl ">
-          <Outlet />
-        </div>
-        <div className="mx-3 col-span-1 row-span-6 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
-          <Groups groups={groups} />
-        </div>
-        <div className="mx-3 col-span-1 row-span-3 rounded-xl bg-gradient-to-tr from-primary to-secondary ">
-          <Bottom />
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function LayoutWrapper() {
-  const { isLoaded, user } = useAuth();
-  const [isOnboarded, setIsOnboarded] = useState<boolean | null>(null);
-
-
-   // Fetch onboarded status
   useEffect(() => {
-    const fetchOnboardedStatus = async () => {
-      if (user) {
-        try {
-          const onboardedStatus = await checkOnboardedStatus(user.uid);
-          setIsOnboarded(onboardedStatus);
-        } catch (error) {
-          console.error("Failed to fetch onboarded status:", error);
-        }
-      } else {
-        setIsOnboarded(null); // Reset onboarding status if no user
-      }
-    };
-
-    fetchOnboardedStatus();
-  }, [user]);
-
-  if( user && isOnboarded === null){
-     // Show loading state while checking onboarding status
-     return (
-      <div className="flex flex-col h-[100vh] justify-center items-center  ">
-        <img className="opacity-80" src={logo} alt="" width="100px" />
-      </div>
-    );
-  }
+    if (user && isOnboarded === undefined) {
+      checkOnboardingStatus();
+    }
+  }, [user, isOnboarded, checkOnboardingStatus]);
 
   if (!isLoaded) {
-    // Show loading state while checking onboarding status
-    return (
-      <div className="flex flex-col h-[100vh] justify-center items-center  ">
-        <img className="opacity-80" src={logo} alt="" width="100px" />
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  //If the user is logged in and tries to access the sign-in page, redirect them to the home page
-  if (user && window.location.pathname === "/signin") {
-    return <Navigate to="/" replace />;
-  }
+  // Paths that don't require authentication
+  const publicPaths = ['/signin', '/signup'];
 
-  if (user && window.location.pathname === "/signup") {
-    return <Navigate to="/" replace />;
-  }
-
-  if(!user && window.location.pathname === "/"){
+  if (!user) {
+    // If the user is on a public path, render it
+    if (publicPaths.includes(location.pathname)) {
+      return <Outlet />;
+    }
+    // Otherwise, redirect to signup
     return <Navigate to="/signup" replace />;
   }
-  if (isOnboarded) {
-    // If onboarded, redirect to the profile page
-    if (window.location.pathname === "/signup" || window.location.pathname === "/onboard") {
-      return <Navigate to="/profile" replace />;
-    }
-  } else {
-    // If not onboarded, redirect to the onboarding page
-    if (window.location.pathname !== "/onboard") {
-      return <Navigate to="/onboard" replace />;
-    }
+
+  // If onboarding status is still undefined, show loading
+  if (isOnboarded === undefined) {
+    return <div>Checking onboarding status...</div>;
   }
 
-  // if (!user && window.location.pathname === '/onboard') {
-  //   return <Navigate to="/signin" replace />;
-  // }
+  if (!isOnboarded) {
+    if (location.pathname === '/onboard') {
+      return <Outlet />;
+    }
+    return <Navigate to="/onboard" replace />;
+  }
 
-  // if (user && onboardedStatus && !onboardedStatus.onboarded && window.location.pathname !== '/onboard') {
-  //   return <Navigate to="/onboard" replace />;
-  // }
+  // User is authenticated and onboarded
+  if (publicPaths.includes(location.pathname) || location.pathname === '/onboard') {
+    // Redirect to home if trying to access signin/signup/onboard while authenticated and onboarded
+    return <Navigate to="/" replace />;
+  }
 
-  return user ? <AuthenticatedLayout /> : <SignUp/>;
-}
+  return <Outlet />;
+};
 
-function AuthWrappedApp() {
-  const navigate = useNavigate();
-
-  return (
-    <AuthProvider navigate={navigate}>
-      <LayoutWrapper />
-    </AuthProvider>
-  );
-}
-
-export default function RootLayout() {
-  return <AuthWrappedApp />;
-}
+export default RootLayout;
