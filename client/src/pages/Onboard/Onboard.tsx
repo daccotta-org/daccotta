@@ -46,10 +46,12 @@ const OnboardingForm: React.FC = () => {
   // const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, updateOnboardingStatus } = useAuth();
+  const {isOnboarded}= useAuth();
+  console.log(isOnboarded);
+
   const mutation = useMutation({
     mutationFn: (data: OnboardingData) => {
-      
       if (!user) {
         throw new Error('User not logged in');
       }
@@ -57,7 +59,7 @@ const OnboardingForm: React.FC = () => {
     },
     onSuccess: (updatedUser) => {
       console.log(updatedUser);
-      
+      updateOnboardingStatus(true); // Update the onboarding status in AuthContext
       queryClient.invalidateQueries({ queryKey: ['user'] });
       navigate('/profile');
     },
