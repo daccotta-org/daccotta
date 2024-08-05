@@ -5,8 +5,10 @@ import { signInSchema, SignInFormData } from '../../Types/validationSchema';
 import { auth } from './firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const SignInPage: React.FC = () => {
+  
   
   const { register, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -47,6 +49,10 @@ const SignInPage: React.FC = () => {
     }
   };
 
+  const navigate = () => {
+    return <Navigate to="/signup" replace/>;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-base-200">
       <div className="card w-96 bg-base-100 shadow-xl">
@@ -86,6 +92,7 @@ const SignInPage: React.FC = () => {
           <div className="divider">OR</div>
           <button className="btn btn-outline" onClick={signInWithGoogle}>Sign In with Google</button>
           <button className="btn btn-outline mt-2" onClick={signInWithApple}>Sign In with Apple</button>
+          <button className="btn btn-outline mt-2" onClick={navigate}>sign Up?</button>
         </div>
       </div>
     </div>

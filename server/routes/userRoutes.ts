@@ -1,7 +1,8 @@
 import { type Request, type Response, type NextFunction, Router } from "express";
 import User from '../models/User';
-import admin from 'firebase-admin';
 import { verifyToken } from "../middleware/verifyToken";
+import { checkUsernameAvailability } from '../controllers/userController';
+
 
 const router = Router();
 
@@ -25,6 +26,30 @@ router.get('/:uid', verifyToken, async (req: Request, res: Response) => {
     res.json(user);
   } catch (error) {
     console.error('Error fetching user data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Route to update user profile
+router.put('/:uid/profile', verifyToken, async (req: Request, res: Response) => {
+  try {
+    console.log("I am on");
+    
+    const { uid } = req.params;
+    const updateData = req.body;
+    
+    if (req.user?.uid !== uid) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(uid, updateData, { new: true });
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'Profile updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error updating profile:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -80,28 +105,7 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
   }
 });
 
-// Route to update user profile
-router.put('/:uid/profile', verifyToken, async (req: Request, res: Response) => {
-  try {
-    console.log("I am on");
-    
-    const { uid } = req.params;
-    const updateData = req.body;
-    
-    if (req.user?.uid !== uid) {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(uid, updateData, { new: true });
-    if (!updatedUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json({ message: 'Profile updated successfully', user: updatedUser });
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+//Route to check unique username
+router.get('/check-username/:userName', checkUsernameAvailability);
 
 export { router as userRoutes };

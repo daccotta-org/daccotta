@@ -1,6 +1,5 @@
 import React from 'react'
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
-
+import { QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import RootLayout from './layouts/root-layout.tsx'
@@ -9,7 +8,6 @@ import HomePage from './pages/Home/HomePage.tsx'
 import ProfilePage from './pages/Profile/ProfilePage.tsx'
 import SignInPage from './pages/auth/SignInPage.tsx'
 import SignUpPage from './pages/auth/SignUpPage.tsx'
-
 import FriendSearch from './pages/Friends/Friends.tsx'
 import OnboardingForm from './pages/Onboard/Onboard.tsx'
 

@@ -47,6 +47,7 @@ interface CreateUserRequest {
   age: number;
 }
 
+
 // Route to create a new user
 app.post('/api/users', async (req:Request, res: Response) => {
 
@@ -123,7 +124,7 @@ app.post('/api/users', async (req:Request, res: Response) => {
 //     }
     
 //     console.log("token ko decode kr rha h ")
-//     const decodedToken = await admin.auth().verifyIdToken(idToken);
+//      const decodedToken = await admin.auth().verifyIdToken(idToken);
    
 //      console.log("user tho h hi glt")
 //     if (decodedToken.uid !== uid) {

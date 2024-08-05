@@ -103,6 +103,25 @@ const mockUsers: IUser[] = [
     }
   };
   
+  export const checkOnboardedStatus = async (userId: string): Promise<boolean> => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      console.log("in check onboarded token is : ",idToken);
+      
+  
+      const response = await axios.get(`http://localhost:8080/api/user/${userId}/onboarded`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+  
+      return response.data.onboarded; 
+    } catch (error) {
+      throw new Error('Failed to check onboarded status');
+    }
+  }
+
 
 export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
   // Simulate API call delay
@@ -111,4 +130,22 @@ export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
   return mockUsers.filter(user => 
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
+};
+
+export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+  try {
+    const idToken = await auth.currentUser?.getIdToken();
+    
+    const response = await axios.get(`http://localhost:8080/api/user/check-username/${username}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
+      }
+    });
+
+    return response.data.isAvailable;
+  } catch (error) {
+    console.error('Error checking username availability:', error);
+    throw new Error('Failed to check username availability');
+  }
 };
