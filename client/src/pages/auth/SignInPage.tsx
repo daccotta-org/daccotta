@@ -6,10 +6,9 @@ import { auth } from './firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const SignInPage: React.FC = () => {
-  
-  
   const { register, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
   });
@@ -92,7 +91,9 @@ const SignInPage: React.FC = () => {
           <div className="divider">OR</div>
           <button className="btn btn-outline" onClick={signInWithGoogle}>Sign In with Google</button>
           <button className="btn btn-outline mt-2" onClick={signInWithApple}>Sign In with Apple</button>
-          <button className="btn btn-outline mt-2" onClick={navigate}>sign Up?</button>
+          <p className="mt-4 text-center">
+don't have an account? <Link to="/signup" className="link link-primary">Sign Up</Link>
+</p>
         </div>
       </div>
     </div>
