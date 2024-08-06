@@ -52,8 +52,8 @@ interface CreateUserRequest {
 app.post('/api/users', async (req:Request, res: Response) => {
 
   try {
-    const { uid, email, age } = req.body;
-    console.log(uid, email, age);
+    const { uid,username, email, age } = req.body;
+    console.log(uid, username, email, age);
 
     // Verify the Firebase ID token
     const authHeader = req.headers.authorization;
@@ -87,7 +87,7 @@ app.post('/api/users', async (req:Request, res: Response) => {
     // Create new user
     const newUser = new User({
       _id: uid,
-      userName:"",
+      userName: username,
       email,
       age,
       groups: [],
