@@ -70,7 +70,14 @@ const mockUsers: IUser[] = [
       actors: ['Anthony Hopkins', 'Sigourney Weaver']
     },
   ];
-
+  export const checkEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/user/check-email', { email });
+      return response.data.exists;
+    } catch (error) {
+      throw new Error('Failed to check Email');
+    }
+  };
 
   export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
     try {

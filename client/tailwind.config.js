@@ -17,16 +17,17 @@ export default {
     themes: ["light", "dark", "retro", "cyberpunk", "valentine", "aqua",
       {
          "Ashu": {
-   
-        "primary": "#091CC8",
+          "primary": "#5C4B99",
+        //"primary": "#D20062",
+        //"primary": "#D03D33",
 
-        "secondary": "#425583",
+        "secondary": "#002379",
 
         "accent": "#e11d48",
 
-        "neutral": "#FAF9F6",
+        "neutral": "#0000",
 
-        "base-100": "#000",
+        "base-100": "#fff",
 
         "info": "#425583",
 

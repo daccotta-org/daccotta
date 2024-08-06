@@ -52,8 +52,8 @@ interface CreateUserRequest {
 app.post('/api/users', async (req:Request, res: Response) => {
 
   try {
-    const { uid, email, userName, age } = req.body;
-    console.log(uid, email, userName, age);
+    const { uid, email, age } = req.body;
+    console.log(uid, email, age);
 
     // Verify the Firebase ID token
     const authHeader = req.headers.authorization;
@@ -66,7 +66,7 @@ app.post('/api/users', async (req:Request, res: Response) => {
     
    console.log("token ko decode kr rha h ");
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-   console.log(decodedToken);
+   
 
     console.log("decoded token ",decodedToken);
     
@@ -78,16 +78,16 @@ app.post('/api/users', async (req:Request, res: Response) => {
 
     // Check if username is already taken
   
-    const existingUser = await User.findOne({ userName });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      console.log('Username is already taken');
-      return res.status(400).json({ error: 'Username is already taken' });
+      console.log('email is already in use.');
+      return res.status(400).json({ error: 'email is already in use.' });
     }
 
     // Create new user
     const newUser = new User({
       _id: uid,
-      userName,
+      userName:"",
       email,
       age,
       groups: [],

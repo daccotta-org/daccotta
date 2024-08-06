@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction, Router } from "express";
 import User from '../models/User';
 import { verifyToken } from "../middleware/verifyToken";
-import { checkUsernameAvailability } from '../controllers/userController';
+import { checkEmailExists, checkUsernameAvailability } from '../controllers/userController';
 
 
 const router = Router();
@@ -10,6 +10,7 @@ const router = Router();
 
 
 // Route to get user data
+router.post('/check-email', checkEmailExists);
 router.get('/:uid', verifyToken, async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;

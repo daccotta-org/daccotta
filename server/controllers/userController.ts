@@ -13,3 +13,16 @@ export const checkUsernameAvailability = async (req: Request, res: Response) => 
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+export const checkEmailExists= async (req:Request, res:Response) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      return res.status(200).json({ exists: true });
+    } else {
+      return res.status(200).json({ exists: false });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error' });
+  }
+}
