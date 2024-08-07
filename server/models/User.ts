@@ -19,7 +19,7 @@ const userSchema = new Schema<Users>({
         type: String,
         required: true,
         default: () => new mongoose.Types.ObjectId().toString()},
-  userName: { type: String,  unique: true},
+  userName: { type: String, required: true, unique: true},
   email:{type:String,required: true},
   age: { type: Number, required: true },
   groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],

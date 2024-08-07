@@ -1,18 +1,37 @@
-import { Movie } from "../Types/Movie";
+import { fetchDataFromApi } from "./tmdbServices";
 
-const mockMovies: Movie[] = [
-  { id: '1', title: 'The Shawshank Redemption', year: 1994 },
-  { id: '2', title: 'The Godfather', year: 1972 },
-  { id: '3', title: 'The Dark Knight', year: 2008 },
-  { id: '4', title: '12 Angry Men', year: 1957 },
-  { id: '5', title: "Schindler's List", year: 1993 },
-];
+// Define an interface for the movie data returned by TMDB
+interface TMDBMovie {
+  id: number;
+  title: string;
+  // Add other properties you might need, e.g.:
+  poster_path?: string | null;
+   release_date?: string | null;
+   overview: string;
+}
 
-export const searchMovies = async (searchTerm: string): Promise<Movie[]> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500));
+// Define an interface for our simplified movie object
+interface SimpleMovie {
+  id: string;
+  title: string;
   
-  return mockMovies.filter(movie => 
-    movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+}
+
+// Define the structure of the TMDB API response
+interface TMDBResponse {
+  results: TMDBMovie[];
+  // You can add other properties if needed, like:
+  // page: number;
+  // total_results: number;
+  // total_pages: number;
+}
+
+export const searchMovies = async (query: string): Promise<SimpleMovie[]> => {
+  const data = await fetchDataFromApi('/search/movie', { query }) as TMDBResponse;
+  return data.results.map((movie: TMDBMovie) => ({
+    id: movie.id.toString(),
+    title: movie.title,
+    poster_path: movie.poster_path,
+    release_date: movie.release_date,
+  }));
 };
