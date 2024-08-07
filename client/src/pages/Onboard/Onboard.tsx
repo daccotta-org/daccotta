@@ -21,7 +21,7 @@ import { useAuth } from '../../hooks/useAuth';
 // Define Zod schema
 const onboardingSchema = z.object({
   username: z.string().min(3).max(20),
-  avatarIndex: z.number().optional(),
+  profileUrl: z.string().url().optional(),
   topMovies: z.array(z.string()).max(5).optional(),
   topDirectors: z.array(z.string()).max(5).optional(),
   friends: z.array(z.string()).optional(),
@@ -36,7 +36,7 @@ const OnboardingForm: React.FC = () => {
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
       username: '',
-      avatarIndex: 0,
+      profileUrl: '',
       topMovies: [],
       topDirectors: [],
       friends: [],

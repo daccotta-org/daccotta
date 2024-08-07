@@ -10,6 +10,7 @@ export const createUser = async (data: SignUpFormData) => {
 
   const response = await axios.post('http://localhost:8080/api/users', {
     uid: userCredential.user.uid,
+    username: data.username,
     email: data.email,
     age: data.age,
     onboarded: false, // Add this line

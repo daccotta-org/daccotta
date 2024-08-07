@@ -1,9 +1,7 @@
-// import React, { useState, useEffect } from 'react';
-// import { useFormContext } from 'react-hook-form';
-// import { checkUsernameAvailability } from '../../../services/userService';
-// import { z } from 'zod';
-
-// // Assuming you have these avatar images
+import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { avatars } from '../../../assets/avatars';
+// Assuming you have these avatar images
 // const avatars = [
 //   '/avatars01.png',
 //   '/avatars02.png',
@@ -12,240 +10,68 @@
 //   '/avatars05.png'
 // ];
 
-// const usernameSchema = z.string()
-//   .min(5, 'Username must be at least 5 characters long')
-//   .max(25, 'Username must not exceed 10 characters')
-//   .regex(/^[a-zA-Z][a-zA-Z0-9]+$/, 'Username must start with a letter and contain only letters and numbers')
-//   .refine((val) => /[0-9]/.test(val), 'Username must contain at least one number');
 
-// interface UsernameAndAvatarProps {
-//   onNext: () => void;
-// }
-
-// const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
-//   const { register, setValue, watch, formState: { errors } } = useFormContext();
-//   const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
-//   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-
-//   const username = watch('username');
-
-//   const [isChecking, setIsChecking] = useState(false);
-
-//   useEffect(() => {
-//     const checkAvailability = async () => {
-//       if (username && username.length >= 5) {
-//         setIsChecking(true);
-//         try {
-//           const isAvailable = await checkUsernameAvailability(username);
-//           setIsUsernameAvailable(isAvailable);
-//         } catch (error) {
-//           console.error('Error checking username availability:', error);
-//           setIsUsernameAvailable(null);
-//         } finally {
-//           setIsChecking(false);
-//         }
-//       } else {
-//         setIsUsernameAvailable(null);
-//       }
-//     };
-
-//     const debounce = setTimeout(checkAvailability, 500);
-//     return () => clearTimeout(debounce);
-//   }, [username]);
-
-//   const handleAvatarSelect = (index: number) => {
-//     setSelectedAvatar(index);
-//     setValue('avatarIndex', index);
-//   };
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (isUsernameAvailable && selectedAvatar !== null) {
-//       onNext();
-//     }
-//   };
-
-//   return (
-//     <div className="p-4 bg-gradient-to-tr from-secondary to-primary shadow-lg rounded-lg max-w-md hover:ring-1">
-//       <h2 className="text-2xl font-bold mb-4">Choose Your Username and Avatar</h2>
-//        {/* <p>{isUsernameAvailable} ||  {selectedAvatar}</p> */}
-//       <form onSubmit={handleSubmit}>
-//         <div className="mb-4">
-//           <label htmlFor="username" className="block mb-2">Username</label>
-//           <input
-//             {...register('username', { 
-//               required: 'Username is required',
-//               validate: (value) => {
-//                 const result = usernameSchema.safeParse(value);
-//                 return result.success || result.error.errors[0].message;
-//               }
-//             })}
-//             id="username"
-//             type="text"
-//             placeholder="Your username"
-//             className="input input-bordered w-full"
-//           />
-//           {errors.username && <p className="text-red-500">{errors.username.message as string}</p>}
-//           {isUsernameAvailable === false && <p className="text-red-500">This username is already taken</p>}
-//           {isUsernameAvailable === true && <p className="text-green-500">Username is available</p>}
-//         </div>
-//         <div className="mb-4">
-//           <p className="mb-2">Select an Avatar</p>
-//           <div className="flex space-x-2">
-//             {avatars.map((avatar, index) => (
-//               <img
-//                 key={index}
-//                 src={avatar}
-//                 alt={`Avatar ${index + 1}`}
-//                 className={`w-16 h-16 cursor-pointer ${selectedAvatar === index ? 'border-4 border-blue-500' : ''}`}
-//                 onClick={() => handleAvatarSelect(index)}
-//               />
-//             ))}
-//           </div>
-//         </div>
-//         <div className="flex justify-start">
-//         <button
-//           type="submit"
-//           className="btn btn-secondary"
-//           disabled={!isUsernameAvailable || selectedAvatar === null}
-//           onClick={handleSubmit}
-//         >
-//           Next
-//         </button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default UsernameAndAvatar;
-
-
-import React, { useState, useEffect } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { checkUsernameAvailability } from '../../../services/userService';
-import { z } from 'zod';
-
-// Assuming you have these avatar images
-const avatars = [
-  '/avatars01.png',
-  '/avatars02.png',
-  '/avatars03.png',
-  '/avatars04.png',
-  '/avatars05.png'
-];
-
-const usernameSchema = z.string()
-  .min(5, 'Username must be at least 5 characters long')
-  .max(25, 'Username must not exceed 10 characters')
-  .regex(/^[a-zA-Z][a-zA-Z0-9]+$/, 'Username must start with a letter and contain only letters and numbers')
-  .refine((val) => /[0-9]/.test(val), 'Username must contain at least one number');
 
 interface UsernameAndAvatarProps {
   onNext: () => void;
 }
 
 const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
-  const { register, setValue, watch, formState: { errors } } = useFormContext();
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
-  const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-
-  const username = watch('username');
-  const [isChecking, setIsChecking] = useState(false);
-
-  useEffect(() => {
-    const checkAvailability = async () => {
-      if (username && username.length >= 5) {
-        setIsChecking(true);
-        try {
-          const isAvailable = await checkUsernameAvailability(username);
-          setIsUsernameAvailable(isAvailable);
-        } catch (error) {
-          console.error('Error checking username availability:', error);
-          setIsUsernameAvailable(null);
-        } finally {
-          setIsChecking(false);
-        }
-      } else {
-        setIsUsernameAvailable(null);
-      }
-    };
-
-    const debounce = setTimeout(checkAvailability, 500);
-    return () => clearTimeout(debounce);
-  }, [username]);
+  const { register, setValue,watch,  formState: { errors } } = useFormContext();
+  const profileUrl = watch('profileUrl'); 
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number | null>(null);
 
   const handleAvatarSelect = (index: number) => {
-    setSelectedAvatar(index);
-    setValue('avatarIndex', index);
+    setSelectedAvatarIndex(index);
+    setValue('profileUrl', avatars[index].profile); // Set only the profile URL
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isUsernameAvailable && selectedAvatar !== null) {
+    if (profileUrl) {
+      console.log(profileUrl);
+      
       onNext();
     }
   };
 
   return (
-    <div className="w-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-      {/* Form Section */}
-      <div className="flex flex-col items-center justify-center p-8 lg:p-20 lg:col-span-2 bg-base-100">
-        <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-4">Choose Your Username and Avatar</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="form-control mb-4">
-              <label htmlFor="username" className="label">
-                <span className="label-text">Username</span>
-              </label>
-              <input
-                {...register('username', { 
-                  required: 'Username is required',
-                  validate: (value) => {
-                    const result = usernameSchema.safeParse(value);
-                    return result.success || result.error.errors[0].message;
-                  }
-                })}
-                id="username"
-                type="text"
-                placeholder="Your username"
-                className="input input-bordered bg-transparent w-full"
-              />
-              {errors.username && <p className="text-error">{errors.username.message as string}</p>}
-              {isUsernameAvailable === false && <p className="text-error">This username is already taken</p>}
-              {isUsernameAvailable === true && <p className="text-success">Username is available</p>}
-            </div>
-            <div className="form-control mb-4">
-              <p className="label-text mb-2">Select an Avatar</p>
-              <div className="flex space-x-2">
-                {avatars.map((avatar, index) => (
-                  <img
-                    key={index}
-                    src={avatar}
-                    alt={`Avatar ${index + 1}`}
-                    className={`w-16 h-16 cursor-pointer ${selectedAvatar === index ? 'border-4 border-blue-500' : ''}`}
-                    onClick={() => handleAvatarSelect(index)}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="form-control mt-6">
-              <button
-                type="submit"
-                className="btn btn-primary text-white w-full"
-                disabled={!isUsernameAvailable || selectedAvatar === null}
-              >
-                Next
-              </button>
-            </div>
-          </form>
+  
+    <div className='w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100'>
+    <div className=" h-full w-full p-4 pt-16 bg-base-100 shadow-lg rounded-lg  hover:ring-1 col-span-2 flex flex-col justify-center lg:justify-evenly items-center">
+      <h2 className="text-3xl font-bold mb-4">Choose an Avatar</h2>
+       {/* <p>{isUsernameAvailable} ||  {selectedAvatar}</p> */}
+      <form onSubmit={handleSubmit}>
+        
+        <div className="mb-4">
+          <div className="flex flex-wrap justify-center items-start gap-4 lg:gap-3 lg:space-x-2 ">
+          {avatars.map((avatar, index) => (
+                <img
+                  key={avatar.id}
+                  src={avatar.profile}
+                  alt={`Avatar ${index + 1}`}
+                  className={` w-32 h-32    lg:w-32 lg:h-32 hover:scale-105 transition duration-150 cursor-pointer ${selectedAvatarIndex === index ? 'border-4 border-primary' : ''}`}
+                  onClick={() => handleAvatarSelect(index)}
+                
+                />
+              ))}
+          </div>
         </div>
-      </div>
-
-      {/* Image Section */}
-      <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+        <div className="flex justify-center">
+        <button
+          type="submit"
+          className="btn btn-block btn-outline hover:bg-primary hover:text-white"
+          disabled={!profileUrl}
+          onClick={handleSubmit}
+        >
+          Next
+        </button>
+        </div>
+      </form>
+    </div>
+    <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
         <div className="w-full h-full flex items-center justify-center">
-          <img src="/signup_illustration.svg" alt="Sign Up Illustration" className="w-[400px] h-auto" />
+          <img src="/profile_page.svg" alt="Sign Up Illustration" className="w-[400px] h-auto" />
         </div>
       </div>
     </div>
@@ -253,3 +79,6 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
 };
 
 export default UsernameAndAvatar;
+
+
+
