@@ -9,10 +9,9 @@ import { z } from 'zod';
 
 // Schema definitions
 const usernameSchema = z.string()
-  .min(5, 'Username must be at least 5 characters long')
+  .min(3, 'Username must be at least 3 characters long')
   .max(25, 'Username must not exceed 25 characters')
   .regex(/^[a-zA-Z][a-zA-Z0-9]+$/, 'Username must start with a letter and contain only letters and numbers')
-  .refine((val) => /[0-9]/.test(val), 'Username must contain at least one number');
 
 const extendedSignUpSchema = z.object({
   username: usernameSchema,
