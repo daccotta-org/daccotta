@@ -156,3 +156,16 @@ export const checkUsernameAvailability = async (username: string): Promise<boole
     throw new Error('Failed to check username availability');
   }
 };
+
+export const getUserData = async (uid?: string) => {
+  const idToken = await auth.currentUser?.getIdToken();
+  
+  const response = await axios.get(`http://localhost:8080/api/user/${uid}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  });
+  console.log("response :: ",response.data);
+  return response.data;
+};
