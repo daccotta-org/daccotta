@@ -38,7 +38,7 @@ const OnboardingForm: React.FC = () => {
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
       username: '',
-      avatarIndex: 0,
+      profileUrl: '',
       topMovies: [],
       topDirectors: [],
       friends: [],

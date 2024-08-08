@@ -11,32 +11,21 @@ import {
 import { z } from "zod";
 
 // Schema definitions
-const usernameSchema = z
-.string()
-.min(4, "Username must be at least 4 characters long")
-.max(25, "Username must not exceed 25 characters")
-.regex(
-  /^[a-zA-Z][a-zA-Z0-9]+$/,
-  "Username must start with a letter and contain only letters and numbers"
-);
+const usernameSchema = z.string()
+  .min(3, 'Username must be at least 3 characters long')
+  .max(25, 'Username must not exceed 25 characters')
+  .regex(/^[a-zA-Z][a-zA-Z0-9]+$/, 'Username must start with a letter and contain only letters and numbers')
 
-
-
-  const extendedSignUpSchema = z
-  .object({
-    username: usernameSchema,
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters long"),
-    confirmPassword: z.string(),
-    age: z
-      .number()
-      .min(13, "You must be at least 13 years old")
-      .max(120, "Invalid age"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+const extendedSignUpSchema = z.object({
+  username: usernameSchema,
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: z.string(),
+  age: z.number().min(13, 'You must be at least 13 years old').max(120, 'Invalid age'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 type ExtendedSignUpFormData = z.infer<typeof extendedSignUpSchema>;
 

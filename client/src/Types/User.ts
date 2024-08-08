@@ -5,6 +5,7 @@ export type IUser=
     id:string,
     name:string,
     username:string,
+    profileUrl?: string,
     email:string,
     age:number,
     onboarded?:boolean,

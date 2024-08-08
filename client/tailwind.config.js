@@ -18,7 +18,7 @@ export default {
       {
          "Ashu": {
                    
-        "primary": "#414345",
+        "primary": "#522FCF",
 
         "secondary": "#000000",
         
