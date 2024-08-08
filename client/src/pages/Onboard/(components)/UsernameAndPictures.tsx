@@ -18,19 +18,19 @@ interface UsernameAndAvatarProps {
 
 const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
   const { register, setValue,watch,  formState: { errors } } = useFormContext();
-  const profileUrl = watch('profileUrl'); 
+  const profileUrl = watch('profile_image'); 
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number | null>(null);
 
   const handleAvatarSelect = (index: number) => {
     setSelectedAvatarIndex(index);
-    setValue('profileUrl', avatars[index].profile); // Set only the profile URL
+    console.log(avatars[index].profile);
+    setValue('profile_image', avatars[index].profile); // Set only the profile URL
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (profileUrl) {
+    if (profileUrl != "") {
       console.log(profileUrl);
-      
       onNext();
     }
   };
