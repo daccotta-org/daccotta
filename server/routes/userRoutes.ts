@@ -25,6 +25,7 @@ router.get('/:uid', verifyToken, async (req: Request, res: Response) => {
     }
 
     res.json(user);
+    console.log("user is : ",user);
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.status(500).json({ error: 'Internal server error' });

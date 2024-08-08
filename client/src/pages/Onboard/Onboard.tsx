@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -21,9 +20,11 @@ import { useAuth } from '../../hooks/useAuth';
 
 // Define Zod schema
 const onboardingSchema = z.object({
-  username: z.string().min(3).max(20),
-  profileUrl: z.string().url().optional(),
-  topMovies: z.array(z.string()).max(5).optional(),
+  username: z.string().min(3).max(20).optional(),
+  avatarIndex: z.number().optional(),
+  topMovies: z.array(z.object({
+    id: z.string()
+  })).max(5).optional(),
   topDirectors: z.array(z.string()).max(5).optional(),
   friends: z.array(z.string()).optional(),
   onboarded : z.boolean()
