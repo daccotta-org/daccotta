@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { searchMovies } from "../../../services/movieService";
 import { RxCrossCircled } from "react-icons/rx";
-
+import { toast } from "react-toastify"; // Only import toast, not ToastContainer
 
 interface Movie {
   id: string;
@@ -13,19 +13,17 @@ interface Movie {
   release_date?: string;
 }
 
-const topMoviesSchema = z.object({
-  topMovies: z
-    .array(
-      z.object({
-        id: z.string(),
-        title: z.string(),
-        poster_path: z.string().optional(),
-        release_date: z.string().optional(),
-      })
-    )
-    .max(5),
+const movieSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  poster_path: z.string().optional(),
+  release_date: z.string().optional(),
 });
 
+// Define topMoviesSchema using movieSchema
+export const topMoviesSchema = z.object({
+  topMovies: z.array(movieSchema).max(5),
+});
 type TopMoviesData = z.infer<typeof topMoviesSchema>;
 
 interface Props {
@@ -44,7 +42,6 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
 
   const {
     data: movies,
-    isLoading,
     refetch,
   } = useQuery({
     queryKey: ["movies", searchTerm],
@@ -69,15 +66,17 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
   const topMovies = watch("topMovies") || [];
 
   const handleAddMovie = (movie: Movie) => {
-    if (topMovies.length < 5) {
+    const isDuplicate = topMovies.some((m) => m.id === movie.id);
+    if (isDuplicate) {
+      toast.warn("This movie is already in your top list.");
+    } else if (topMovies.length < 5) {
       setValue("topMovies", [...topMovies, movie]);
-      setSearchTerm("");
-      setSearchResults([]);
+      toast.success("Movie added to your top list!");
     } else {
-      alert("You can only select up to 5 movies");
-      setSearchTerm("");
-      setSearchResults([]);
+      toast.error("You can only select up to 5 movies");
     }
+    setSearchTerm("");
+    setSearchResults([]);
     console.log(topMovies);
   };
 
@@ -86,11 +85,12 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
       "topMovies",
       topMovies.filter((movie) => movie.id !== movieId)
     );
+    toast.info("Movie removed from your top list.");
   };
 
   return (
     <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-      <div className="  w-full h-full flex flex-col items-center py-24 col-span-2">
+      <div className="w-full h-full flex flex-col items-center py-24 col-span-2">
         <h2 className="text-3xl font-bold mb-12 text-center">
           Select Your Top 5 Movies
         </h2>
@@ -127,7 +127,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
           )}
         </div>
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-3">Selected Movies:</h3>
+          <h3 className="text-xl font-semibold mb-3">Selected Movies :</h3>
           <ul className="space-y-4 h-[180px] overflow-y-auto">
             {topMovies.map((movie) => (
               <li
@@ -147,7 +147,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
                   className=""
                   onClick={() => handleRemoveMovie(movie.id)}
                 >
-                  <RxCrossCircled  size="24px"/>
+                  <RxCrossCircled size="24px" />
                 </button>
               </li>
             ))}
@@ -166,7 +166,11 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
           >
             Previous
           </button>
-          <button type="button" className="btn btn-outline hover:bg-primary hover:text-white" onClick={onNext}>
+          <button
+            type="button"
+            className="btn btn-outline hover:bg-primary hover:text-white"
+            onClick={onNext}
+          >
             Next
           </button>
         </div>

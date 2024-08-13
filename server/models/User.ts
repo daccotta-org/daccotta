@@ -1,34 +1,39 @@
 import mongoose, { Schema, model, Document } from 'mongoose';
+import type Person from './Person';
+import { personSchema } from './Person';
 
-interface Users  {
+interface Users {
   _id: Schema.Types.ObjectId;
   userName: string;
   age: number;
-  email:string;
+  email: string;
   groups: Schema.Types.ObjectId[];
   badges: Schema.Types.ObjectId[];
   lists: Schema.Types.ObjectId[];
   actor: Schema.Types.ObjectId[];
-  directors: Schema.Types.ObjectId[];
+  directors: Person[];
   profile_image: string;
   onboarded: boolean;
+  friends: Schema.Types.ObjectId[]; // New field for friends
 }
 
 const userSchema = new Schema<Users>({
-    _id: {
-        type: String,
-        required: true,
-        default: () => new mongoose.Types.ObjectId().toString()},
-  userName: { type: String, required: true, unique: true},
-  email:{type:String,required: true},
+  _id: {
+    type: String,
+    required: true,
+    default: () => new mongoose.Types.ObjectId().toString()
+  },
+  userName: { type: String, required: true, unique: true },
+  email: { type: String, required: true },
   age: { type: Number, required: true },
   groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
   badges: [{ type: Schema.Types.ObjectId, ref: 'Badge' }],
   lists: [{ type: Schema.Types.ObjectId, ref: 'List' }],
-  actor: [{ type: Schema.Types.ObjectId, ref: 'People' }],
-  directors: [{ type: Schema.Types.ObjectId, ref: 'People' }],
+  actor: [{ type: Schema.Types.ObjectId, ref: 'Person' }],
+  directors: [personSchema],
   profile_image: { type: String },
-  onboarded: { type: Boolean, default: false }, 
+  onboarded: { type: Boolean, default: false },
+  friends: [String] // New field for friends
 });
 
 const User = model<Users>('User', userSchema);

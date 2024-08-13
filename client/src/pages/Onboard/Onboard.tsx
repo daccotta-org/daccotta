@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { updateUserProfile } from '../../services/userService';
 import UsernameAndPicture from './(components)/UsernameAndPictures';
-import TopMovies from './(components)/TopMovies';
-import TopDirectors from './(components)/TopDirectors';
-import AddFriends from './(components)/AddFriends';
+import TopMovies, { topMoviesSchema } from './(components)/TopMovies';
+import TopDirectors, { topDirectorsSchema } from './(components)/TopDirectors';
+import AddFriends, { friendsSchema } from './(components)/AddFriends';
 import { useAuth } from '../../hooks/useAuth';
 
 
@@ -21,14 +21,11 @@ import { useAuth } from '../../hooks/useAuth';
 // Define Zod schema
 const onboardingSchema = z.object({
   profile_image: z.string().optional(),
-  topMovies: z.array(z.object({
-    id: z.string()
-  })).max(5).optional(),
-  topDirectors: z.array(z.string()).max(5).optional(),
+  topMovies: topMoviesSchema.shape.topMovies.optional(), // Incorporate topMoviesSchema
+  directors: topDirectorsSchema.shape.directors.optional(), // Incorporate topDirectorsSchema
   friends: z.array(z.string()).optional(),
-  onboarded : z.boolean()
+  onboarded: z.boolean(),
 });
-
 type OnboardingData = z.infer<typeof onboardingSchema>;
 
 const OnboardingForm: React.FC = () => {
@@ -38,7 +35,7 @@ const OnboardingForm: React.FC = () => {
     defaultValues: {
       profile_image: '',
       topMovies: [],
-      topDirectors: [],
+      directors: [],
       friends: [],
       onboarded: false
     },
@@ -104,15 +101,20 @@ const OnboardingForm: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="onboarding-form h-[100vh] flex flex-col justify-center items-center">
+        <div className=" relative onboarding-form h-[100vh] flex flex-col justify-center items-center">
           <div className="progress-bar">
             {/* Implement progress bar here */}
           </div>
           {renderStep()}
           {step === 3 && (
-            <button className='btn btn-secondary mt-2' type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
-            </button>
+          <button
+          className="btn btn-secondary text-white  mt-2 absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:top-4 lg:right-4 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:translate-y-0"
+          type="submit"
+          disabled={mutation.isPending}
+        >
+          {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
+        </button>
+          
           )}
         </div>
       </form>

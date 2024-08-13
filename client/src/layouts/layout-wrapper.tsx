@@ -1,11 +1,11 @@
 // LayoutWrapper.tsx
 import React from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const LayoutWrapper: React.FC = () => {
   const { isLoaded, user, isOnboarded } = useAuth();
-  const navigate = useNavigate();
+  
 
   if (!isLoaded) {
     return (

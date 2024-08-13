@@ -50,10 +50,12 @@ const SignInPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
+    <div className="w-full lg:grid lg:grid-cols-5 h-screen bg-base-100">
       {/* Form Section */}
-      <div className="flex flex-col items-center justify-center  p-8 lg:p-20 lg:col-span-2  bg-base-100">
-        <h2 className="text-3xl font-bold mb-2 self-start">Sign In</h2>
+      <div className="h-full flex flex-col items-center justify-evenly  p-8  lg:p-20 lg:col-span-2  bg-base-100">
+        <h2 className="text-3xl font-bold mb-2   ">Sign In</h2>
+        <img src="/movie_signup.svg" alt="Sign In Illustration" className="w-[400px] h-auto lg:hidden" />
+        <div className='flex flex-col gap-2  w-full'>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
           <div className="form-control mb-4">
             <label className="label">
@@ -85,10 +87,10 @@ const SignInPage: React.FC = () => {
             </button>
           </div>
           <div className="divider">OR</div>
-          <button className="btn btn-outline  hover:bg-primary hover:text-white w-full mb-2" onClick={signInWithGoogle}>Sign In with Google</button>
-          <button className="btn btn-outline  hover:bg-primary hover:text-white w-full " onClick={signInWithApple}>Sign In with Apple</button>
+         
           <button className="btn btn-link w-full mt-2" onClick={() => navigate('/signup')}>Sign Up?</button>
         </form>
+        </div>
       </div>
 
       {/* Image Section */}

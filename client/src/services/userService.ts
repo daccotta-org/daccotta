@@ -3,73 +3,73 @@ import { MdOutlineGroups3 } from "react-icons/md";
 import axios from 'axios';
 import { useAuth } from "../hooks/useAuth";
 import { auth } from "../pages/auth/firebase";
+import { useQuery } from "@tanstack/react-query";
 
-const mockUsers: IUser[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      username: 'john_doe',
-      email: 'john@example.com',
-      age: 30,
-      badges: ['Cinephile', 'Early Adopter'],
-      groups: [
-        { 
-          id: 'g1', 
-          name: 'Movie Buffs', 
-          description: 'A group for serious movie enthusiasts',
-          members: [], // Just the ID of John Doe for now
-          icon: MdOutlineGroups3 
 
-        }
-      ],
-      lists: ['Favorite Sci-Fi', 'Must-Watch Classics'],
-      directors: ['Christopher Nolan', 'Quentin Tarantino'],
-      actors: ['Tom Hanks', 'Meryl Streep']
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      username: 'jane_smith',
-      email: 'jane@example.com',
-      age: 28,
-      badges: ['Film Critic'],
-      groups: [
-        {
-          id: 'g2',
-          name: 'Indie Film Lovers',
-          description: 'Exploring the world of independent cinema',
-          members: [], // Just the ID of Jane Smith for now
-          icon:MdOutlineGroups3
+// const mockUsers: IUser[] = [
+//     {
+//       id: '1',
+
+//       username: 'john_doe',
+//       email: 'john@example.com',
+//       age: 30,
+//       badges: ['Cinephile', 'Early Adopter'],
+//       groups: [
+//         { 
+//           id: 'g1', 
+//           name: 'Movie Buffs', 
+//           description: 'A group for serious movie enthusiasts',
+//           members: [], // Just the ID of John Doe for now
+//           icon: MdOutlineGroups3 
+
+//         }
+//       ],
+//       lists: ['Favorite Sci-Fi', 'Must-Watch Classics'],
+//       directors: ['Christopher Nolan', 'Quentin Tarantino'],
+//       actors: ['Tom Hanks', 'Meryl Streep']
+//     },
+//     {
+//       id: '2',
+//       username: 'jane_smith',
+//       email: 'jane@example.com',
+//       age: 28,
+//       badges: ['Film Critic'],
+//       groups: [
+//         {
+//           id: 'g2',
+//           name: 'Indie Film Lovers',
+//           description: 'Exploring the world of independent cinema',
+//           members: [], // Just the ID of Jane Smith for now
+//           icon:MdOutlineGroups3
 
          
-        }
-      ],
-      lists: ['Top Documentaries', 'Underrated Gems'],
-      directors: ['Wes Anderson', 'Sofia Coppola'],
-      actors: ['Joaquin Phoenix', 'Cate Blanchett']
-    },
-    {
-      id: '3',
-      name: 'Bob Johnson',
-      username: 'bob_johnson',
-      email: 'bob@example.com',
-      age: 35,
-      badges: ['Horror Fan'],
-      groups: [
-        {
-          id: 'g3',
-          name: 'Thriller Enthusiasts',
-          description: 'For those who love edge-of-your-seat movies',
-          members: [], // Just the ID of Bob Johnson for now
-          icon: MdOutlineGroups3
+//         }
+//       ],
+//       lists: ['Top Documentaries', 'Underrated Gems'],
+//       directors: ['Wes Anderson', 'Sofia Coppola'],
+//       actors: ['Joaquin Phoenix', 'Cate Blanchett']
+//     },
+//     {
+//       id: '3',
+//       username: 'bob_johnson',
+//       email: 'bob@example.com',
+//       age: 35,
+//       badges: ['Horror Fan'],
+//       groups: [
+//         {
+//           id: 'g3',
+//           name: 'Thriller Enthusiasts',
+//           description: 'For those who love edge-of-your-seat movies',
+//           members: [], // Just the ID of Bob Johnson for now
+//           icon: MdOutlineGroups3
          
-        }
-      ],
-      lists: ['Best Horror Movies', 'Psychological Thrillers'],
-      directors: ['Alfred Hitchcock', 'John Carpenter'],
-      actors: ['Anthony Hopkins', 'Sigourney Weaver']
-    },
-  ];
+//         }
+//       ],
+//       lists: ['Best Horror Movies', 'Psychological Thrillers'],
+//       directors: ['Alfred Hitchcock', 'John Carpenter'],
+//       actors: ['Anthony Hopkins', 'Sigourney Weaver']
+//     },
+//   ];
   export const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
       const response = await axios.post('http://localhost:8080/api/user/check-email', { email });
@@ -123,21 +123,46 @@ const mockUsers: IUser[] = [
         }
       });
   
-      return response.data.onboarded; 
+      return response.data.onboarded;
+      
     } catch (error) {
       throw new Error('Failed to check onboarded status');
     }
   }
-
-
-export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500));
+  export const searchUsers = async (searchTerm: string,uid:string|undefined) => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      
   
-  return mockUsers.filter(user => 
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-};
+      if (!uid) {
+        throw new Error('User not authenticated');
+      }
+  
+      const response = await axios.get(`http://localhost:8080/api/user/${uid}/search?term=${searchTerm}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      throw new Error('Failed to search users');
+    }
+  };
+// export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
+//   // Simulate API call delay
+//   await new Promise(resolve => setTimeout(resolve, 500));
+  
+//   return mockUsers.filter(user => 
+//     user.username.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+// };
+export const useSearchUsers =(searchTerm:string,uid:string|undefined)=>  useQuery({
+  queryKey: ['users', searchTerm],
+  queryFn: () => searchUsers(searchTerm,uid),
+  enabled: searchTerm.length > 2,
+});
 
 export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
   try {

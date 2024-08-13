@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction, Router } from "express";
 import User from '../models/User';
 import { verifyToken } from "../middleware/verifyToken";
-import { checkEmailExists, checkUsernameAvailability } from '../controllers/userController';
+import { checkEmailExists, checkUsernameAvailability, searchUsers } from '../controllers/userController';
 
 
 const router = Router();
@@ -43,7 +43,7 @@ router.put('/:uid/profile', verifyToken, async (req: Request, res: Response) => 
     if (req.user?.uid !== uid) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
-
+    
     const updatedUser = await User.findByIdAndUpdate(uid, updateData, { new: true });
     if (!updatedUser) {
       return res.status(404).json({ error: 'User not found' });
@@ -83,7 +83,8 @@ router.get('/:uid/onboarded', verifyToken, async (req: Request, res: Response) =
 router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
-    const { username, profilePicture, topMovies, topDirectors, friends } = req.body;
+    const { username, profile_image, topMovies, directors, friends } = req.body;
+    console.log("onboarding : ",username,friends,profile_image,directors);
     
     if (req.user?.uid !== uid) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -92,9 +93,9 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
     const updatedUser = await User.findByIdAndUpdate(uid, {
       onboarded: true,
       username,
-      profilePicture,
+      profile_image,
       topMovies,
-      topDirectors,
+      directors,
       friends
     }, { new: true });
 
@@ -111,5 +112,6 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
 
 //Route to check unique username
 router.get('/check-username/:userName', checkUsernameAvailability);
+router.get('/:uid/search', verifyToken, searchUsers);
 
 export { router as userRoutes };

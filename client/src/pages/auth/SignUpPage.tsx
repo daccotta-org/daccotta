@@ -94,7 +94,7 @@ const SignUp: React.FC = () => {
     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5 bg-base-100">
       <div className="flex flex-col items-center justify-center py-12 lg:py-2 lg:col-span-2 bg-base-100">
         <div className="mx-auto w-full max-w-md px-4">
-          <h2 className="text-3xl font-bold text-center self-start">Sign Up</h2>
+          <h2 className="text-3xl font-bold text-center self-start mb-8 lg:mb-2">Sign Up</h2>
           <p className="text-center text-gray-600 mb-2">
             Enter your details below to create a new account
           </p>
@@ -192,7 +192,7 @@ const SignUp: React.FC = () => {
               >
                 {createUser.isPending ? "Signing Up..." : "Sign Up"}
               </button>
-              <p className="mt-4 text-center">
+              <p className="lg:mt-4 mt-12 text-center">
                 Already have an account?{" "}
                 <Link to="/signin" className="link link-primary">
                   Sign In
