@@ -11,13 +11,6 @@ import TopDirectors, { topDirectorsSchema } from './(components)/TopDirectors';
 import AddFriends, { friendsSchema } from './(components)/AddFriends';
 import { useAuth } from '../../hooks/useAuth';
 
-
-//import individual screen components
-// import AddFriends from './(components)/AddFriends';
-// import TopDirectors from './(components)/TopDirectors';
-// import TopMovies from './(components)/TopMovies';
-// import UsernameAndPicture from './(components)/UsernameAndPictures';
-
 // Define Zod schema
 const onboardingSchema = z.object({
   profile_image: z.string().optional(),
@@ -67,9 +60,19 @@ const OnboardingForm: React.FC = () => {
   });
 
   const onSubmit = (data: OnboardingData) => {
-    console.log("this is user data : ",data);
-    
-    mutation.mutate(data);
+    console.log("form data", data);
+    const topMoviesData = data.topMovies?.map(movie => ({
+      id: movie.id,
+    }));
+
+    console.log("topMoviesData:", topMoviesData);
+  
+    const onboardingData = {
+      ...data,
+      topMovies: topMoviesData,
+    };
+  
+    mutation.mutate(onboardingData);
   };
 
   const handleNext = () => {

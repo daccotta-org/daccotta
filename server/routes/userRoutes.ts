@@ -2,7 +2,8 @@ import { type Request, type Response, type NextFunction, Router } from "express"
 import User from '../models/User';
 import { verifyToken } from "../middleware/verifyToken";
 import { checkEmailExists, checkUsernameAvailability, searchUsers } from '../controllers/userController';
-
+import { v4 as uuidv4 } from 'uuid';
+import type List from "../models/List";
 
 const router = Router();
 
@@ -80,24 +81,55 @@ router.get('/:uid/onboarded', verifyToken, async (req: Request, res: Response) =
 });
 
 // Route to complete onboarding
+
+
+
 router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
+
+    console.log("uid is : ",uid); 
     const { username, profile_image, topMovies, directors, friends } = req.body;
-    console.log("onboarding : ",username,friends,profile_image,directors);
-    
+    console.log("username is : ",username);
+    console.log("profile_image is : ",profile_image);
+    console.log("topMovies is : ",topMovies);
+    console.log("directors is : ",directors);
+    console.log("friends is : ",friends);
+
+
     if (req.user?.uid !== uid) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(uid, {
-      onboarded: true,
-      username,
-      profile_image,
-      topMovies,
-      directors,
-      friends
-    }, { new: true });
+    // Create the top 5 movies list object
+    const top5MoviesList = {
+      list_id: uuidv4(),
+      name: 'Top 5 Movies',
+      list_type: 'user' as const,
+      movies: topMovies.map((movie: any) => ({
+        movie_id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        release_date: movie.release_date,
+      })),
+      members: [{ user_id: uid, is_author: true }],
+      date_created: new Date(),
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(
+      uid,
+      {
+        $set: {
+          userName: username,
+          profile_image,
+          directors,
+          friends,
+          onboarded: true,
+        },
+        $push: { lists: top5MoviesList }
+      },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedUser) {
       return res.status(404).json({ error: 'User not found' });

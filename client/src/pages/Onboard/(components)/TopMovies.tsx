@@ -8,14 +8,14 @@ import { toast } from "react-toastify"; // Only import toast, not ToastContainer
 
 interface Movie {
   id: string;
-  title: string;
+  title?: string;
   poster_path?: string;
   release_date?: string;
 }
 
 const movieSchema = z.object({
   id: z.string(),
-  title: z.string(),
+  title: z.string().optional(),
   poster_path: z.string().optional(),
   release_date: z.string().optional(),
 });

@@ -6,7 +6,8 @@
     "dev": "bun --watch main.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/uuid": "^10.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -21,6 +22,9 @@
     "express": "^4.19.2",
     "firebase-admin": "^12.3.0",
     "mongodb": "^6.8.0",
-    "mongoose": "^8.5.1"
+    "mongoose": "^8.5.1",
+    "uuid": "^10.0.0",
+    "uuid4": "^2.0.3",
+    "uuidv4": "^6.2.13"
   }
 }

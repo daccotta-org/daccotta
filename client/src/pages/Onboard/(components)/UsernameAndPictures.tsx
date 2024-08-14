@@ -57,7 +57,7 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
               ))}
           </div>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center px-14">
         <button
           type="submit"
           className="btn btn-block btn-outline hover:bg-primary hover:text-white"

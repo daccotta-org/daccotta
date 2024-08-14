@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from "../hooks/useAuth";
 import { auth } from "../pages/auth/firebase";
 import { useQuery } from "@tanstack/react-query";
+import { useId } from "react";
 
 
 // const mockUsers: IUser[] = [
@@ -83,9 +84,11 @@ import { useQuery } from "@tanstack/react-query";
     try {
       const idToken = await auth.currentUser?.getIdToken();
       console.log("in profile token is : ",idToken);
+
+      console.log("data :: of UID before api call ", userId, "is here: ",data);
       
   
-      const response = await axios.put(`http://localhost:8080/api/user/${userId}/profile`, data, {
+      const response = await axios.post(`http://localhost:8080/api/user/${userId}/complete-onboarding`, data, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`
