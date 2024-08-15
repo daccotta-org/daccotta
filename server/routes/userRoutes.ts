@@ -103,7 +103,6 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
 
     // Create the top 5 movies list object
     const top5MoviesList = {
-      list_id: uuidv4(),
       name: 'Top 5 Movies',
       list_type: 'user' as const,
       movies: topMovies.map((movie: any) => ({
