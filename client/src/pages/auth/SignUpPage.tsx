@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { useSignUp } from "../../services/queries";
-import { useAuth } from "../../hooks/useAuth";
+
 import {
   checkEmailExists,
   checkUsernameAvailability,
+  useSignUp,
 } from "../../services/userService";
 import { z } from "zod";
 
@@ -30,8 +30,7 @@ const extendedSignUpSchema = z.object({
 type ExtendedSignUpFormData = z.infer<typeof extendedSignUpSchema>;
 
 const SignUp: React.FC = () => {
-  const navigate = useNavigate();
-  const { isOnboarded } = useAuth();
+
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<
     boolean | null
   >(null);

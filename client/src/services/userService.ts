@@ -1,76 +1,70 @@
-import { IUser } from "../Types/User"
-import { MdOutlineGroups3 } from "react-icons/md";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from 'axios';
-import { useAuth } from "../hooks/useAuth";
-import { auth } from "../pages/auth/firebase";
-import { useQuery } from "@tanstack/react-query";
-import { useId } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { IUser } from "../Types/User";
+import { SignUpFormData } from "../Types/validationSchema";
+import { auth } from "../lib/firebase";
 
+export function  useSignUp(){
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+    return useMutation({
+        mutationFn: (data:SignUpFormData)=>createUser(data),
+        
+        onMutate: () => {
+          console.log("onMutate");
+        },
+        onSuccess: (response) => {
+          console.log("onSuccess");
+          console.log(response.data);
+          navigate("/");
+          
 
-// const mockUsers: IUser[] = [
-//     {
-//       id: '1',
+          
+          //Notify("success", response?.data?.message);
+        },
+        onError: (error) => {
+          if (axios.isAxiosError(error)) {
+            console.error("onError", error?.response);
+            //Notify("error", error?.response?.data?.message);
+          }
+        },
+       
+        onSettled: async (_, error) => {
+          if (error) {
+            console.error("onSettled error", error);
+          } else {
+            await queryClient.invalidateQueries({ queryKey: ["users"] });
+          }
+        },
+      });
 
-//       username: 'john_doe',
-//       email: 'john@example.com',
-//       age: 30,
-//       badges: ['Cinephile', 'Early Adopter'],
-//       groups: [
-//         { 
-//           id: 'g1', 
-//           name: 'Movie Buffs', 
-//           description: 'A group for serious movie enthusiasts',
-//           members: [], // Just the ID of John Doe for now
-//           icon: MdOutlineGroups3 
+ 
+}
+export const createUser = async (data: SignUpFormData) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+  const idTokenResult = await userCredential.user.getIdTokenResult();
+  const idToken = idTokenResult.token;
 
-//         }
-//       ],
-//       lists: ['Favorite Sci-Fi', 'Must-Watch Classics'],
-//       directors: ['Christopher Nolan', 'Quentin Tarantino'],
-//       actors: ['Tom Hanks', 'Meryl Streep']
-//     },
-//     {
-//       id: '2',
-//       username: 'jane_smith',
-//       email: 'jane@example.com',
-//       age: 28,
-//       badges: ['Film Critic'],
-//       groups: [
-//         {
-//           id: 'g2',
-//           name: 'Indie Film Lovers',
-//           description: 'Exploring the world of independent cinema',
-//           members: [], // Just the ID of Jane Smith for now
-//           icon:MdOutlineGroups3
+  const response = await axios.post('http://localhost:8080/api/users', {
+    uid: userCredential.user.uid,
+    username: data.username,
+    email: data.email,
+    age: data.age,
+    onboarded: false, // Add this line
+  }, {
+    headers: {
+      'Authorization': `Bearer ${idToken}`,
+    },
+  });
 
-         
-//         }
-//       ],
-//       lists: ['Top Documentaries', 'Underrated Gems'],
-//       directors: ['Wes Anderson', 'Sofia Coppola'],
-//       actors: ['Joaquin Phoenix', 'Cate Blanchett']
-//     },
-//     {
-//       id: '3',
-//       username: 'bob_johnson',
-//       email: 'bob@example.com',
-//       age: 35,
-//       badges: ['Horror Fan'],
-//       groups: [
-//         {
-//           id: 'g3',
-//           name: 'Thriller Enthusiasts',
-//           description: 'For those who love edge-of-your-seat movies',
-//           members: [], // Just the ID of Bob Johnson for now
-//           icon: MdOutlineGroups3
-         
-//         }
-//       ],
-//       lists: ['Best Horror Movies', 'Psychological Thrillers'],
-//       directors: ['Alfred Hitchcock', 'John Carpenter'],
-//       actors: ['Anthony Hopkins', 'Sigourney Weaver']
-//     },
-//   ];
+  // Redirect to onboarding page
+  window.location.href = '/onboard';
+
+  return response;
+}
+   
   export const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
       const response = await axios.post('http://localhost:8080/api/user/check-email', { email });

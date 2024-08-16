@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import {users} from "../../data/user"
 
 interface User {
   id: number;
@@ -7,7 +6,7 @@ interface User {
 }
 
 // Mock user data
-const usersData = users;
+const usersData:any = [];
 
 
 const FriendSearch: React.FC = () => {
@@ -16,7 +15,7 @@ const FriendSearch: React.FC = () => {
   const [friendsList, setFriendsList] = useState<User[]>([]);
 
   // Filter users based on search term
-  const filteredUsers = usersData.filter((user) =>
+  const filteredUsers = usersData.filter((user:any) =>
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

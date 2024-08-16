@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import logo from "../assets/logo_light.png"
 
 interface ProtectedRouteProps {

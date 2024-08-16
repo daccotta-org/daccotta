@@ -15,10 +15,6 @@ export const signUpSchema = z.object({
   path: ["confirmPassword"], // path of error
 });
 
-export const signInSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
 
 export type SignUpFormData = z.infer<typeof signUpSchema>;
-export type SignInFormData = z.infer<typeof signInSchema>;
+

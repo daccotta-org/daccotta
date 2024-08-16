@@ -1,11 +1,18 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signInSchema, SignInFormData } from '../../Types/validationSchema';
-import { auth } from './firebase';
+import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+
+
+export const signInSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+export type SignInFormData = z.infer<typeof signInSchema>;
 
 const SignInPage: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<SignInFormData>({

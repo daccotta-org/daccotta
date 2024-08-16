@@ -90,7 +90,7 @@
 import React, { createContext, useEffect, useState, useCallback } from 'react';
 import { getAuth, onAuthStateChanged, User, signOut, getIdToken } from 'firebase/auth';
 import axios from 'axios';
-import app, { auth } from '../pages/auth/firebase';
+import app, { auth } from '../lib/firebase';
 import { NavigateFunction } from 'react-router-dom';
 
 interface AuthState {

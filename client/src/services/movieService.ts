@@ -1,23 +1,6 @@
+import { SimpleMovie, TMDBMovie } from "../Types/Movie";
 import { fetchDataFromApi } from "./tmdbServices";
 
-// Define an interface for the movie data returned by TMDB
-interface TMDBMovie {
-  id: number;
-  title: string;
-  // Add other properties you might need, e.g.:
-  poster_path?: string | null;
-   release_date?: string | null;
-   overview: string;
-}
-
-// Define an interface for our simplified movie object
-interface SimpleMovie {
-  id: string;
-  title: string;
-  
-}
-
-// Define the structure of the TMDB API response
 interface TMDBResponse {
   results: TMDBMovie[];
   // You can add other properties if needed, like:
