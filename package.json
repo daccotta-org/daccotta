@@ -1,20 +1,20 @@
 {
-  "dependencies": {
-    "concurrently": "^8.2.2",
-    "express": "^4.19.2"
-  },
+  "dependencies": { "eslint": "^9.9.0" },
   "scripts": {
-    "client": "bunx --bun vite --prefix client",
-    "server": "bun --watch main.ts --prefix server",
-    "dev": "concurrently \" cd client && bun dev\" \"cd server && bun dev\" ",
-    "lint": "eslint ."
+    "start:client": "cd client && bunx --bun vite",
+    "start:server": " cd server && bun --watch main.ts",
+    "start": "concurrently \"bun start:client\" \"bun start:server\"",
+    "lint": "eslint 'client/**/*.{ts,tsx,js,jsx}' 'server/**/*.{ts,js}'",
+    "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.1.0",
-    "@eslint/js": "^9.5.0",
-    "eslint": "^9.5.0",
-    "eslint-plugin-react": "^7.34.3",
-    "globals": "^15.6.0",
-    "typescript-eslint": "^7.14.1"
+    "@eslint/js": "^9.9.0",
+    "concurrently": "^8.2.2",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.0",
+    "globals": "^15.9.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.1.0"
   }
 }

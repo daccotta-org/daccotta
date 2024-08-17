@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface User {
   id: number;
@@ -6,17 +6,16 @@ interface User {
 }
 
 // Mock user data
-const usersData:any = [];
-
+const usersData: any = [];
 
 const FriendSearch: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [friendsList, setFriendsList] = useState<User[]>([]);
 
   // Filter users based on search term
-  const filteredUsers = usersData.filter((user:any) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = usersData.filter((user: any) =>
+    user.username.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Handle search input change
@@ -41,7 +40,7 @@ const FriendSearch: React.FC = () => {
   const handleAddFriends = () => {
     setFriendsList((prevFriends) => [...prevFriends, ...selectedUsers]);
     setSelectedUsers([]); // Clear selected users
-    setSearchTerm(''); // Clear search term
+    setSearchTerm(""); // Clear search term
   };
 
   return (
@@ -69,8 +68,8 @@ const FriendSearch: React.FC = () => {
               key={user.id}
               className={`flex items-center mb-2 p-2  rounded-lg cursor-pointer transition-colors ${
                 selectedUsers.some((selected) => selected.id === user.id)
-                  ? 'bg-blue-300'
-                  : 'bg-blue-200'
+                  ? "bg-blue-300"
+                  : "bg-blue-200"
               }`}
               onClick={() => handleUserClick(user)}
             >
