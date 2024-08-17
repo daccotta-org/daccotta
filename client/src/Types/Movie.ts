@@ -1,14 +1,28 @@
+import { z } from "zod";
+
 export interface TMDBMovie {
-  id: number;
-  title: string;
-  // Add other properties you might need, e.g.:
-  poster_path?: string | null;
-   release_date?: string | null;
-   overview: string;
+  id: string;
+  title?: string;
+  poster_path?: string;
+  release_date?: string  
 }
 export interface SimpleMovie {
   id: string;
-  title: string;
-  poster_path: string;
-  release_date: string   
+  title?: string;
+  poster_path?: string;
+  release_date?: string   
 }
+
+export interface Movie {
+  id: string;
+  title?: string;
+  poster_path?: string;
+  release_date?: string;
+}
+
+export const movieSchema = z.object({
+  id: z.string(),
+  title: z.string().optional(),
+  poster_path: z.string().optional(),
+  release_date: z.string().optional(),
+});

@@ -2,8 +2,7 @@ import { type Request, type Response, type NextFunction, Router } from "express"
 import User from '../models/User';
 import { verifyToken } from "../middleware/verifyToken";
 import { checkEmailExists, checkUsernameAvailability, searchUsers } from '../controllers/userController';
-import { v4 as uuidv4 } from 'uuid';
-import type { List } from "../models/List";
+
 
 const router = Router();
 

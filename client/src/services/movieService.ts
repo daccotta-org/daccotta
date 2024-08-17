@@ -1,12 +1,9 @@
 import { SimpleMovie, TMDBMovie } from "../Types/Movie";
 import { fetchDataFromApi } from "./tmdbServices";
 
+
 interface TMDBResponse {
-  results: TMDBMovie[];
-  // You can add other properties if needed, like:
-  // page: number;
-  // total_results: number;
-  // total_pages: number;
+  results: TMDBMovie[]; 
 }
 
 export const searchMovies = async (query: string): Promise<SimpleMovie[]> => {
@@ -18,3 +15,4 @@ export const searchMovies = async (query: string): Promise<SimpleMovie[]> => {
     release_date: movie.release_date,
   }));
 };
+

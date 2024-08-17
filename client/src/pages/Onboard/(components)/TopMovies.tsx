@@ -5,20 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { searchMovies } from "../../../services/movieService";
 import { RxCrossCircled } from "react-icons/rx";
 import { toast } from "react-toastify"; // Only import toast, not ToastContainer
+import { Movie } from "../../../Types/Movie";
+import { movieSchema } from "../../../Types/Movie";
 
-interface Movie {
-  id: string;
-  title: string;
-  poster_path: string;
-  release_date: string;
-}
 
-const movieSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  poster_path: z.string(),
-  release_date: z.string(),
-});
 
 // Define topMoviesSchema using movieSchema
 export const topMoviesSchema = z.object({
