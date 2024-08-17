@@ -9,5 +9,6 @@ export interface TMDBMovie {
 export interface SimpleMovie {
   id: string;
   title: string;
-  
+  poster_path: string;
+  release_date: string   
 }

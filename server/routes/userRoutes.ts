@@ -3,7 +3,7 @@ import User from '../models/User';
 import { verifyToken } from "../middleware/verifyToken";
 import { checkEmailExists, checkUsernameAvailability, searchUsers } from '../controllers/userController';
 import { v4 as uuidv4 } from 'uuid';
-import type List from "../models/List";
+import type { List } from "../models/List";
 
 const router = Router();
 
@@ -113,6 +113,7 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
       })),
       members: [{ user_id: uid, is_author: true }],
       date_created: new Date(),
+      description:'top 5 Movies'
     };
 
     const updatedUser = await User.findByIdAndUpdate(

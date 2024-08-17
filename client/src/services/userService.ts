@@ -79,9 +79,9 @@ export const createUser = async (data: SignUpFormData) => {
       const idToken = await auth.currentUser?.getIdToken();
       console.log("in profile token is : ",idToken);
 
-      //console.log("data :: of UID before api call ", userId, "is here: ",data);
+      console.log("data :: of UID before api call ", userId, "is here: ",data);
       
-  
+    
       const response = await axios.post(`http://localhost:8080/api/user/${userId}/complete-onboarding`, data, {
         headers: {
           'Content-Type': 'application/json',
