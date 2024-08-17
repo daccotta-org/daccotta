@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
-import { searchMovies } from "../../../services/movieService";
+import { searchMovies, useSearchMovies } from "../../../services/movieService";
 import { RxCrossCircled } from "react-icons/rx";
 import { toast } from "react-toastify"; // Only import toast, not ToastContainer
 
@@ -40,14 +40,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
 
-  const {
-    data: movies,
-    refetch,
-  } = useQuery({
-    queryKey: ["movies", searchTerm],
-    queryFn: () => searchMovies(searchTerm),
-    enabled: false, // We'll manually trigger the query
-  });
+  const { data: movies, refetch } = useSearchMovies(searchTerm);
 
   useEffect(() => {
     if (searchTerm.length > 2) {
@@ -83,7 +76,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
   const handleRemoveMovie = (movieId: string) => {
     setValue(
       "topMovies",
-      topMovies.filter((movie) => movie.id !== movieId)
+      topMovies.filter((movie) => movie.id !== movieId),
     );
     toast.info("Movie removed from your top list.");
   };
