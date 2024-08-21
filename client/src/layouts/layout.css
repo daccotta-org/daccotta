@@ -1,0 +1,11 @@
+.bg-main{
+
+    background: linear-gradient(to bottom, rgb(30,32,30) 1%, rgba(0,0,0,0.55) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+ background-blend-mode: multiply,multiply;
+}
+.bg-bar{
+
+    background: linear-gradient(to bottom, rgb(30,32,30) 1%, rgba(0,0,0,0.55) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+ background-blend-mode: multiply,multiply;
+ opacity: 0.8;
+}
