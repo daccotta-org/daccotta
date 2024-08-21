@@ -1,74 +1,162 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { z } from 'zod';
-import { useQuery } from '@tanstack/react-query';
-import { searchDirectors } from '../../../services/directorService';
+import React, { useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { z } from "zod";
+import { useSearchPerson } from "../../../services/directorService";
+import { RxCrossCircled } from "react-icons/rx";
+import { toast } from "react-toastify";
 
-const topDirectorsSchema = z.object({
-  topDirectors: z.array(z.string()).max(5),
+// Define the Director schema
+const directorSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  profile_path: z.string().nullable(),
+  known_for_department: z.literal("Directing"),
+
 });
 
-type TopDirectorsData = z.infer<typeof topDirectorsSchema>;
+// Use the Director schema in the directors schema
+export const topDirectorsSchema = z.object({
+  directors: z.array(directorSchema).max(5),
+});
+
+export type Director = z.infer<typeof directorSchema>;
+export type TopDirectorsData = z.infer<typeof topDirectorsSchema>;
 
 interface Props {
   onNext: () => void;
   onPrevious: () => void;
 }
 
-const TopDirectors: React.FC<Props> = ({ onNext, onPrevious }) => {
-  const { register, setValue, watch, formState: { errors } } = useFormContext<TopDirectorsData>();
-  const [searchTerm, setSearchTerm] = React.useState('');
+const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<TopDirectorsData>();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: directors, isLoading } = useQuery({
-    queryKey: ['directors', searchTerm],
-    queryFn: () => searchDirectors(searchTerm),
-    enabled: searchTerm.length > 2,
-  });
+  const { data: directorsData, isLoading } = useSearchPerson(searchTerm, 'Directing');
+  
+  
+  const directors = watch("directors") || [];
 
-  const topDirectors = watch('topDirectors');
-
-  const handleAddDirector = (directorId: string) => {
-    if (topDirectors.length < 5) {
-      setValue('topDirectors', [...topDirectors, directorId]);
+  const handleAddDirector = (director: Director) => {
+    const isDuplicate = directors.some((d) => d.id === director?.id);
+    if (isDuplicate) {
+      toast.warn("This director is already in your top list.");
+    } else if (directors.length < 5) {
+      setValue("directors", [...directors, director]);
+      console.log("top: ",directors);
+      
+      toast.success("Director added to your top list!");
+    } else {
+      toast.error("You can only select up to 5 directors");
     }
+    setSearchTerm("");
+  };
+
+  const handleRemoveDirector = (directorId: number) => {
+    setValue(
+      "directors",
+      directors.filter((director) => director?.id !== directorId)
+    );
+    toast.info("Director removed from your top list.");
   };
 
   return (
-    <div className="p-4 bg-gradient-to-tr from-secondary to-primary shadow-lg rounded-lg max-w-md hover:ring-1">
-      <h2 className="text-2xl font-bold mb-4">Select Your Top 5 Directors</h2>
-      <input
-        type="text"
-        placeholder="Search directors"
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="input input-bordered w-full mb-4"
-      />
-      {isLoading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
-        <ul className="mb-4">
-          {directors?.map((director) => (
-            <li key={director.id} className="flex justify-between items-center mb-2">
-              <span>{director.name}</span>
-              <button type='button' className="btn btn-secondary btn-sm" onClick={() => handleAddDirector(director.id)}>Add</button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className="mb-4">
-        <h3 className="text-xl font-semibold mb-2">Your Top Directors:</h3>
-        <ul>
-          {topDirectors.map((directorId) => (
-            <li key={directorId} className="mb-1">{directorId}</li>
-          ))}
-        </ul>
+    <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
+      <div className="w-full h-full flex flex-col items-center py-24 col-span-2">
+        <h2 className="text-3xl font-bold mb-12 text-center">Select Your Top 5 Directors</h2>
+        <div className="relative mb-6">
+          <input
+            type="text"
+            placeholder="Search directors"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input input-bordered w-[400px] bg-transparent text-gray-800"
+          />
+          {isLoading && <p>Loading...</p>}
+          {directorsData && directorsData.results && directorsData.results.length > 0 && (
+            <ul className="absolute z-10 w-full overflow-y-auto  max-h-[300px] lg:h-28 mt-1 bg-white text-gray-800 rounded-lg shadow-lg">
+              {directorsData.results.slice(0, 10).map((director: Director) => (
+                <li
+                  key={director?.id}
+                  className="flex items-center space-x-4 p-3 hover:bg-gray-100 cursor-pointer border-b-2"
+                  onClick={() => handleAddDirector(director)}
+                >
+                  {director?.profile_path && (
+                    <img
+                      src={`https://image.tmdb.org/t/p/w92${director?.profile_path}`}
+                      alt={director?.name}
+                      className="w-12 h-12 object-cover rounded-full"
+                    />
+                  )}
+                  <span className="flex-grow text-sm">{director?.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold mb-3">Selected Directors:</h3>
+          <ul className="space-y-4 h-[180px] overflow-y-auto">
+            {directors.map((director) => (
+              <li
+                key={director?.id}
+                className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors"
+              >
+                {director?.profile_path && (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w92${director?.profile_path}`}
+                    alt={director?.name}
+                    className="w-12 h-12 object-cover rounded-full"
+                  />
+                )}
+                <span className="flex-grow text-sm">{director?.name}</span>
+                <button
+                  type="button"
+                  className=""
+                  onClick={() => handleRemoveDirector(director?.id)}
+                >
+                  <RxCrossCircled size="24px" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {errors.directors && (
+          <span className="text-red-300 block mb-4">
+            {errors.directors.message}
+          </span>
+        )}
+        <div className="mt-10 self-end lg:self-auto flex w-full justify-evenly">
+          <button
+            type="button"
+            className="btn btn-secondary text-white"
+            onClick={onPrevious}
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline hover:bg-primary hover:text-white"
+            onClick={onNext}
+          >
+            Next
+          </button>
+        </div>
       </div>
-      {errors.topDirectors && <span className="text-red-500">{errors.topDirectors.message}</span>}
-      <div className="flex justify-between">
-        <button type='button' className="btn btn-secondary" onClick={onPrevious}>Previous</button>
-        <button type='button' className="btn btn-primary" onClick={onNext}>Next</button>
+      <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+        <div className="w-full h-full flex items-center justify-center">
+          <img
+            src="/profile_page.svg"
+            alt="Sign Up Illustration"
+            className="w-[400px] h-auto"
+          />
+        </div>
       </div>
     </div>
   );
 };
 
-export default TopDirectors;
+export default directors;

@@ -5,23 +5,20 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { updateUserProfile } from '../../services/userService';
-
-
-//import individual screen components
-import AddFriends from './(components)/AddFriends';
-import TopDirectors from './(components)/TopDirectors';
-import TopMovies from './(components)/TopMovies';
 import UsernameAndPicture from './(components)/UsernameAndPictures';
+import TopMovies, { topMoviesSchema } from './(components)/TopMovies';
+import TopDirectors, { topDirectorsSchema } from './(components)/TopDirectors';
+import AddFriends, { friendsSchema } from './(components)/AddFriends';
+import { useAuth } from '../../hooks/useAuth';
 
 // Define Zod schema
 const onboardingSchema = z.object({
-  username: z.string().min(3).max(20),
-  profilePicture: z.any().optional(),
-  topMovies: z.array(z.string()).max(5).optional(),
-  topDirectors: z.array(z.string()).max(5).optional(),
+  profile_image: z.string().optional(),
+  topMovies: topMoviesSchema.shape.topMovies.optional(), // Incorporate topMoviesSchema
+  directors: topDirectorsSchema.shape.directors.optional(), // Incorporate topDirectorsSchema
   friends: z.array(z.string()).optional(),
+  onboarded: z.boolean(),
 });
-
 type OnboardingData = z.infer<typeof onboardingSchema>;
 
 const OnboardingForm: React.FC = () => {
@@ -29,30 +26,56 @@ const OnboardingForm: React.FC = () => {
   const methods = useForm<OnboardingData>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      username: '',
+      profile_image: '',
       topMovies: [],
-      topDirectors: [],
+      directors: [],
       friends: [],
+      onboarded: false
     },
   });
 
   // const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user, updateOnboardingStatus } = useAuth();
+  const {isOnboarded}= useAuth();
+  console.log(isOnboarded);
 
   const mutation = useMutation({
-    mutationFn: (data: OnboardingData) => updateUserProfile('1', data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-
-      navigate('/');
+    mutationFn: (data: OnboardingData) => {
+      if (!user) {
+        throw new Error('User not logged in');
+      }
+      return updateUserProfile(user.uid, { ...data, onboarded: true });
     },
+    onSuccess: (updatedUser) => {
+      console.log(updatedUser);
+      updateOnboardingStatus(true); // Update the onboarding status in AuthContext
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      navigate('/profile');
+    },
+    onError: (error) => {
+      console.error('Error updating user profile:', error);
+    }
   });
 
   const onSubmit = (data: OnboardingData) => {
-    console.log("this is user data : ",data);
-    
-    mutation.mutate(data);
+    console.log("form data", data);
+    const topMoviesData = data.topMovies?.map(movie => ({
+      id: movie.id,
+      title: movie.title,
+      poster_path: movie.poster_path,
+      release_date:movie.release_date
+    }));
+
+    console.log("topMoviesData:", topMoviesData);
+  
+    const onboardingData = {
+      ...data,
+      topMovies: topMoviesData,
+    };
+  
+    mutation.mutate(onboardingData);
   };
 
   const handleNext = () => {
@@ -84,15 +107,20 @@ const OnboardingForm: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="onboarding-form h-[100vh] flex flex-col justify-center items-center">
+        <div className=" relative onboarding-form h-[100vh] flex flex-col justify-center items-center">
           <div className="progress-bar">
             {/* Implement progress bar here */}
           </div>
           {renderStep()}
           {step === 3 && (
-            <button className='btn btn-secondary mt-2' type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
-            </button>
+          <button
+          className="btn btn-secondary text-white  mt-2 absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:top-4 lg:right-4 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:translate-y-0"
+          type="submit"
+          disabled={mutation.isPending}
+        >
+          {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
+        </button>
+          
           )}
         </div>
       </form>

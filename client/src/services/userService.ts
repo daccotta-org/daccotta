@@ -1,94 +1,193 @@
-import { IUser } from "../Types/User"
-import { MdOutlineGroups3 } from "react-icons/md";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from 'axios';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { IUser } from "../Types/User";
+import { SignUpFormData } from "../Types/validationSchema";
+import { auth } from "../lib/firebase";
 
+export function  useSignUp(){
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+    return useMutation({
+        mutationFn: (data:SignUpFormData)=>createUser(data),
+        
+        onMutate: () => {
+          console.log("onMutate");
+        },
+        onSuccess: (response) => {
+          console.log("onSuccess");
+          console.log(response.data);
+          navigate("/");
+          
 
-const mockUsers: IUser[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      username: 'john_doe',
-      email: 'john@example.com',
-      age: 30,
-      badges: ['Cinephile', 'Early Adopter'],
-      groups: [
-        { 
-          id: 'g1', 
-          name: 'Movie Buffs', 
-          description: 'A group for serious movie enthusiasts',
-          members: [], // Just the ID of John Doe for now
-          icon: MdOutlineGroups3 
+          
+          //Notify("success", response?.data?.message);
+        },
+        onError: (error) => {
+          if (axios.isAxiosError(error)) {
+            console.error("onError", error?.response);
+            //Notify("error", error?.response?.data?.message);
+          }
+        },
+       
+        onSettled: async (_, error) => {
+          if (error) {
+            console.error("onSettled error", error);
+          } else {
+            await queryClient.invalidateQueries({ queryKey: ["users"] });
+          }
+        },
+      });
 
-        }
-      ],
-      lists: ['Favorite Sci-Fi', 'Must-Watch Classics'],
-      directors: ['Christopher Nolan', 'Quentin Tarantino'],
-      actors: ['Tom Hanks', 'Meryl Streep']
+ 
+}
+export const createUser = async (data: SignUpFormData) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+  const idTokenResult = await userCredential.user.getIdTokenResult();
+  const idToken = idTokenResult.token;
+
+  const response = await axios.post('http://localhost:8080/api/users', {
+    uid: userCredential.user.uid,
+    username: data.username,
+    email: data.email,
+    age: data.age,
+    onboarded: false, // Add this line
+  }, {
+    headers: {
+      'Authorization': `Bearer ${idToken}`,
     },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      username: 'jane_smith',
-      email: 'jane@example.com',
-      age: 28,
-      badges: ['Film Critic'],
-      groups: [
-        {
-          id: 'g2',
-          name: 'Indie Film Lovers',
-          description: 'Exploring the world of independent cinema',
-          members: [], // Just the ID of Jane Smith for now
-          icon:MdOutlineGroups3
+  });
 
-         
-        }
-      ],
-      lists: ['Top Documentaries', 'Underrated Gems'],
-      directors: ['Wes Anderson', 'Sofia Coppola'],
-      actors: ['Joaquin Phoenix', 'Cate Blanchett']
-    },
-    {
-      id: '3',
-      name: 'Bob Johnson',
-      username: 'bob_johnson',
-      email: 'bob@example.com',
-      age: 35,
-      badges: ['Horror Fan'],
-      groups: [
-        {
-          id: 'g3',
-          name: 'Thriller Enthusiasts',
-          description: 'For those who love edge-of-your-seat movies',
-          members: [], // Just the ID of Bob Johnson for now
-          icon: MdOutlineGroups3
-         
-        }
-      ],
-      lists: ['Best Horror Movies', 'Psychological Thrillers'],
-      directors: ['Alfred Hitchcock', 'John Carpenter'],
-      actors: ['Anthony Hopkins', 'Sigourney Weaver']
-    },
-  ];
+  // Redirect to onboarding page
+  window.location.href = '/onboard';
 
-export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  return response;
+}
+   
+  export const checkEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/user/check-email', { email });
+      return response.data.exists;
+    } catch (error) {
+      throw new Error('Failed to check Email');
+    }
+  };
+
+  export const updateUserProfile = async (userId: string, data: Partial<IUser>): Promise<IUser> => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      console.log("in profile token is : ",idToken);
+
+      console.log("data :: of UID before api call ", userId, "is here: ",data);
+      
+    
+      const response = await axios.post(`http://localhost:8080/api/user/${userId}/complete-onboarding`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+      console.log("response :: ",response.data);
+      
+      const updatedUser = response.data.user;
+
   
-  const user = mockUsers.find(u => u.id === userId);
-  if (!user) {
-    throw new Error('User not found');
+      // Update local storage if onboarded status changed
+      
+      if (data.onboarded !== undefined) {
+        
+        
+        localStorage.setItem('onboarded', updatedUser.onboarded.toString());
+      }
+      
+      return updatedUser;
+    } catch (error) {
+      throw new Error('Failed to update user profile');
+    }
+  };
+  
+  export const checkOnboardedStatus = async (userId: string): Promise<boolean> => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      console.log("in check onboarded token is : ",idToken);
+      
+  
+      const response = await axios.get(`http://localhost:8080/api/user/${userId}/onboarded`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+  
+      return response.data.onboarded;
+      
+    } catch (error) {
+      throw new Error('Failed to check onboarded status');
+    }
   }
+  export const searchUsers = async (searchTerm: string,uid:string|undefined) => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      
   
-  Object.assign(user, data);
-  console.log("user is : ",user);
+      if (!uid) {
+        throw new Error('User not authenticated');
+      }
   
-  return user;
+      const response = await axios.get(`http://localhost:8080/api/user/${uid}/search?term=${searchTerm}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      throw new Error('Failed to search users');
+    }
+  };
+// export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
+//   // Simulate API call delay
+//   await new Promise(resolve => setTimeout(resolve, 500));
+  
+//   return mockUsers.filter(user => 
+//     user.username.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+// };
+export const useSearchUsers =(searchTerm:string,uid:string|undefined)=>  useQuery({
+  queryKey: ['users', searchTerm],
+  queryFn: () => searchUsers(searchTerm,uid),
+  enabled: searchTerm.length > 2,
+});
+
+export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+  try {
+    const idToken = await auth.currentUser?.getIdToken();
+    
+    const response = await axios.get(`http://localhost:8080/api/user/check-username/${username}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
+      }
+    });
+
+    return response.data.isAvailable;
+  } catch (error) {
+    console.error('Error checking username availability:', error);
+    throw new Error('Failed to check username availability');
+  }
 };
 
-export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500));
+export const getUserData = async (uid?: string) => {
+  const idToken = await auth.currentUser?.getIdToken();
   
-  return mockUsers.filter(user => 
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const response = await axios.get(`http://localhost:8080/api/user/${uid}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  });
+  console.log("response :: ",response.data);
+  return response.data;
 };

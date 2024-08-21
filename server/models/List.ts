@@ -1,24 +1,66 @@
-import mongoose, { Schema, model, Document } from 'mongoose';
+import  mongoose,{ Schema } from 'mongoose';
+import { movieInListSchema, type MovieInList } from './movie';
 
-interface Lists {
+export interface List extends Document {
+  list_id: string;
   name: string;
-  list_type:string ;
-  movies:  Schema.Types.ObjectId[];
+  list_type: 'user' | 'group';
+  movies: MovieInList[];
+  members: {
+    user_id: string;
+    is_author: boolean;
+  }[];
+  date_created: Date;
+  description:string;
 }
 
-const listSchema = new Schema<Lists>({
-
+export const listSchema = new Schema<List>({
+  list_id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
   name: { type: String, required: true },
   list_type: {
     type: String,
-    enum:[
-        "user",
-        "group"
-    ]
+    enum: ['user', 'group'],
+    required: true,
   },
-  movies: [{ type: Schema.Types.ObjectId, ref: 'Movie' }],
+  movies: [movieInListSchema],
+  members: [{
+    user_id: { type: String, required: true },
+    is_author: { type: Boolean, required: true },
+  }],
+  date_created: { type: Date, default: Date.now },
+  description:{type:String, required:false}
 });
 
-const List = model<Lists>('List', listSchema);
+// import mongoose, { Schema, model, Document } from 'mongoose';
 
-export default List;
+// interface List extends Document {
+//   list_id: string;
+//   name: string;
+//   list_type: 'user' | 'group';
+//   movies: string[];
+//   members: {
+//     user_id: string;
+//     is_author: boolean;
+//   }[];
+//   date_created: Date;
+// }
+
+// const listSchema = new Schema<List>({
+//   list_id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
+//   name: { type: String, required: true },
+//   list_type: {
+//     type: String,
+//     enum: ['user', 'group'],
+//     required: true,
+//   },
+//   movies: [{ type: String, required: true }],
+//   members: [{
+//     user_id: { type: String, required: true },
+//     is_author: { type: Boolean, required: true },
+//   }],
+//   date_created: { type: Date, default: Date.now },
+// });
+
+// const List = model<List>('List', listSchema);
+
+// export default {List, listSchema};
