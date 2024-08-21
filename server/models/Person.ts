@@ -14,6 +14,6 @@ export const personSchema = new Schema<Person>({
    
   }, { timestamps: true });
 
-  const Person = model<Person>('Person', personSchema);
+  const Person = model<Person>('Person', personSchema);                     
 
   export default Person;

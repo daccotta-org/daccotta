@@ -63,6 +63,9 @@ const OnboardingForm: React.FC = () => {
     console.log("form data", data);
     const topMoviesData = data.topMovies?.map(movie => ({
       id: movie.id,
+      title: movie.title,
+      poster_path: movie.poster_path,
+      release_date:movie.release_date
     }));
 
     console.log("topMoviesData:", topMoviesData);
