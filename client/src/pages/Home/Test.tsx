@@ -1,6 +1,9 @@
-function testComponent() {
-  const message = "This should have double quotes";
-  console.log(message);
+import React from "react"
+
+type Props = {}
+
+function Test({}: Props) {
+    return <div>Test</div>
 }
 
-export default testComponent;
+export default Test

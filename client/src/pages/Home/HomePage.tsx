@@ -1,6 +1,5 @@
-import MovieCarousel from "../../components/custom/MovieCarousel/MovieCarousel"
-import { MovieList } from "../../data/Movies"
-
+import { AccordionShadcn } from "@/components/custom/Accordion"
+import Button from "@mui/material/Button"
 const HomePage = () => {
     //fix this import issue
     // const SignInRedirectUrl= import.meta.env.CLERK_SIGN_IN_FORCE_REDIRECT_URL;
@@ -8,9 +7,7 @@ const HomePage = () => {
     return (
         <>
             <main className="px-8 w-full h-full">
-                <div className="section-1 w-full p-2 flex flex-col ">
-                    Hello World
-                </div>
+                <div className="section-1 w-full p-2 flex flex-col "></div>
             </main>
         </>
     )
