@@ -98,7 +98,7 @@ const OnboardingForm: React.FC = () => {
       case 2:
         return <TopDirectors onNext={handleNext} onPrevious={handlePrevious} />;
       case 3:
-        return <AddFriends onPrevious={handlePrevious} />;
+        return <AddFriends onPrevious={handlePrevious} onSubmit={methods.handleSubmit(onSubmit)} isSubmitting={mutation.isPending} />;
       default:
         return null;
     }
@@ -111,17 +111,7 @@ const OnboardingForm: React.FC = () => {
           <div className="progress-bar">
             {/* Implement progress bar here */}
           </div>
-          {renderStep()}
-          {step === 3 && (
-          <button
-          className="btn btn-secondary text-white  mt-2 absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:top-4 lg:right-4 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:translate-y-0"
-          type="submit"
-          disabled={mutation.isPending}
-        >
-          {mutation.isPending ? 'Submitting...' : 'Complete Onboarding'}
-        </button>
-          
-          )}
+          {renderStep()}        
         </div>
       </form>
     </FormProvider>

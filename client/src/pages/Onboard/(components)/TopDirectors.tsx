@@ -65,7 +65,7 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
 
   return (
     <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-      <div className="w-full h-full flex flex-col items-center py-24 col-span-2">
+      <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center">
         <h2 className="text-3xl font-bold mb-12 text-center">Select Your Top 5 Directors</h2>
         <div className="relative mb-6">
           <input
@@ -73,7 +73,7 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
             placeholder="Search directors"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input input-bordered w-[400px] bg-transparent text-gray-800"
+            className="input input-bordered w-[400px] bg-transparent text-white"
           />
           {isLoading && <p>Loading...</p>}
           {directorsData && directorsData.results && directorsData.results.length > 0 && (

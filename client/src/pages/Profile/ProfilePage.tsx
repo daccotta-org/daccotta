@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import { getUserData } from "../../services/userService";
+import "./profile.css"
 
 
 // Define the type for each carousel item
@@ -113,13 +114,13 @@ const Profile: React.FC = () => {
     }),
   };
   return (
-    <div className="flex flex-col rounded-md items-center justify-center w-full h-full bg-gradient-to-tr from-primary to-secondary text-white">
+    <div className="flex flex-col rounded-md items-center justify-center w-full h-full bg-gradient-to-tr from-primary to-secondary text-[#E0E0E0] bg-[#1E1E2C]">
       <div className="flex flex-col md:flex-col sm:flex-row w-[90%] h-[90%] gap-4">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
           {/* Profile Card */}
           <motion.div
-            className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ring-2 hover:ease-in ease-out transition duration-300"
+            className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-2xl border-b-2 border-r-2 hover:ring-2 hover:ease-in ease-out transition duration-300"
           >
             <div className="flex items-center">
               <div className="flex-shrink-0 w-32 h-32">
@@ -140,7 +141,7 @@ const Profile: React.FC = () => {
           </motion.div>
 
           {/* Stats Card */}
-          <div className="flex items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ring-2 hover:ease-in ease-out transition duration-300">
+          <div className="flex items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-2xl border-b-2 border-r-2 hover:ring-2 hover:ease-in ease-out transition duration-300">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
               Bento Stats
             </h2>
@@ -150,7 +151,7 @@ const Profile: React.FC = () => {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
           {/* Map List Card */}
-          <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ring-2 hover:ease-in ease-out transition duration-300">
+          <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-2xl border-b-2 border-r-2 hover:ring-2 hover:ease-in ease-out transition duration-300">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
               Map &lt;List&gt;
             </h2>
@@ -172,7 +173,7 @@ const Profile: React.FC = () => {
           </div>
 
          {/* Carousel */}
-<div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative hover:ring-2 hover:ease-in ease-out transition duration-300 overflow-hidden">
+<div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-2xl border-b-2 border-r-2 relative hover:ring-2 hover:ease-in ease-out transition duration-300 overflow-hidden">
   <button
     className="text-white hover:text-yellow-400 absolute left-2"
     onClick={handlePrev}

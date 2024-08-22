@@ -73,7 +73,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
 
   return (
     <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-      <div className="w-full h-full flex flex-col items-center py-24 col-span-2">
+      <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center shadow-2xl">
         <h2 className="text-3xl font-bold mb-12 text-center">
           Select Your Top 5 Movies
         </h2>
@@ -83,7 +83,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
             placeholder="Search movies"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input input-bordered w-[400px] bg-transparent text-gray-800"
+            className="input input-bordered w-[400px] bg-transparent text-white"
           />
           {searchResults.length > 0 && (
             <ul className="absolute z-10 w-full overflow-y-auto h-[300px] lg:h-28 mt-1 bg-white text-gray-800 rounded-lg shadow-lg ">
