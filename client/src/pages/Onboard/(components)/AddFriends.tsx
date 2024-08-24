@@ -5,6 +5,7 @@ import { useSearchUsers } from '../../../services/userService';
 import { toast } from 'react-toastify';
 import { RxCrossCircled } from 'react-icons/rx';
 import { useAuth } from '../../../hooks/useAuth';
+import '../../../index.css'
 import CircularIndeterminate from '@/components/ui/loading';
 
 // Define the Friends schema
@@ -55,13 +56,13 @@ const AddFriends: React.FC<Props> = ({ onPrevious, onSubmit, isSubmitting }) => 
   };
 
   return (
-    <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-      <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center">
-        <h2 className="text-3xl font-bold mb-12 text-center">Add Friends</h2>
+    <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen ">
+      <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center bg-main">
+        <h2 className="text-3xl font-bold mb-12 px-4 text-center">Add Friends</h2>
         <div className="relative mb-6">
         <input
           type="text"
-          className="input input-bordered w-[400px] bg-transparent text-white justify-center flex"
+          className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white justify-center flex"
           placeholder="Search users"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -89,11 +90,11 @@ const AddFriends: React.FC<Props> = ({ onPrevious, onSubmit, isSubmitting }) => 
         )}
         </div>
         {selectedFriends.length > 0 && (
-        <div className="mb-4">
+        <div className="mb-4 w-[320px] sm:w-[400px]">
           <h3 className="text-xl font-semibold mb-2">Your Friends:</h3>
           <ul className="space-y-4 h-[180px] overflow-y-auto scrollbar-hide">
             {selectedFriends.map((friend) => (
-              <li key={friend._id} className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors">
+              <li key={friend._id} className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[320px] sm:w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors">
                 {friend.profile_image && (
                   <img
                     src={friend.profile_image}
@@ -127,7 +128,7 @@ const AddFriends: React.FC<Props> = ({ onPrevious, onSubmit, isSubmitting }) => 
         </div>
         
       </div>
-      <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+      <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FFEBCD]">
         <div className="w-full h-full flex items-center justify-center">
           <img
             src="/profile_page.svg"

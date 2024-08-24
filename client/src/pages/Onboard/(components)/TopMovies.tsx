@@ -7,6 +7,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { toast } from "react-toastify"; // Only import toast, not ToastContainer
 import { Movie } from "../../../Types/Movie";
 import { movieSchema } from "../../../Types/Movie";
+import '../../../index.css'
 
 
 
@@ -30,7 +31,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
 
-  const { data: movies, refetch } = useSearchMovies(searchTerm);
+  const { data: movies, isLoading, refetch } = useSearchMovies(searchTerm);
 
   useEffect(() => {
     if (searchTerm.length > 2) {
@@ -72,9 +73,9 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
   };
 
   return (
-    <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-      <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center shadow-2xl">
-        <h2 className="text-3xl font-bold mb-12 text-center">
+    <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen ">
+      <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center shadow-2xl bg-main">
+        <h2 className="text-3xl font-bold mb-12 px-4 text-center">
           Select Your Top 5 Movies
         </h2>
         <div className="relative mb-6">
@@ -83,8 +84,9 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
             placeholder="Search movies"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input input-bordered w-[400px] bg-transparent text-white"
+            className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white"
           />
+           {isLoading && <p>Loading...</p>}
           {searchResults.length > 0 && (
             <ul className="absolute z-10 w-full overflow-y-auto h-[300px] lg:h-28 mt-1 bg-white text-gray-800 rounded-lg shadow-lg ">
               {searchResults.map((movie) => (
@@ -109,13 +111,14 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
             </ul>
           )}
         </div>
-        <div className="mb-6">
+         {topMovies.length > 0 && (
+          <div className="mb-6 w-[320px] sm:w-[400px]">
           <h3 className="text-xl font-semibold mb-3">Selected Movies :</h3>
           <ul className="space-y-4 h-[180px] overflow-y-auto">
             {topMovies.map((movie) => (
               <li
                 key={movie.id}
-                className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors"
+                className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[320px] sm:w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors"
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
@@ -136,6 +139,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
             ))}
           </ul>
         </div>
+         )}
         {errors.topMovies && (
           <span className="text-red-300 block mb-4">
             {errors.topMovies.message}
@@ -158,7 +162,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
           </button>
         </div>
       </div>
-      <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+      <div className="hidden lg:flex lg:items-center lg:justify-center  lg:col-span-3 bg-[#FEFEFA]">
         <div className="w-full h-full flex items-center justify-center">
           <img
             src="/profile_page.svg"

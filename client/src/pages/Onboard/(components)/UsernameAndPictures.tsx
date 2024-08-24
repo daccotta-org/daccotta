@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { avatars } from '../../../assets/avatars';
+import '../../../index.css'
 // Assuming you have these avatar images
 // const avatars = [
 //   '/avatars01.png',
@@ -37,8 +38,8 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
 
   return (
   
-    <div className='w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100'>
-    <div className=" h-full w-full p-4 pt-16 bg-base-100 shadow-lg rounded-lg  hover:ring-1 col-span-2 flex flex-col justify-center lg:justify-evenly items-center">
+    <div className='w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen '>
+    <div className=" h-full w-full p-4 pt-16 bg-base-100 shadow-lg rounded-lg  hover:ring-1 col-span-2 flex flex-col justify-center lg:justify-evenly items-center bg-main">
       <h2 className="text-3xl font-bold mb-4">Choose an Avatar</h2>
        {/* <p>{isUsernameAvailable} ||  {selectedAvatar}</p> */}
       <form onSubmit={handleSubmit}>
@@ -69,7 +70,7 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
         </div>
       </form>
     </div>
-    <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+    <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FFF8DC]">
         <div className="w-full h-full flex items-center justify-center">
           <img src="/profile_page.svg" alt="Sign Up Illustration" className="w-[400px] h-auto" />
         </div>
