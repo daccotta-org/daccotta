@@ -9,6 +9,15 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    extend: {
+      fontFamily: {
+        'lato': ['Lato', 'sans-serif'],
+        'noto': ['Noto Sans', 'sans-serif'],
+        'montserrat': ['Montserrat', 'sans-serif'],
+        'roboto': ['Roboto', 'sans-serif'],
+        'matemasie':['Matemasie','sans-serif']
+      },
+    },
     container: {
       center: true,
       padding: "2rem",

@@ -1,54 +1,55 @@
-
-import React, { useEffect } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import AuthenticatedLayout from './authenticated-layout';
-
+import "@fontsource/ibm-plex-mono"
+import React, { useEffect } from "react"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth"
 const RootLayout: React.FC = () => {
-  const { user, isOnboarded, isLoaded, checkOnboardingStatus } = useAuth();
-  const location = useLocation();
+    const { user, isOnboarded, isLoaded, checkOnboardingStatus } = useAuth()
+    const location = useLocation()
 
-  useEffect(() => {
-    if (user && isOnboarded === undefined) {
-      checkOnboardingStatus();
+    useEffect(() => {
+        if (user && isOnboarded === undefined) {
+            checkOnboardingStatus()
+        }
+    }, [user, isOnboarded, checkOnboardingStatus])
+
+    if (!isLoaded) {
+        return <div>Loading...</div>
     }
-  }, [user, isOnboarded, checkOnboardingStatus]);
 
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
+    // Paths that don't require authentication
+    const publicPaths = ["/signin", "/signup"]
 
-  // Paths that don't require authentication
-  const publicPaths = ['/signin', '/signup'];
-
-  if (!user) {
-    // If the user is on a public path, render it
-    if (publicPaths.includes(location.pathname)) {
-      return <Outlet />;
+    if (!user) {
+        // If the user is on a public path, render it
+        if (publicPaths.includes(location.pathname)) {
+            return <Outlet />
+        }
+        // Otherwise, redirect to signup
+        return <Navigate to="/signup" replace />
     }
-    // Otherwise, redirect to signup
-    return <Navigate to="/signup" replace />;
-  }
 
-  // If onboarding status is still undefined, show loading
-  if (isOnboarded === undefined) {
-    return <div>Checking onboarding status...</div>;
-  }
-
-  if (!isOnboarded) {
-    if (location.pathname === '/onboard') {
-      return <Outlet />;
+    // If onboarding status is still undefined, show loading
+    if (isOnboarded === undefined) {
+        return <div>Checking onboarding status...</div>
     }
-    return <Navigate to="/onboard" replace />;
-  }
 
-  // User is authenticated and onboarded
-  if (publicPaths.includes(location.pathname) || location.pathname === '/onboard') {
-    // Redirect to home if trying to access signin/signup/onboard while authenticated and onboarded
-    return <Navigate to="/" replace />;
-  }
+    if (!isOnboarded) {
+        if (location.pathname === "/onboard") {
+            return <Outlet />
+        }
+        return <Navigate to="/onboard" replace />
+    }
 
-  return <Outlet />;
-};
+    // User is authenticated and onboarded
+    if (
+        publicPaths.includes(location.pathname) ||
+        location.pathname === "/onboard"
+    ) {
+        // Redirect to home if trying to access signin/signup/onboard while authenticated and onboarded
+        return <Navigate to="/" replace />
+    }
 
-export default RootLayout;
+    return <Outlet />
+}
+
+export default RootLayout
