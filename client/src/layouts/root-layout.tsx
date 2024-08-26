@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import AuthenticatedLayout from './authenticated-layout';
 
 const RootLayout: React.FC = () => {
   const { user, isOnboarded, isLoaded, checkOnboardingStatus } = useAuth();

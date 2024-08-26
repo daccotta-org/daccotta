@@ -1,6 +1,5 @@
 import MovieCarousel from "@/components/custom/MovieCarousel/MovieCarousel"
 import ProfileIcon from "@/components/custom/ProfileIcon/ProfileIcon"
-import Button from "@mui/material/Button"
 const HomePage = () => {
     return (
         <>

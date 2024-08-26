@@ -33,7 +33,8 @@ const Transition = React.forwardRef(function Transition(
 
 function SimpleDialog(props: SimpleDialogProps) {
   const navigate = useNavigate();
-  const { isSignedIn, signOut } = useAuth();
+
+  const { signOut } = useAuth();
   
   const handleSignOut = async () => {
     try {
@@ -44,7 +45,7 @@ function SimpleDialog(props: SimpleDialogProps) {
     }
   };
 
-  const { onClose, selectedValue, open, avatar } = props;
+  const { onClose, selectedValue, open } = props;
 
   const handleClose = () => {
     onClose(selectedValue);

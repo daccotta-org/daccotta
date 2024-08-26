@@ -63,11 +63,6 @@ const Profile: React.FC = () => {
 
 
   // Define the carousel items with type safety
-  const carouselItems: CarouselItem[] = [
-    { title: "Item 1", description: "Description for Item 1" },
-    { title: "Item 2", description: "Description for Item 2" },
-    { title: "Item 3", description: "Description for Item 3" },
-  ];
 
 
 

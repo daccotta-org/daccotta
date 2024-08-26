@@ -18,7 +18,7 @@ interface UsernameAndAvatarProps {
 }
 
 const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
-  const { register, setValue,watch,  formState: { errors } } = useFormContext();
+  const {  setValue,watch} = useFormContext();
   const profileUrl = watch('profile_image'); 
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number | null>(null);
 

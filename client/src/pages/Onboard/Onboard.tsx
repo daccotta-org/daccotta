@@ -8,7 +8,7 @@ import { updateUserProfile } from '../../services/userService';
 import UsernameAndPicture from './(components)/UsernameAndPictures';
 import TopMovies, { topMoviesSchema } from './(components)/TopMovies';
 import TopDirectors, { topDirectorsSchema } from './(components)/TopDirectors';
-import AddFriends, { friendsSchema } from './(components)/AddFriends';
+import AddFriends from './(components)/AddFriends';
 import { useAuth } from '../../hooks/useAuth';
 
 // Define Zod schema

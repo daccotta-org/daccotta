@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
-import { searchMovies, useSearchMovies } from "../../../services/movieService";
+
+import { useSearchMovies } from "../../../services/movieService";
 import { RxCrossCircled } from "react-icons/rx";
 import { toast } from "react-toastify"; // Only import toast, not ToastContainer
 import { Movie } from "../../../Types/Movie";

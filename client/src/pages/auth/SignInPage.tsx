@@ -4,24 +4,24 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { auth } from "../../lib/firebase"
 import {
     signInWithEmailAndPassword,
-    signInWithPopup,
-    GoogleAuthProvider,
-    OAuthProvider,
+    // signInWithPopup,
+    // GoogleAuthProvider,
+    // OAuthProvider,
 } from "firebase/auth"
 import { useMutation } from "@tanstack/react-query"
-import { useNavigate } from "react-router-dom"
+//import { useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { Link } from "react-router-dom"
 import "../../index.css"
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
 import { checkEmailExists } from "@/services/userService"
 import { useState, useEffect } from "react"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipProvider,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip"
 
 export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),

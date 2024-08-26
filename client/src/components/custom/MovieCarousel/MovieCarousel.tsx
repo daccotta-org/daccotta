@@ -1,9 +1,8 @@
-import { FC } from "react"
-import MovieCard, { MovieDetails } from "../MovieCard/MovieCard"
+
 import CarouselCard, { CardProps } from "./CarouselCard"
-interface Movies {
-    movie: CardProps[]
-}
+// interface Movies {
+//     movie: CardProps[]
+// }
 const MovieData: CardProps[] = [
     {
         movie_id: "49026",
