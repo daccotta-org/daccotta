@@ -4,7 +4,10 @@ import PopoverRadix from "@/components/custom/PopoverRadix"
 const HomePage = () => {
     return (
         <>
-            <main className="w-full h-full">
+            <main className="w-full h-full relative z-0">
+                <div className="flex justify-end absolute z-50 right-0 top-0 ">
+                    <ProfileIcon />
+                </div>
                 <MovieCarousel />
                 <div className="flex flex-col justify-center text-white">
                     <PopoverRadix />

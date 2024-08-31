@@ -27,20 +27,10 @@ export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 })
-export type SignInFormData = z.infer<typeof signInSchema>
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-})
+
 export type SignInFormData = z.infer<typeof signInSchema>
 
 const SignInPage: React.FC = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<SignInFormData>({
-        resolver: zodResolver(signInSchema),
-    })
     const {
         register,
         handleSubmit,
@@ -112,7 +102,6 @@ const SignInPage: React.FC = () => {
     //     }
     // }
 
-
     return (
         <div className="w-full lg:grid lg:grid-cols-5 h-screen">
             {/* Form Section */}
@@ -146,7 +135,6 @@ const SignInPage: React.FC = () => {
                                         {isCheckingEmail ? (
                                             <span className="loading loading-spinner loading-sm"></span>
                                         ) : isEmailExists === true ? (
-                                            
                                             <FaCheckCircle className="text-success" />
                                         ) : isEmailExists === false ? (
                                             <FaTimesCircle
