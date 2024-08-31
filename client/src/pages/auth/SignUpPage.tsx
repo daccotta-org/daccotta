@@ -1,14 +1,16 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import React, { useEffect, useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "react-router-dom"
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
+import "../../index.css"
 
-import { z } from "zod"
 import {
     checkEmailExists,
     checkUsernameAvailability,
     useSignUp,
 } from "../../services/userService"
+import { z } from "zod"
 
 // Schema definitions
 const usernameSchema = z
@@ -44,8 +46,12 @@ const SignUp: React.FC = () => {
     const [isUsernameAvailable, setIsUsernameAvailable] = useState<
         boolean | null
     >(null)
-    const [isChecking, setIsChecking] = useState(false)
 
+    const [isChecking, setIsChecking] = useState(false)
+    const [isEmailAvailable, setIsEmailAvailable] = useState<boolean | null>(
+        null
+    )
+    const [isCheckingEmail, setIsCheckingEmail] = useState(false)
     const {
         register,
         handleSubmit,
@@ -57,8 +63,8 @@ const SignUp: React.FC = () => {
     })
     const createUser = useSignUp()
 
+    // useEffect to check if email is available
     const username = watch("username")
-
     useEffect(() => {
         const checkAvailability = async () => {
             if (username && username.length >= 3) {
@@ -86,15 +92,6 @@ const SignUp: React.FC = () => {
     }, [username])
 
     const onSubmit = async (values: ExtendedSignUpFormData) => {
-        const emailExists = await checkEmailExists(values.email)
-        if (emailExists) {
-            setError("email", {
-                type: "manual",
-                message: "Email is already taken",
-            })
-            return
-        }
-
         if (!isUsernameAvailable) {
             setError("username", {
                 type: "manual",
@@ -103,12 +100,45 @@ const SignUp: React.FC = () => {
             return
         }
 
+        if (!isEmailAvailable) {
+            setError("email", {
+                type: "manual",
+                message: "Email is already in use",
+            })
+            return
+        }
+
         createUser.mutate(values)
     }
 
+    //userEffect to check if email is available
+    const email = watch("email")
+
+    useEffect(() => {
+        const checkEmailAvailability = async () => {
+            if (email && email.endsWith("@gmail.com")) {
+                setIsCheckingEmail(true)
+                try {
+                    const emailExists = await checkEmailExists(email)
+                    setIsEmailAvailable(!emailExists)
+                } catch (error) {
+                    console.error("Error checking email availability:", error)
+                    setIsEmailAvailable(null)
+                } finally {
+                    setIsCheckingEmail(false)
+                }
+            } else {
+                setIsEmailAvailable(null)
+            }
+        }
+
+        const debounce = setTimeout(checkEmailAvailability, 500)
+        return () => clearTimeout(debounce)
+    }, [email])
+
     return (
-        <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5 bg-base-100">
-            <div className="flex flex-col items-center justify-center py-12 lg:py-2 lg:col-span-2 bg-base-100">
+        <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5">
+            <div className="flex flex-col items-center justify-center py-12 lg:py-2 lg:col-span-2 bg-main">
                 <div className="mx-auto w-full max-w-md px-4">
                     <h2 className="text-3xl font-bold text-center self-start mb-8 lg:mb-2">
                         Sign Up
@@ -120,49 +150,91 @@ const SignUp: React.FC = () => {
                         onSubmit={handleSubmit(onSubmit)}
                         className="space-y-2"
                     >
-                        <div className="form-control">
+                        <div className="form-control relative">
                             <label className="label">
-                                <span className="label-text">
-                                    Username
-                                    {errors.username && (
-                                        <span className="text-error">
-                                            {errors.username.message}
-                                        </span>
-                                    )}
-                                </span>
+                                <span className="label-text">Username</span>
                             </label>
-                            <input
-                                type="text"
-                                placeholder="Username"
-                                className={`input input-bordered bg-transparent w-full ${
-                                    errors.username || !isUsernameAvailable
-                                        ? "input-error"
-                                        : ""
-                                }`}
-                                {...register("username")}
-                            />
-                            {isUsernameAvailable === false && (
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Username"
+                                    className={`input input-bordered bg-transparent w-full pr-10 ${
+                                        errors.username ? "input-error" : ""
+                                    }`}
+                                    {...register("username")}
+                                />
+                                {username && username.length >= 3 && (
+                                    <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                        {isChecking ? (
+                                            <span className="loading loading-spinner loading-sm"></span>
+                                        ) : isUsernameAvailable ? (
+                                            <FaCheckCircle className="text-success" />
+                                        ) : (
+                                            <FaTimesCircle
+                                                className="text-error tooltip tooltip-top"
+                                                data-tip="unvalid username"
+                                            />
+                                        )}
+                                    </span>
+                                )}
+                            </div>
+                            {errors.username && (
                                 <label className="label">
-                                    <span className="label-text text-error">
-                                        Username is not available
+                                    <span className="label-text-alt text-error">
+                                        {errors.username.message}
                                     </span>
                                 </label>
                             )}
+                            {isUsernameAvailable === false &&
+                                !errors.username && (
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">
+                                            Username is not available
+                                        </span>
+                                    </label>
+                                )}
                         </div>
-                        <div className="form-control">
+                        <div className="form-control relative">
                             <label className="label">
                                 <span className="label-text">Email</span>
                             </label>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                className="input input-bordered bg-transparent w-full"
-                                {...register("email")}
-                            />
+                            <div className="relative">
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    className={`input input-bordered bg-transparent w-full pr-10 ${
+                                        errors.email ? "input-error" : ""
+                                    }`}
+                                    {...register("email")}
+                                />
+                                {email && email.endsWith("@gmail.com") && (
+                                    <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                        {isCheckingEmail ? (
+                                            <span className="loading loading-spinner loading-sm"></span>
+                                        ) : isEmailAvailable === true ? (
+                                            <FaCheckCircle className="text-success" />
+                                        ) : isEmailAvailable === false ? (
+                                            <FaTimesCircle
+                                                className="text-error tooltip tooltip-top"
+                                                data-tip="Email already in use"
+                                            />
+                                        ) : null}
+                                    </span>
+                                )}
+                            </div>
                             {errors.email && (
-                                <span className="text-error">
-                                    {errors.email.message}
-                                </span>
+                                <label className="label">
+                                    <span className="label-text-alt text-error">
+                                        {errors.email.message}
+                                    </span>
+                                </label>
+                            )}
+                            {isEmailAvailable === false && !errors.email && (
+                                <label className="label">
+                                    <span className="label-text-alt text-error">
+                                        Email is already in use
+                                    </span>
+                                </label>
                             )}
                         </div>
                         <div className="form-control">
@@ -222,7 +294,9 @@ const SignUp: React.FC = () => {
                                 disabled={
                                     createUser.isPending ||
                                     isChecking ||
-                                    !isUsernameAvailable
+                                    !isUsernameAvailable ||
+                                    isCheckingEmail ||
+                                    !isEmailAvailable
                                 }
                             >
                                 {createUser.isPending
@@ -243,7 +317,7 @@ const SignUp: React.FC = () => {
                 </div>
             </div>
 
-            <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+            <div className="hidden lg:flex lg:items-center lg:justify-center bg-[#E6E3D3] lg:col-span-3">
                 <div className="w-full h-full flex items-center justify-center">
                     <img
                         src="movie_signup.svg"

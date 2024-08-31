@@ -1,4 +1,5 @@
 import MovieCarousel from "@/components/custom/MovieCarousel/MovieCarousel"
+import ProfileIcon from "@/components/custom/ProfileIcon/ProfileIcon"
 import PopoverRadix from "@/components/custom/PopoverRadix"
 const HomePage = () => {
     return (

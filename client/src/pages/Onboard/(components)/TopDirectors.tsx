@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { RxCrossCircled } from "react-icons/rx"
-import { toast } from "react-toastify"
 import { z } from "zod"
 import { useSearchPerson } from "../../../services/directorService"
+import { RxCrossCircled } from "react-icons/rx"
+import { toast } from "react-toastify"
+import "../../../index.css"
 
 // Define the Director schema
 const directorSchema = z.object({
@@ -65,9 +66,9 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
     }
 
     return (
-        <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen bg-base-100">
-            <div className="w-full h-full flex flex-col items-center py-24 col-span-2">
-                <h2 className="text-3xl font-bold mb-12 text-center">
+        <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen ">
+            <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center bg-main">
+                <h2 className="text-3xl font-bold mb-12 px-4 text-center">
                     Select Your Top 5 Directors
                 </h2>
                 <div className="relative mb-6">
@@ -76,7 +77,7 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
                         placeholder="Search directors"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="input input-bordered w-[400px] bg-transparent text-gray-800"
+                        className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white"
                     />
                     {isLoading && <p>Loading...</p>}
                     {directorsData &&
@@ -108,39 +109,41 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
                             </ul>
                         )}
                 </div>
-                <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-3">
-                        Selected Directors:
-                    </h3>
-                    <ul className="space-y-4 h-[180px] overflow-y-auto">
-                        {directors.map((director) => (
-                            <li
-                                key={director?.id}
-                                className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors"
-                            >
-                                {director?.profile_path && (
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w92${director?.profile_path}`}
-                                        alt={director?.name}
-                                        className="w-12 h-12 object-cover rounded-full"
-                                    />
-                                )}
-                                <span className="flex-grow text-sm">
-                                    {director?.name}
-                                </span>
-                                <button
-                                    type="button"
-                                    className=""
-                                    onClick={() =>
-                                        handleRemoveDirector(director?.id)
-                                    }
+                {directors.length > 0 && (
+                    <div className="mb-6 w-[320px] sm:w-[400px]">
+                        <h3 className="text-xl font-semibold mb-3">
+                            Selected Directors:
+                        </h3>
+                        <ul className="space-y-4 h-[180px] overflow-y-auto">
+                            {directors.map((director) => (
+                                <li
+                                    key={director?.id}
+                                    className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[320px] sm:w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors"
                                 >
-                                    <RxCrossCircled size="24px" />
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                                    {director?.profile_path && (
+                                        <img
+                                            src={`https://image.tmdb.org/t/p/w92${director?.profile_path}`}
+                                            alt={director?.name}
+                                            className="w-12 h-12 object-cover rounded-full"
+                                        />
+                                    )}
+                                    <span className="flex-grow text-sm">
+                                        {director?.name}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className=""
+                                        onClick={() =>
+                                            handleRemoveDirector(director?.id)
+                                        }
+                                    >
+                                        <RxCrossCircled size="24px" />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 {errors.directors && (
                     <span className="text-red-300 block mb-4">
                         {errors.directors.message}
@@ -163,7 +166,7 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
                     </button>
                 </div>
             </div>
-            <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+            <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FAEBD7]">
                 <div className="w-full h-full flex items-center justify-center">
                     <img
                         src="/profile_page.svg"

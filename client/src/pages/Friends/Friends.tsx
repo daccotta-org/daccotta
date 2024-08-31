@@ -1,8 +1,15 @@
 import React, { useState } from "react"
+import { useSearchUsers } from "@/services/userService"
+import { useAuth } from "@/hooks/useAuth"
+import { toast } from "react-toastify"
+import { RxCrossCircled } from "react-icons/rx"
+import { FaSearch } from "react-icons/fa" // Import search icon
+import "../../index.css"
 
 interface User {
-    id: number
-    username: string
+    _id: string
+    userName: string
+    profile_image: string | null
 }
 
 // Mock user data
@@ -10,94 +17,119 @@ const usersData: any = []
 
 const FriendSearch: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>("")
-    const [selectedUsers, setSelectedUsers] = useState<User[]>([])
-    const [friendsList, setFriendsList] = useState<User[]>([])
+    const [selectedFriends, setSelectedFriends] = useState<User[]>([])
+    const { user } = useAuth()
+    const { data: users, isLoading } = useSearchUsers(searchTerm, user?.uid)
 
-    // Filter users based on search term
-    const filteredUsers = usersData.filter((user: any) =>
-        user.username.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-
-    // Handle search input change
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value)
+    const handleAddFriend = (user: User) => {
+        const isDuplicate = selectedFriends.some(
+            (friend) => friend._id === user._id
+        )
+        if (isDuplicate) {
+            toast.warn("This user is already in your friends list.")
+        } else {
+            setSelectedFriends([...selectedFriends, user])
+            toast.success("Friend added to your list!")
+            setSearchTerm("")
+        }
     }
 
-    // Handle user selection
-    const handleUserClick = (user: User) => {
-        setSelectedUsers((prevSelected) => {
-            if (prevSelected.some((selected) => selected.id === user.id)) {
-                // Remove user if already selected
-                return prevSelected.filter(
-                    (selected) => selected.id !== user.id
-                )
-            } else {
-                // Add user if not already selected
-                return [...prevSelected, user]
-            }
-        })
-    }
-
-    // Handle add friend button click
-    const handleAddFriends = () => {
-        setFriendsList((prevFriends) => [...prevFriends, ...selectedUsers])
-        setSelectedUsers([]) // Clear selected users
-        setSearchTerm("") // Clear search term
+    const handleRemoveFriend = (userId: string) => {
+        setSelectedFriends(
+            selectedFriends.filter((friend) => friend._id !== userId)
+        )
+        toast.info("Friend removed from your list.")
     }
 
     return (
-        <div className="h-screen w-screen p-4 bg-gradient-to-b from-gray-900 to-blue-900 text-white flex flex-col items-center justify-start">
-            <div className="w-2/3 max-w-[50%] rounded-lg p-4 shadow-lg bg-blue-900">
-                <h1 className="text-2xl font-bold mb-4 text-center">Friends</h1>
-                <div className="flex items-center mb-4">
+        <div className="min-h-screen w-full p-4 bg-main text-white flex flex-col items-center justify-start">
+            <div className="w-full max-w-3xl rounded-2xl p-4 hover:border-t-2 hover:border-bg-gray-500 bg-main text-white shadow-2xl">
+                <h1 className="text-2xl font-bold mb-4 text-center font-Montserrat">
+                    Stay Connected, Anytime, Anywhere.
+                </h1>
+                <div className="mb-6 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <FaSearch className="text-gray-400" />
+                    </div>
                     <input
                         type="text"
-                        className="w-[70%] px-4 py-2 rounded-l-lg focus:outline-none focus:ring focus:border-blue-300 text-black"
-                        placeholder="Search username"
+                        className="w-full pl-10 pr-10 py-2 rounded-2xl focus:outline-none focus:ring bg-white bg-opacity-10 text-white"
+                        placeholder="Search users"
                         value={searchTerm}
-                        onChange={handleSearchChange}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg w-auto"
-                        onClick={handleAddFriends}
-                    >
-                        Add Friend
-                    </button>
-                </div>
-                <div className="max-h-[50vh] overflow-y-auto w-[70%] justify-center items-center">
-                    {filteredUsers.map((user: any) => (
-                        <div
-                            key={user.id}
-                            className={`flex items-center mb-2 p-2  rounded-lg cursor-pointer transition-colors ${
-                                selectedUsers.some(
-                                    (selected) => selected.id === user.id
-                                )
-                                    ? "bg-blue-300"
-                                    : "bg-blue-200"
-                            }`}
-                            onClick={() => handleUserClick(user)}
-                        >
-                            <div className="h-8 w-8 rounded-full bg-blue-500 flex-shrink-0 mr-2 text"></div>
-                            <span className="font-medium text-black">
-                                {user.username}
-                            </span>
+                    {isLoading && searchTerm.length > 3 && (
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                         </div>
-                    ))}
+                    )}
                 </div>
-                <div className="mt-4">
-                    <h2 className="text-xl font-semibold ">Friends List</h2>
-                    {friendsList.map((friend) => (
-                        <div
-                            key={friend.id}
-                            className="flex items-center mb-2 p-2 rounded-lg bg-blue-200"
-                        >
-                            <div className="h-8 w-8 rounded-full bg-blue-500 flex-shrink-0 mr-2"></div>
-                            <span className="font-medium text-black">
-                                {friend.username}
-                            </span>
-                        </div>
-                    ))}
-                </div>
+                {isLoading && searchTerm.length > 3 ? (
+                    <p className="text-center text-gray-500">Loading...</p>
+                ) : (
+                    <ul className="max-h-[300px] overflow-y-auto bg-white bg-opacity-10 rounded-lg shadow-lg mb-6">
+                        {searchTerm.length > 3 &&
+                            users?.slice(0, 10).map((user: User) => (
+                                <li
+                                    key={user._id}
+                                    className="flex justify-between items-center p-3 hover:bg-white hover:bg-opacity-20 cursor-pointer border-b border-white border-opacity-20"
+                                >
+                                    <div className="flex items-center space-x-4">
+                                        {user.profile_image && (
+                                            <img
+                                                src={user.profile_image}
+                                                alt={user.userName}
+                                                className="w-12 h-12 object-cover rounded-full"
+                                            />
+                                        )}
+                                        <span>{user.userName}</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary btn-sm"
+                                        onClick={() => handleAddFriend(user)}
+                                    >
+                                        Add
+                                    </button>
+                                </li>
+                            ))}
+                    </ul>
+                )}
+                {selectedFriends.length > 0 && (
+                    <div className="mb-4">
+                        <h3 className="text-xl font-semibold mb-2">
+                            Your Friends:
+                        </h3>
+                        <ul className="space-y-4 max-h-[300px] overflow-y-auto">
+                            {selectedFriends.map((friend) => (
+                                <li
+                                    key={friend._id}
+                                    className="flex items-center space-x-4 bg-white bg-opacity-10 p-3 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors"
+                                >
+                                    {friend.profile_image && (
+                                        <img
+                                            src={friend.profile_image}
+                                            alt={friend.userName}
+                                            className="w-12 h-12 object-cover rounded-full"
+                                        />
+                                    )}
+                                    <span className="flex-grow">
+                                        {friend.userName}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleRemoveFriend(friend._id)
+                                        }
+                                        className="text-red-500 hover:text-red-700"
+                                    >
+                                        <RxCrossCircled size="24px" />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     )

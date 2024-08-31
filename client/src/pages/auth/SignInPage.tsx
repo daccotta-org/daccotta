@@ -1,13 +1,33 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { signInWithEmailAndPassword } from "firebase/auth"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { auth } from "../../lib/firebase"
+import {
+    signInWithEmailAndPassword,
+    // signInWithPopup,
+    // GoogleAuthProvider,
+    // OAuthProvider,
+} from "firebase/auth"
+import { useMutation } from "@tanstack/react-query"
+//import { useNavigate } from "react-router-dom"
+import { z } from "zod"
+import { Link } from "react-router-dom"
+import "../../index.css"
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
+import { checkEmailExists } from "@/services/userService"
+import { useState, useEffect } from "react"
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipProvider,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip"
 
 export const signInSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+})
+export type SignInFormData = z.infer<typeof signInSchema>
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 })
@@ -21,6 +41,41 @@ const SignInPage: React.FC = () => {
     } = useForm<SignInFormData>({
         resolver: zodResolver(signInSchema),
     })
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
+    } = useForm<SignInFormData>({
+        resolver: zodResolver(signInSchema),
+    })
+
+    const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null)
+    const [isCheckingEmail, setIsCheckingEmail] = useState(false)
+
+    //email check
+    const email = watch("email")
+
+    useEffect(() => {
+        const checkEmailExistence = async () => {
+            if (email && email.endsWith("@gmail.com")) {
+                setIsCheckingEmail(true)
+                try {
+                    const exists = await checkEmailExists(email)
+                    setIsEmailExists(exists)
+                } catch (error) {
+                    console.error("Error checking email existence:", error)
+                    setIsEmailExists(null)
+                } finally {
+                    setIsCheckingEmail(false)
+                }
+            } else {
+                setIsEmailExists(null)
+            }
+        }
+        const debounce = setTimeout(checkEmailExistence, 500)
+        return () => clearTimeout(debounce)
+    }, [email])
 
     const signInMutation = useMutation({
         mutationFn: (data: SignInFormData) =>
@@ -57,13 +112,12 @@ const SignInPage: React.FC = () => {
     //     }
     // }
 
-    const navigate = useNavigate()
 
     return (
-        <div className="w-full lg:grid lg:grid-cols-5 h-screen bg-base-100">
+        <div className="w-full lg:grid lg:grid-cols-5 h-screen">
             {/* Form Section */}
-            <div className="h-full flex flex-col items-center justify-evenly  p-8  lg:p-20 lg:col-span-2  bg-base-100">
-                <h2 className="text-3xl font-bold mb-2   ">Sign In</h2>
+            <div className="h-full flex flex-col items-center justify-evenly  p-8  lg:p-20 lg:col-span-2 bg-main">
+                <h2 className="text-3xl font-bold mb-2  ">Sign In</h2>
                 <img
                     src="/movie_signup.svg"
                     alt="Sign In Illustration"
@@ -74,20 +128,41 @@ const SignInPage: React.FC = () => {
                         onSubmit={handleSubmit(onSubmit)}
                         className="w-full max-w-md"
                     >
-                        <div className="form-control mb-4">
+                        <div className="form-control relative">
                             <label className="label">
                                 <span className="label-text">Email</span>
                             </label>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                className="input input-bordered bg-transparent w-full"
-                                {...register("email")}
-                            />
+                            <div className="relative">
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    className={`input input-bordered bg-transparent w-full pr-10 ${
+                                        errors.email ? "input-error" : ""
+                                    }`}
+                                    {...register("email")}
+                                />
+                                {email && email.endsWith("@gmail.com") && (
+                                    <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                        {isCheckingEmail ? (
+                                            <span className="loading loading-spinner loading-sm"></span>
+                                        ) : isEmailExists === true ? (
+                                            
+                                            <FaCheckCircle className="text-success" />
+                                        ) : isEmailExists === false ? (
+                                            <FaTimesCircle
+                                                className="text-error tooltip tooltip-top"
+                                                data-tip="Email not found"
+                                            />
+                                        ) : null}
+                                    </span>
+                                )}
+                            </div>
                             {errors.email && (
-                                <span className="text-error">
-                                    {errors.email.message}
-                                </span>
+                                <label className="label">
+                                    <span className="label-text-alt text-error">
+                                        {errors.email.message}
+                                    </span>
+                                </label>
                             )}
                         </div>
                         <div className="form-control mb-4">
@@ -119,18 +194,18 @@ const SignInPage: React.FC = () => {
                         </div>
                         <div className="divider">OR</div>
 
-                        <button
-                            className="btn btn-link w-full mt-2"
-                            onClick={() => navigate("/signup")}
-                        >
-                            Sign Up?
-                        </button>
+                        <p className="lg:mt-4 mt-12 text-center">
+                            New User?{" "}
+                            <Link to="/signup" className="link link-primary">
+                                Sign Up
+                            </Link>
+                        </p>
                     </form>
                 </div>
             </div>
 
             {/* Image Section */}
-            <div className="hidden lg:flex lg:items-center lg:justify-center lg:bg-primary lg:col-span-3">
+            <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FFFAA0]">
                 <div className="w-full h-full flex items-center justify-center">
                     <img
                         src="/movie_signup.svg"
