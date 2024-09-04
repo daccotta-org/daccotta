@@ -33,6 +33,7 @@ const OnboardingForm: React.FC = () => {
             onboarded: false,
         },
     })
+    
 
     // const { user } = useAuth();
     const navigate = useNavigate()
@@ -60,7 +61,7 @@ const OnboardingForm: React.FC = () => {
     })
 
     const onSubmit = (data: OnboardingData) => {
-        console.log("form data", data)
+        console.log("form data", data)  
         const topMoviesData = data.topMovies?.map((movie) => ({
             id: movie.id,
             title: movie.title,
@@ -86,6 +87,12 @@ const OnboardingForm: React.FC = () => {
     const handlePrevious = () => {
         setStep((prevStep) => prevStep - 1)
     }
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // Optionally, trigger your search or select action here
+        }
+    };
 
     const renderStep = () => {
         switch (step) {
@@ -96,6 +103,7 @@ const OnboardingForm: React.FC = () => {
                     <TopMovies
                         onNext={handleNext}
                         onPrevious={handlePrevious}
+                        handleKeyDown={handleKeyDown}
                     />
                 )
             case 2:
@@ -103,6 +111,7 @@ const OnboardingForm: React.FC = () => {
                     <TopDirectors
                         onNext={handleNext}
                         onPrevious={handlePrevious}
+                        handleKeyDown={handleKeyDown}
                     />
                 )
             case 3:
@@ -111,6 +120,7 @@ const OnboardingForm: React.FC = () => {
                         onPrevious={handlePrevious}
                         onSubmit={methods.handleSubmit(onSubmit)}
                         isSubmitting={mutation.isPending}
+                        handleKeyDown={handleKeyDown}
                     />
                 )
             default:

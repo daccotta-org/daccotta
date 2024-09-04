@@ -1,4 +1,3 @@
-import "@fontsource/ibm-plex-mono"
 import React, { useEffect } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
@@ -13,7 +12,11 @@ const RootLayout: React.FC = () => {
     }, [user, isOnboarded, checkOnboardingStatus])
 
     if (!isLoaded) {
-        return <div>Loading...</div>
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
     }
 
     // Paths that don't require authentication
@@ -30,7 +33,11 @@ const RootLayout: React.FC = () => {
 
     // If onboarding status is still undefined, show loading
     if (isOnboarded === undefined) {
-        return <div>Checking onboarding status...</div>
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
     }
 
     if (!isOnboarded) {

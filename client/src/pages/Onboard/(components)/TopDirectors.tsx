@@ -25,9 +25,10 @@ export type TopDirectorsData = z.infer<typeof topDirectorsSchema>
 interface Props {
     onNext: () => void
     onPrevious: () => void
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void; 
 }
 
-const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
+const directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown  }) => {
     const {
         setValue,
         watch,
@@ -76,6 +77,7 @@ const directors: React.FC<Props> = ({ onNext, onPrevious }) => {
                         type="text"
                         placeholder="Search directors"
                         value={searchTerm}
+                        onKeyDown={handleKeyDown}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white"
                     />

@@ -127,7 +127,7 @@ export default function SimpleDialogDemo() {
           cursor: 'pointer',
           bgcolor: avatar ? 'transparent' : 'red' // Fallback to red background if no avatar
         }}
-        className=' hover:shadow-2xl hover:w-14 hover:h-14 transition duration-300'
+        className=' hover:shadow-2xl hover:scale-110 transition duration-300'
       >
         {!avatar && <PersonIcon />} {/* Show PersonIcon if no avatar */}
       </Avatar>

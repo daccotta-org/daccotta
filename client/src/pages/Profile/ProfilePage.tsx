@@ -99,7 +99,7 @@ const Profile: React.FC = () => {
                 {/* Top Section */}
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Profile Card */}
-                    <motion.div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ring-2 hover:ease-in ease-out transition duration-300">
+                    <motion.div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg  hover:ease-in border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 ease-out transition duration-1000">
                         <div className="flex items-center">
                             <div className="flex-shrink-0 w-32 h-32">
                                 <img
@@ -125,7 +125,7 @@ const Profile: React.FC = () => {
                     </motion.div>
 
                     {/* Stats Card */}
-                    <div className="flex items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ring-2 hover:ease-in ease-out transition duration-300">
+                    <div className="flex items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg  hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
                             Bento Stats
                         </h2>
@@ -135,7 +135,7 @@ const Profile: React.FC = () => {
                 {/* Bottom Section */}
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Map List Card */}
-                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ring-2 hover:ease-in ease-out transition duration-300">
+                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg  hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
                             Map &lt;List&gt;
                         </h2>
@@ -157,7 +157,7 @@ const Profile: React.FC = () => {
                     </div>
 
                     {/* Carousel */}
-                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative hover:ring-2 hover:ease-in ease-out transition duration-300 overflow-hidden">
+                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative  hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300 overflow-hidden">
                         <button
                             className="text-white hover:text-yellow-400 absolute left-2"
                             onClick={handlePrev}

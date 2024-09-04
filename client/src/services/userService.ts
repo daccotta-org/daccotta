@@ -19,9 +19,7 @@ export function  useSignUp(){
           console.log("onSuccess");
           console.log(response.data);
           navigate("/");
-          
-
-          
+             
           //Notify("success", response?.data?.message);
         },
         onError: (error) => {
@@ -51,7 +49,7 @@ export const createUser = async (data: SignUpFormData) => {
     uid: userCredential.user.uid,
     username: data.username,
     email: data.email,
-    age: data.age,
+    // age: data.age,
     onboarded: false, // Add this line
   }, {
     headers: {

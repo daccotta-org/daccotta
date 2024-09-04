@@ -9,7 +9,7 @@ export const signUpSchema = z.object({
   .max(25, 'Username must not exceed 25 characters')
   .regex(/^[a-zA-Z][a-zA-Z0-9]+$/, 'Username must start with a letter and contain only letters and numbers'),
   confirmPassword: z.string().min(8, { message: "Password must be at least 8 characters" }),
-  age: z.number().min(0, { message: "Age cannot be negative" }).max(100, { message: "Age cannot be more than 100" }),
+  age: z.number().min(0, { message: "Age cannot be negative" }).max(100, { message: "Age cannot be more than 100" }).optional(),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"], // path of error
