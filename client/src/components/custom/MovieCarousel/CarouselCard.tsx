@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { FC, useState } from "react"
 import LazyImage from "../LazyLoadImage/LazyImage"
+import "./CarouselCard.css"
 export interface CardProps {
     movie_id: string // movie id
     release_date: string
@@ -26,7 +27,7 @@ const CarouselCard: FC<CardProps> = ({
     return (
         <div
             id={movie_id}
-            className="carousel-prime-car font-montserrat carousel-item relative w-full h-[300px]  bg-cover bg-center rounded-lg overflow-hidden"
+            className="roboto-regular  carousel-item relative w-full h-[300px]  bg-cover bg-center rounded-lg overflow-hidden"
             style={{
                 backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.9) 90%, rgba(0, 0, 0, 1)), url(${image_url}/w1280${backdrop_path})`,
             }}
@@ -42,7 +43,7 @@ const CarouselCard: FC<CardProps> = ({
             <div className="absolute inset-0 flex items-center p-6 rounded-md">
                 {/* Poster Image */}
                 <LazyImage
-                    src={`${image_url}/w300${poster_path}`}
+                    src={`${image_url}/w92${poster_path}`}
                     alt={title}
                     className="w-[150px] h-auto rounded-lg shadow-lg z-10"
                 />
@@ -54,10 +55,7 @@ const CarouselCard: FC<CardProps> = ({
                             {release_date}
                         </button>
                         <button className="btn  btn-sm glass text-sm lg:w-fit  overflow-hidden">
-                            <span className="lg:visible hidden font-montserrat">
-                                {" "}
-                                Genre:
-                            </span>{" "}
+                            <span className="lg:visible hidden "> Genre:</span>{" "}
                             Action, Drama
                         </button>
                     </div>
@@ -66,7 +64,7 @@ const CarouselCard: FC<CardProps> = ({
                     <AnimatePresence>
                         {isHovered && (
                             <motion.p
-                                className="mt-4  text-lg max-w-3xl font-matemasie h-[120px] overflow-auto scrollbar-hide "
+                                className="mt-4  text-lg max-w-3xl  h-[120px] overflow-auto scrollbar-hide "
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 10 }}
