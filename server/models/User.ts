@@ -26,7 +26,7 @@ const userSchema = new Schema<Users>({
   },
   userName: { type: String, required: true, unique: true },
   email: { type: String, required: true },
-  age: { type: Number, required: true },
+  age: { type: Number },
   groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
   badges: [{ type: Schema.Types.ObjectId, ref: 'Badge' }],
   lists: [listSchema],

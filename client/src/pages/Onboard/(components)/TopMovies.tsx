@@ -18,9 +18,10 @@ type TopMoviesData = z.infer<typeof topMoviesSchema>
 interface Props {
     onNext: () => void
     onPrevious: () => void
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void; 
 }
 
-const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
+const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
     const {
         setValue,
         watch,
@@ -81,6 +82,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious }) => {
                         type="text"
                         placeholder="Search movies"
                         value={searchTerm}
+                        onKeyDown={handleKeyDown}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white"
                     />
