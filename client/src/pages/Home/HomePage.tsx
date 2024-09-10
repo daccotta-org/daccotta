@@ -2,6 +2,7 @@ import MovieCarousel from "@/components/custom/MovieCarousel/MovieCarousel"
 import ProfileIcon from "@/components/custom/ProfileIcon/ProfileIcon"
 import PopoverRadix from "@/components/custom/PopoverRadix"
 import MovieCarouselCards from "@/components/custom/MovieCard/Carousel"
+import { DialogCloseButton } from "@/components/custom/Share/Share"
 const HomePage = () => {
     return (
         <>
@@ -11,7 +12,7 @@ const HomePage = () => {
                     <ProfileIcon />
                 </div>
 
-                <div className="flex flex-col p-2 mb-12 h-auto    text-white">
+                <div className="flex flex-col p-2 mb-12 h-auto text-white">
                     {" "}
                     <MovieCarouselCards
                         type="popular"
@@ -21,6 +22,7 @@ const HomePage = () => {
                         type="popular"
                         heading="Top Movies This Week"
                     />
+                    <DialogCloseButton />
                 </div>
             </main>
         </>

@@ -43,7 +43,7 @@ const CarouselCard: FC<CardProps> = ({
             <div className="absolute inset-0 flex items-center p-6 rounded-md">
                 {/* Poster Image */}
                 <LazyImage
-                    src={`${image_url}/w92${poster_path}`}
+                    src={`${image_url}/w300${poster_path}`}
                     alt={title}
                     className="w-[150px] h-auto rounded-lg shadow-lg z-10"
                 />

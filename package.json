@@ -1,5 +1,5 @@
 {
-  "dependencies": { "@fontsource/ibm-plex-mono": "^5.0.14", "@fontsource/lato": "^5.0.22", "@fontsource/matemasie": "^5.0.1", "@fontsource/montserrat": "^5.0.19", "@fontsource/noto-sans": "^5.0.22", "@fontsource/roboto": "^5.0.14", "eslint": "^9.9.0" },
+  "dependencies": { "@fontsource/ibm-plex-mono": "^5.0.14", "@fontsource/lato": "^5.0.22", "@fontsource/matemasie": "^5.0.1", "@fontsource/montserrat": "^5.0.19", "@fontsource/noto-sans": "^5.0.22", "@fontsource/roboto": "^5.0.14", "daccotta": ".", "eslint": "^9.9.1" },
   "scripts": {
     "start:client": "cd client && bunx --bun vite",
     "start:server": " cd server && bun --watch main.ts",
@@ -8,13 +8,20 @@
     "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@eslint/js": "^9.9.1",
     "concurrently": "^8.2.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react": "^7.35.2",
     "globals": "^15.9.0",
     "prettier": "^3.3.3",
-    "typescript-eslint": "^8.1.0"
+    "typescript-eslint": "^8.4.0",
+    "@types/bun": "latest"
+  },
+  "name": "daccotta",
+  "module": "index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5.5.4"
   }
 }

@@ -51,17 +51,17 @@ const extendedSignUpSchema = z
 type ExtendedSignUpFormData = z.infer<typeof extendedSignUpSchema>
 const LoadingSpinner: React.FC = () => {
     return (
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-      </div>
-    );
-  };
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+        </div>
+    )
+}
 
 const SignUp: React.FC = () => {
     const [isUsernameAvailable, setIsUsernameAvailable] = useState<
         boolean | null
-    >(null);
-    const [isLoading, setIsLoading] = useState(false);
+    >(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [isChecking, setIsChecking] = useState(false)
     const [isEmailAvailable, setIsEmailAvailable] = useState<boolean | null>(
@@ -90,13 +90,13 @@ const SignUp: React.FC = () => {
                     // First, validate the username against the schema
                     await trigger("username")
                     if (!errors.username) {
-                        const isAvailable = await checkUsernameAvailability(username)
+                        const isAvailable =
+                            await checkUsernameAvailability(username)
                         setIsUsernameAvailable(isAvailable)
                     } else {
                         setIsUsernameAvailable(false)
                     }
-                } 
-                catch (error) {
+                } catch (error) {
                     console.error(
                         "Error checking username availability:",
                         error
@@ -113,7 +113,6 @@ const SignUp: React.FC = () => {
         const debounce = setTimeout(checkAvailability, 500)
         return () => clearTimeout(debounce)
     }, [username, trigger, errors.username])
-
 
     const onSubmit = async (values: ExtendedSignUpFormData) => {
         if (!isUsernameAvailable) {
@@ -133,11 +132,11 @@ const SignUp: React.FC = () => {
         }
 
         try {
-            await createUser.mutate(values);
-          } catch (error) {
-            setIsLoading(false);
+            await createUser.mutate(values)
+        } catch (error) {
+            setIsLoading(false)
             // Handle error
-          }
+        }
     }
 
     //userEffect to check if email is available
@@ -163,11 +162,11 @@ const SignUp: React.FC = () => {
 
         const debounce = setTimeout(checkEmailAvailability, 500)
         return () => clearTimeout(debounce)
-    }, [email]);
+    }, [email])
 
     const preventPaste = (e: React.ClipboardEvent) => {
-        e.preventDefault(); 
-    };
+        e.preventDefault()
+    }
 
     return (
         <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5">
@@ -218,13 +217,14 @@ const SignUp: React.FC = () => {
                                     </span>
                                 </label>
                             )}
-                            {isUsernameAvailable === false && !errors.username && (
-                                <label className="label">
-                                    <span className="label-text-alt text-error">
-                                        Username is not available
-                                    </span>
-                                </label>
-                            )}
+                            {isUsernameAvailable === false &&
+                                !errors.username && (
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">
+                                            Username is not available
+                                        </span>
+                                    </label>
+                                )}
                             {/* <div className="text-xs text-gray-500 mt-1">
                                 <p>Username rules:</p>
                                 <ul className="list-disc list-inside">
@@ -281,42 +281,42 @@ const SignUp: React.FC = () => {
                             )}
                         </div>
                         <div className="form-control">
-                    <label className="label">
-                        <span className="label-text">Password</span>
-                    </label>
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="input input-bordered bg-transparent w-full"
-                        {...register("password")}
-                        onPaste={preventPaste}
-                    />
-                    {errors.password && (
-                        <span className="text-error">
-                            {errors.password.message}
-                        </span>
-                    )}
-                </div>
-                <div className="form-control">
-                    <label className="label">
-                        <span className="label-text">
-                            Confirm Password
-                        </span>
-                    </label>
-                    <input
-                        type="password"
-                        placeholder="Confirm Password"
-                        className="input input-bordered bg-transparent w-full"
-                        {...register("confirmPassword")}
-                        onPaste={preventPaste}
-                    />
-                    {errors.confirmPassword && (
-                        <span className="text-error">
-                            {errors.confirmPassword.message}
-                        </span>
-                    )}
-                </div>
-                {/* Age input Field */}
+                            <label className="label">
+                                <span className="label-text">Password</span>
+                            </label>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                className="input input-bordered bg-transparent w-full"
+                                {...register("password")}
+                                onPaste={preventPaste}
+                            />
+                            {errors.password && (
+                                <span className="text-error">
+                                    {errors.password.message}
+                                </span>
+                            )}
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">
+                                    Confirm Password
+                                </span>
+                            </label>
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                className="input input-bordered bg-transparent w-full"
+                                {...register("confirmPassword")}
+                                onPaste={preventPaste}
+                            />
+                            {errors.confirmPassword && (
+                                <span className="text-error">
+                                    {errors.confirmPassword.message}
+                                </span>
+                            )}
+                        </div>
+                        {/* Age input Field */}
                         {/* <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Age</span>
@@ -342,7 +342,7 @@ const SignUp: React.FC = () => {
                                     isChecking ||
                                     !isUsernameAvailable ||
                                     isCheckingEmail ||
-                                    !isEmailAvailable || 
+                                    !isEmailAvailable ||
                                     isLoading
                                 }
                             >
@@ -378,4 +378,3 @@ const SignUp: React.FC = () => {
 }
 
 export default SignUp
-

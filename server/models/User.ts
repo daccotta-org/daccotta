@@ -1,122 +1,113 @@
-import mongoose,{ Schema, model, Document } from 'mongoose';
-import { movieInListSchema, type MovieInList } from './movie';
-import { listSchema, type List } from './List';
-import Person from './Person';
-
-interface Users extends Document {
-  _id: string;
-  userName: string;
-  age: number;
-  email: string;
-  groups: Schema.Types.ObjectId[];
-  badges: Schema.Types.ObjectId[];
-  lists: List[];
-  actor: Schema.Types.ObjectId[];
-  directors: Person[];
-  profile_image: string;
-  onboarded: boolean;
-  friends: string[];
-}
-
-const userSchema = new Schema<Users>({
-  _id: {
-    type: String,
-    required: true,
-    default: () => new mongoose.Types.ObjectId().toString()
-  },
-  userName: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
-  age: { type: Number },
-  groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
-  badges: [{ type: Schema.Types.ObjectId, ref: 'Badge' }],
-  lists: [listSchema],
-  actor: [{ type: Schema.Types.ObjectId, ref: 'Person' }],
-  directors: [Person.schema],
-  profile_image: { type: String },
-  onboarded: { type: Boolean, default: false },
-  friends: [String]
-});
-
-const User = model<Users>('User', userSchema);
-
-export default User;
-
-// import mongoose, { Schema, model, Document } from 'mongoose';
-// import Person from './Person';
-
-// interface MovieInList {
-//   movie_id: string;
-//   title: string;
-//   poster_path:string;
-//   release_date:string;
-// }
-
-// interface List {
-//   list_id: string;
-//   name: string;
-//   list_type: 'user' | 'group';
-//   movies: MovieInList[];
-//   members: {
-//     user_id: string;
-//     is_author: boolean;
-//   }[];
-//   date_created: Date;
-// }
+// import mongoose, { Schema, model, Document } from "mongoose"
+// import { movieInListSchema, type MovieInList } from "./movie"
+// import { listSchema, type List } from "./List"
+// import Person from "./Person"
 
 // interface Users extends Document {
-//   _id: string;
-//   userName: string;
-//   age: number;
-//   email: string;
-//   groups: Schema.Types.ObjectId[];
-//   badges: Schema.Types.ObjectId[];
-//   lists: List[];
-//   actor: Schema.Types.ObjectId[];
-//   directors: Person[];
-//   profile_image: string;
-//   onboarded: boolean;
-//   friends: string[];
+//     _id: string
+//     userName: string
+//     age: number
+//     email: string
+//     groups: Schema.Types.ObjectId[]
+//     badges: Schema.Types.ObjectId[]
+//     lists: List[]
+//     actor: Schema.Types.ObjectId[]
+//     directors: Person[]
+//     profile_image: string
+//     onboarded: boolean
+//     friends: string[]
 // }
 
-// const movieInListSchema = new Schema<MovieInList>({
-//   movie_id: { type: String, required: true }
-// });
-
-// const listSchema = new Schema<List>({
-//   list_id: { type: String, required: true ,unique: true, default: () => new mongoose.Types.ObjectId().toString() },
-//   name: { type: String, required: true },
-//   list_type: {
-//     type: String,
-//     enum: ['user', 'group'],
-//     required: true,
-//   },
-//   movies: [movieInListSchema],
-//   members: [{
-//     user_id: { type: String, required: true },
-//     is_author: { type: Boolean, required: true },
-//   }],
-//   date_created: { type: Date, default: Date.now },
-// });
-
 // const userSchema = new Schema<Users>({
-//   _id: {
-//     type: String,
-//     required: true,
-//     default: () => new mongoose.Types.ObjectId().toString()
-//   },
-//   userName: { type: String, required: true, unique: true },
-//   email: { type: String, required: true },
-//   age: { type: Number, required: true },
-//   groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
-//   badges: [{ type: Schema.Types.ObjectId, ref: 'Badge' }],
-//   lists: [listSchema],
-//   actor: [{ type: Schema.Types.ObjectId, ref: 'Person' }],
-//   directors: [Person.schema],
-//   profile_image: { type: String },
-//   onboarded: { type: Boolean, default: false },
-//   friends: [String]
-// });
+//     _id: {
+//         type: String,
+//         required: true,
+//         default: () => new mongoose.Types.ObjectId().toString(),
+//     },
+//     userName: { type: String, required: true, unique: true },
+//     email: { type: String, required: true },
+//     age: { type: Number },
+//     groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
+//     badges: [{ type: Schema.Types.ObjectId, ref: "Badge" }],
+//     lists: [listSchema],
+//     actor: [{ type: Schema.Types.ObjectId, ref: "Person" }],
+//     directors: [Person.schema],
+//     profile_image: { type: String },
+//     onboarded: { type: Boolean, default: false },
+//     friends: [String],
+// })
 
-// const User = model<Users>('User', userSchema);
+// const User = model<Users>("User", userSchema)
 
-// export default User;
+// export default User
+
+import mongoose, { Schema, model, Document } from "mongoose"
+import { movieInListSchema, type MovieInList } from "./movie"
+import { listSchema, type List } from "./List"
+import Person from "./Person"
+
+export interface FriendRequest {
+    _id?: mongoose.Types.ObjectId
+    from: string | mongoose.Types.ObjectId
+    to: string | mongoose.Types.ObjectId
+    status: "pending" | "accepted" | "rejected"
+    createdAt: Date
+}
+
+interface Users extends Document {
+    _id: string
+    userName: string
+    age: number
+    email: string
+    groups: Schema.Types.ObjectId[]
+    badges: Schema.Types.ObjectId[]
+    lists: List[]
+    actor: Schema.Types.ObjectId[]
+    directors: Person[]
+    profile_image: string
+    onboarded: boolean
+    friends: (string | mongoose.Types.ObjectId)[]
+    friendRequests: FriendRequest[]
+}
+
+// FriendRequest schema
+const friendRequestSchema = new Schema<FriendRequest>({
+    _id: { type: Schema.Types.ObjectId, auto: true },
+    from: { type: Schema.Types.Mixed, ref: "User", required: true },
+    to: { type: Schema.Types.Mixed, ref: "User", required: true },
+    status: {
+        type: String,
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending",
+    },
+    createdAt: { type: Date, default: Date.now },
+})
+
+const userSchema = new Schema<Users>({
+    _id: {
+        type: String,
+        required: true,
+        default: () => new mongoose.Types.ObjectId().toString(),
+    },
+    userName: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    age: { type: Number },
+    groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
+    badges: [{ type: Schema.Types.ObjectId, ref: "Badge" }],
+    lists: [listSchema],
+    actor: [{ type: Schema.Types.ObjectId, ref: "Person" }],
+    directors: [Person.schema],
+    profile_image: { type: String },
+    onboarded: { type: Boolean, default: false },
+    friends: [{ type: Schema.Types.Mixed, ref: "User" }],
+    friendRequests: [friendRequestSchema],
+})
+userSchema.methods.toObjectId = function (
+    id: string | mongoose.Types.ObjectId
+): mongoose.Types.ObjectId {
+    return typeof id === "string" ? new mongoose.Types.ObjectId(id) : id
+}
+
+const User = model<Users>("User", userSchema)
+
+export default User
