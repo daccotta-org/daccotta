@@ -48,8 +48,8 @@ import Person from "./Person"
 
 export interface FriendRequest {
     _id?: mongoose.Types.ObjectId
-    from: string | mongoose.Types.ObjectId
-    to: string | mongoose.Types.ObjectId
+    from: string // Changed to string (username)
+    to: string // Changed to string (username)
     status: "pending" | "accepted" | "rejected"
     createdAt: Date
 }
@@ -66,15 +66,14 @@ interface Users extends Document {
     directors: Person[]
     profile_image: string
     onboarded: boolean
-    friends: (string | mongoose.Types.ObjectId)[]
+    friends: string[] // Changed to string[] (usernames)
     friendRequests: FriendRequest[]
 }
 
-// FriendRequest schema
 const friendRequestSchema = new Schema<FriendRequest>({
     _id: { type: Schema.Types.ObjectId, auto: true },
-    from: { type: Schema.Types.Mixed, ref: "User", required: true },
-    to: { type: Schema.Types.Mixed, ref: "User", required: true },
+    from: { type: String, required: true }, // Changed to String
+    to: { type: String, required: true }, // Changed to String
     status: {
         type: String,
         enum: ["pending", "accepted", "rejected"],
@@ -99,14 +98,9 @@ const userSchema = new Schema<Users>({
     directors: [Person.schema],
     profile_image: { type: String },
     onboarded: { type: Boolean, default: false },
-    friends: [{ type: Schema.Types.Mixed, ref: "User" }],
+    friends: [{ type: String }], // Changed to String
     friendRequests: [friendRequestSchema],
 })
-userSchema.methods.toObjectId = function (
-    id: string | mongoose.Types.ObjectId
-): mongoose.Types.ObjectId {
-    return typeof id === "string" ? new mongoose.Types.ObjectId(id) : id
-}
 
 const User = model<Users>("User", userSchema)
 
