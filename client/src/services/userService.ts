@@ -6,6 +6,39 @@ import { IUser } from "../Types/User";
 import { SignUpFormData } from "../Types/validationSchema";
 import { auth } from "../lib/firebase";
 
+
+interface CreateListData {
+  name: string;
+  description: string;
+  isPublic: boolean;
+  list_type: 'user' | 'group';
+}
+
+export const createList = async (userId: string, data: CreateListData) => {
+
+  console.log("in create list token is : ",auth.currentUser?.getIdToken());
+  console.log("in create list userId is : ",userId);
+  console.log("in create list data is : ",data);
+  try {
+    const idToken = await auth.currentUser?.getIdToken();
+    const response = await axios.post(`http://localhost:8080/api/list/create`, {
+      ...data,
+      movies: [],
+      members: [{ user_id: userId, is_author: true }],
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
+      }
+    });
+    console.log("response :: ",response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating list:', error);
+    throw new Error('Failed to create list');
+  }
+};
+
 export function  useSignUp(){
   const queryClient = useQueryClient();
   const navigate = useNavigate();

@@ -73,3 +73,32 @@ export const useMovieList = (type: MovieListType, page: number = 1) => {
         staleTime: 5 * 60 * 1000, // 5 minutes
     })
 }
+
+
+export const fetchMoviesByIds = async (movieIds: string[]): Promise<SimpleMovie[]> => {
+    try {
+      const moviePromises = movieIds.map(id => 
+        axios.get(`${BASE_URL}/movie/${id}`, {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${TMDB_TOKEN}`,
+          },
+        })
+      );
+  
+      const movieResponses = await Promise.all(moviePromises);
+  
+      return movieResponses.map(response => {
+        const movie: TMDBMovie = response.data;
+        return {
+          id: movie.id.toString(),
+          title: movie.title,
+          poster_path: movie.poster_path,
+          release_date: movie.release_date,
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching movies by IDs:", error);
+      throw error;
+    }
+  };

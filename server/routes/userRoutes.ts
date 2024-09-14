@@ -2,7 +2,7 @@ import { type Request, type Response, type NextFunction, Router } from "express"
 import User from '../models/User';
 import { verifyToken } from "../middleware/verifyToken";
 import { checkEmailExists, checkUsernameAvailability, searchUsers } from '../controllers/userController';
-
+import ListModel from '../models/List';
 
 const router = Router();
 
@@ -86,15 +86,7 @@ router.get('/:uid/onboarded', verifyToken, async (req: Request, res: Response) =
 router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
-
-    console.log("uid is : ",uid); 
     const { username, profile_image, topMovies, directors, friends } = req.body;
-    console.log("username is : ",username);
-    console.log("profile_image is : ",profile_image);
-    console.log("topMovies is : ",topMovies);
-    console.log("directors is : ",directors);
-    console.log("friends is : ",friends);
-
 
     if (req.user?.uid !== uid) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -112,7 +104,9 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
       })),
       members: [{ user_id: uid, is_author: true }],
       date_created: new Date(),
-      description:'top 5 Movies'
+      description: 'Top 5 Movies',
+      isPublic: true,
+      isShared: false,
     };
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -123,9 +117,9 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
           profile_image,
           directors,
           friends,
-          onboarded: true,
+          onboarded: true
         },
-        $push: { lists: top5MoviesList }
+        $push: { lists: top5MoviesList }  // Directly push the list object
       },
       { new: true, runValidators: true }
     );
@@ -135,11 +129,16 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
     }
 
     res.json({ message: 'Onboarding completed successfully', user: updatedUser });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error completing onboarding:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    if (error instanceof Error) {
+      res.status(500).json({ error: 'Internal server error', details: error.message });
+    } else {
+      res.status(500).json({ error: 'Internal server error', details: 'An unknown error occurred' });
+    }
   }
 });
+
 
 //Route to check unique username
 router.get('/check-username/:userName', checkUsernameAvailability);
