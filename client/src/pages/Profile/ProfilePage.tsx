@@ -3,6 +3,9 @@ import { useAuth } from "../../hooks/useAuth"
 import { motion, AnimatePresence } from "framer-motion"
 import { getUserData } from "../../services/userService"
 import "./profile.css"
+import { fetchMoviesByIds } from "@/services/movieService"
+import { SimpleMovie } from "@/Types/Movie"
+import { useNavigate } from "react-router-dom";
 
 // Define the type for each carousel item
 interface MovieInList {
@@ -33,11 +36,16 @@ interface UserData {
     friends: string[]
 }
 
+const ITEMS_PER_PAGE = 20
+
 const Profile: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState<number>(0)
     const [direction, setDirection] = useState<number>(0)
     const { user } = useAuth()
     const [userData, setUserData] = useState<UserData | null>(null)
+
+    const [movieData, setMovieData] = useState<SimpleMovie[]>([])
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -53,6 +61,31 @@ const Profile: React.FC = () => {
 
         fetchUserData()
     }, [user])
+
+    useEffect(() => {
+        const fetchMovies = async () => {
+            if (userData?.lists[activeIndex]?.movies) {
+                const movieIds = userData.lists[activeIndex].movies.map(
+                    (m) => m.movie_id
+                )
+                try {
+                    const movies = await fetchMoviesByIds(movieIds)
+                    setMovieData(movies)
+                } catch (error) {
+                    console.error("Error fetching movie data:", error)
+                }
+            }
+        }
+
+        fetchMovies()
+    }, [userData, activeIndex])
+
+
+    
+
+  const handleCreateList = () => {
+    navigate("/create-list");
+  };
 
     const handlePrev = () => {
         setDirection(-1)
@@ -93,13 +126,31 @@ const Profile: React.FC = () => {
         }),
     }
 
+    const MovieCard: React.FC<{ movie: SimpleMovie; isLast: boolean }> = ({
+        movie,
+        isLast,
+    }) => (
+        <div className="relative w-full pb-[150%] overflow-hidden rounded-lg">
+            <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className="absolute top-0 left-0 w-full h-full object-cover"
+            />
+            <div className="absolute  bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black to-transparent">
+                <h3 className="text-sm font-semibold text-white truncate">
+                    {movie.title}
+                </h3>
+            </div>
+        </div>
+    )
+
     return (
         <div className="flex flex-col rounded-md items-center justify-center w-full h-full bg-gradient-to-tr from-primary to-secondary text-white">
             <div className="flex flex-col md:flex-col sm:flex-row w-[90%] h-[90%] gap-4">
                 {/* Top Section */}
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Profile Card */}
-                    <motion.div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg  hover:ease-in border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 ease-out transition duration-1000">
+                    <motion.div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 ease-out transition duration-1000">
                         <div className="flex items-center">
                             <div className="flex-shrink-0 w-32 h-32">
                                 <img
@@ -125,25 +176,24 @@ const Profile: React.FC = () => {
                     </motion.div>
 
                     {/* Stats Card */}
-                    <div className="flex items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg  hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
+                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
                             Bento Stats
                         </h2>
                     </div>
                 </div>
 
-                {/* Bottom Section */}
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Map List Card */}
-                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg  hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
+                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
-                            Map &lt;List&gt;
+                            Your List
                         </h2>
                         <div className="flex flex-col space-y-2">
                             {userData?.lists.map((item, index) => (
                                 <button
                                     key={index}
-                                    className={`p-2 w-72 rounded-lg text-center transition-all duration-700 ease-in-out ${
+                                    className={`p-2 w-72 rounded-2xl text-center transition-all duration-700 ease-in-out ${
                                         activeIndex === index
                                             ? "bg-gradient-to-r from-yellow-500 to-orange-500"
                                             : "bg-gray-700 hover:bg-gray-600"
@@ -154,72 +204,42 @@ const Profile: React.FC = () => {
                                 </button>
                             ))}
                         </div>
+                        <button
+                            className="mt-4 p-2 w-72 rounded-2xl text-center bg-green-500 hover:bg-green-600 transition-all duration-300 ease-in-out"
+                            onClick={handleCreateList}
+                        >
+                            Create List +
+                        </button>
                     </div>
 
-                    {/* Carousel */}
-                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative  hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300 overflow-hidden">
-                        <button
-                            className="text-white hover:text-yellow-400 absolute left-2"
-                            onClick={handlePrev}
-                        >
-                            &lt;
-                        </button>
-                        <AnimatePresence custom={direction}>
+                    {/* Movie Grid */}
+                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300 overflow-hidden">
+                        <AnimatePresence>
                             <motion.div
                                 key={activeIndex}
-                                className="w-full h-full flex items-center justify-center"
-                                custom={direction}
-                                variants={variants}
-                                initial="enter"
-                                animate="center"
-                                exit="exit"
-                                transition={{
-                                    x: {
-                                        type: "spring",
-                                        stiffness: 300,
-                                        damping: 30,
-                                    },
-                                    opacity: { duration: 0.2 },
-                                }}
-                                drag="x"
-                                dragConstraints={{ left: 0, right: 0 }}
-                                dragElastic={1}
-                                onDragEnd={(_, { offset, velocity }) => {
-                                    const swipe =
-                                        Math.abs(offset.x) * velocity.x
-                                    if (swipe < -1000) {
-                                        handleNext()
-                                    } else if (swipe > 1000) {
-                                        handlePrev()
-                                    }
-                                }}
+                                className="w-full h-full"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
                             >
-                                <div className="text-center">
-                                    <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold transition mb-4">
-                                        {userData?.lists[activeIndex]?.name ||
-                                            "Loading..."}
-                                    </h3>
-                                    <div className="overflow-y-auto max-h-[200px]">
-                                        {userData?.lists[
-                                            activeIndex
-                                        ]?.movies.map((movie, index) => (
-                                            <p
-                                                key={index}
-                                                className="mt-2 transition"
-                                            >
-                                                Movie ID: {movie.movie_id}
-                                            </p>
-                                        )) || "No movies in this list"}
-                                    </div>
+                                <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-4 text-center">
+                                    {userData?.lists[activeIndex]?.name ||
+                                        "Loading..."}
+                                </h3>
+                                <div className="grid grid-cols-4 gap-4 overflow-y-auto max-h-[calc(100%-6rem)]">
+                                    {movieData.map((movie, index) => (
+                                        <MovieCard
+                                            key={movie.id}
+                                            movie={movie}
+                                            isLast={
+                                                index === movieData.length - 1
+                                            }
+                                        />
+                                    ))}
                                 </div>
                             </motion.div>
                         </AnimatePresence>
-                        <button
-                            className="text-white hover:text-yellow-400 absolute right-2"
-                            onClick={handleNext}
-                        >
-                            &gt;
-                        </button>
                     </div>
                 </div>
             </div>

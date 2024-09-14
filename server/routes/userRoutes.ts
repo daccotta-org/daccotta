@@ -6,6 +6,7 @@ import {
     checkUsernameAvailability,
     searchUsers,
 } from "../controllers/userController"
+import ListModel from "../models/List"
 
 const router = Router()
 
@@ -102,15 +103,8 @@ router.post(
     async (req: Request, res: Response) => {
         try {
             const { uid } = req.params
-
-            console.log("uid is : ", uid)
             const { username, profile_image, topMovies, directors, friends } =
                 req.body
-            console.log("username is : ", username)
-            console.log("profile_image is : ", profile_image)
-            console.log("topMovies is : ", topMovies)
-            console.log("directors is : ", directors)
-            console.log("friends is : ", friends)
 
             if (req.user?.uid !== uid) {
                 return res.status(403).json({ error: "Unauthorized" })
@@ -128,8 +122,11 @@ router.post(
                 })),
                 members: [{ user_id: uid, is_author: true }],
                 date_created: new Date(),
-                description: "top 5 Movies",
+                description: "Top 5 Movies",
+                isPublic: true,
+                isShared: false,
             }
+
             const top5DirectorsList = {
                 names: directors.map((director: any) => ({
                     id: director.id,
@@ -145,14 +142,14 @@ router.post(
                     $set: {
                         userName: username,
                         profile_image,
-                        //directors,
+                        // directors,
                         friends,
                         onboarded: true,
                     },
                     $push: {
                         lists: top5MoviesList,
                         directorsold: top5DirectorsList,
-                    },
+                    }, // Directly push the list object
                 },
                 { new: true, runValidators: true }
             )
@@ -165,9 +162,19 @@ router.post(
                 message: "Onboarding completed successfully",
                 user: updatedUser,
             })
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error completing onboarding:", error)
-            res.status(500).json({ error: "Internal server error" })
+            if (error instanceof Error) {
+                res.status(500).json({
+                    error: "Internal server error",
+                    details: error.message,
+                })
+            } else {
+                res.status(500).json({
+                    error: "Internal server error",
+                    details: "An unknown error occurred",
+                })
+            }
         }
     }
 )
