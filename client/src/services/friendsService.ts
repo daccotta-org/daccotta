@@ -16,11 +16,11 @@ export function useFriends() {
         return response.data
     }
 
-    const sendFriendRequest = async (friendId: string) => {
+    const sendFriendRequest = async (friendUserName: string) => {
         const idToken = await user?.getIdToken()
         const response = await axios.post(
             `${API_URL}/friends/request`,
-            { friendId },
+            { friendUserName },
             {
                 headers: { Authorization: `Bearer ${idToken}` },
             }
@@ -46,11 +46,11 @@ export function useFriends() {
         return response.data
     }
 
-    const removeFriend = async (friendId: string) => {
+    const removeFriend = async (friendUserName: string) => {
         const idToken = await user?.getIdToken()
         const response = await axios.post(
             `${API_URL}/friends/remove`,
-            { friendId },
+            { friendUserName },
             {
                 headers: { Authorization: `Bearer ${idToken}` },
             }

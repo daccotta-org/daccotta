@@ -1,16 +1,8 @@
 import { type Request, type Response, type NextFunction, Router } from "express"
 import User from "../models/User"
 import { verifyToken } from "../middleware/verifyToken"
-import mongoose from "mongoose"
 
 const router = Router()
-
-// Helper function to convert string to ObjectId if needed
-const toObjectId = (
-    id: string | mongoose.Types.ObjectId
-): mongoose.Types.ObjectId => {
-    return typeof id === "string" ? new mongoose.Types.ObjectId(id) : id
-}
 
 // Route to retrieve list of all friends
 router.get(
@@ -18,15 +10,11 @@ router.get(
     verifyToken,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            console.log("helloo firends")
-
             const user = await User.findById(req.user?.uid).populate("friends")
-
             if (!user) {
                 return res.status(404).json({ message: "User not found" })
             }
             res.status(200).json(user?.friends)
-            console.log("user friends", user?.friends)
         } catch (error) {
             next(error)
         }
@@ -39,23 +27,22 @@ router.post(
     verifyToken,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { friendId } = req.body
+            const { friendUserName } = req.body
+
             const user = await User.findById(req.user?.uid)
-            const friend = await User.findById(friendId)
+            const friend = await User.findOne({ userName: friendUserName })
 
             if (!user || !friend) {
                 return res.status(404).json({ message: "User not found" })
             }
 
-            if (
-                user.friends.some((id) => id.toString() === friendId.toString())
-            ) {
+            if (user.friends.includes(friendUserName)) {
                 return res.status(400).json({ message: "Already friends" })
             }
 
             const existingRequest = friend.friendRequests.find(
                 (request) =>
-                    request.from.toString() === req.user?.uid.toString() &&
+                    request.from === user.userName &&
                     request.status === "pending"
             )
 
@@ -66,13 +53,17 @@ router.post(
             }
 
             friend.friendRequests.push({
-                from: toObjectId(req.user?.id),
-                to: toObjectId(friendId),
+                from: user.userName,
+                to: friendUserName,
                 status: "pending",
                 createdAt: new Date(),
             })
 
             await friend.save()
+            console.log(
+                "Friend request sent successfully",
+                friend.friendRequests
+            )
             res.status(200).json({
                 message: "Friend request sent successfully",
             })
@@ -109,10 +100,10 @@ router.post(
 
             if (action === "accept") {
                 request.status = "accepted"
-                user.friends.push(toObjectId(request.from))
-                const friend = await User.findById(request.from)
+                user.friends.push(request.from)
+                const friend = await User.findOne({ userName: request.from })
                 if (friend) {
-                    friend.friends.push(toObjectId(user._id))
+                    friend.friends.push(user.userName)
                     await friend.save()
                 }
             } else if (action === "reject") {
@@ -138,16 +129,16 @@ router.post(
     verifyToken,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { friendId } = req.body
+            const { friendUserName } = req.body
             const user = await User.findById(req.user?.uid)
-            const friend = await User.findById(friendId)
+            const friend = await User.findOne({ userName: friendUserName })
 
             if (user && friend) {
                 user.friends = user.friends.filter(
-                    (id) => id.toString() !== friendId.toString()
+                    (username) => username !== friendUserName
                 )
                 friend.friends = friend.friends.filter(
-                    (id) => id.toString() !== req.user?.id.toString()
+                    (username) => username !== user.userName
                 )
                 await user.save()
                 await friend.save()

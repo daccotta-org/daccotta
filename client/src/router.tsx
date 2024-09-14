@@ -10,6 +10,8 @@ import SignInPage from "./pages/auth/SignInPage"
 import SignUpPage from "./pages/auth/SignUpPage"
 import OnboardingForm from "./pages/Onboard/Onboard"
 import SearchMovie from "./pages/SearchMovie/SearchMovie"
+import FriendsPage from "./pages/Friends/FriendsPage"
+import FriendsSearch from "./pages/Friends/Friends"
 import CreateList from "./pages/CreateList/CreateList"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -42,7 +44,7 @@ export const router = createBrowserRouter([
                 children: [
                     { path: "/", element: <HomePage /> },
                     { path: "/profile", element: <ProfilePage /> },
-                    { path: "/friends", element: <FriendSearch /> },
+                    { path: "/friends", element: <FriendsSearch /> },
                     { path: "/search-movie", element: <SearchMovie /> },
                     {path:"create-list",element:<CreateList/>}
                 ],
