@@ -21,7 +21,7 @@ router.post('/create', verifyToken, async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Unauthorized' }); 
     }
 
-    const newListData: Partial<List> = {
+    const newListData: Partial<List> = {      
       name: name,
       list_type: list_type || 'user',
       movies: movies || [],

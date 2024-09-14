@@ -2,6 +2,7 @@ import  mongoose,{ Schema } from 'mongoose';
 import { movieInListSchema, type MovieInList } from './movie';
 
 export interface List extends Document {
+  list_id: string;
   name: string;
   list_type: 'user' | 'group';
   movies: MovieInList[];
@@ -15,6 +16,7 @@ export interface List extends Document {
 }
 
 const listSchema = new Schema<List>({
+   list_id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
   name: { type: String, required: true },
   list_type: {
     type: String,

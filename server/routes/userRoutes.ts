@@ -109,17 +109,29 @@ router.post('/:uid/complete-onboarding', verifyToken, async (req: Request, res: 
       isShared: false,
     };
 
+    const top5DirectorsList = {
+      names: directors.map((director: any) => ({
+          id: director.id,
+          name: director.name,
+          profile_path: director.profile_path,
+          known_for_department: director.known_for_department,
+      })),
+  }
+
     const updatedUser = await User.findByIdAndUpdate(
       uid,
       {
         $set: {
           userName: username,
           profile_image,
-          directors,
+          // directors,
           friends,
           onboarded: true
         },
-        $push: { lists: top5MoviesList }  // Directly push the list object
+        $push: {
+          lists: top5MoviesList,
+          directorsold: top5DirectorsList,
+         },  // Directly push the list object
       },
       { new: true, runValidators: true }
     );

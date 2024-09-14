@@ -91,7 +91,7 @@ app.post("/api/users", async (req: Request, res: Response) => {
             badges: [],
             lists: [],
             actor: [],
-            directors: [],
+            directorsold: [],
             profile_image: "",
         })
         await newUser.save()

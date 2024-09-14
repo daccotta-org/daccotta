@@ -7,7 +7,7 @@ interface Person  {
     known_for_department: 'Acting' | 'Directing';
 }
 export const personSchema = new Schema<Person>({
-    id: { type: Number, required: true, unique: true },
+    id: { type: Number, required: true },
     name: { type: String, required: true },
     profile_path: { type: String, default: null },
     known_for_department: { type: String, enum: ['Acting', 'Directing'], required: true },

@@ -5,8 +5,10 @@ import { movieInListSchema, type MovieInList } from "./movie";
 // import { type List } from "./List";  // Import both the model and the interface
 // import listSchema from "./List";
 import Person from "./Person";
+import { directorSchema, type Directors } from "./Director";
 
 export interface List extends Document {
+  list_id: string;
     name: string;
     list_type: 'user' | 'group';
     movies: MovieInList[];
@@ -21,6 +23,7 @@ export interface List extends Document {
   }
   
   const listSchema = new Schema<List>({
+    list_id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
     name: { type: String, required: true },
     list_type: {
       type: String,
@@ -55,7 +58,8 @@ interface Users extends Document {
     badges: Schema.Types.ObjectId[]
     lists: List[]
     actor: Schema.Types.ObjectId[]
-    directors: Person[]
+    // directors: Person[]
+    directorsold: Directors[]
     profile_image: string
     onboarded: boolean
     friends: string[] // Changed to string[] (usernames)
@@ -87,7 +91,7 @@ const userSchema = new Schema<Users>({
     badges: [{ type: Schema.Types.ObjectId, ref: "Badge" }],
     lists: [listSchema], // Reference List model
     actor: [{ type: Schema.Types.ObjectId, ref: "Person" }],
-    directors: [Person.schema],
+    directorsold: [directorSchema],
     profile_image: { type: String },
     onboarded: { type: Boolean, default: false },
     friends: [{ type: String }], // Changed to String
