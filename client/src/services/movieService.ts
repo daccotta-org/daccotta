@@ -54,11 +54,12 @@ const fetchMovieList = async (
             },
         })
 
-        return data.results.map((movie: TMDBMovie) => ({
+        return data.results.map((movie: SimpleMovie) => ({
             id: movie.id.toString(),
             title: movie.title,
             poster_path: movie.poster_path,
             release_date: movie.release_date,
+            backdrop_path: movie.backdrop_path,
         }))
     } catch (error) {
         console.error(`Error fetching ${type} movies:`, error)
@@ -74,31 +75,33 @@ export const useMovieList = (type: MovieListType, page: number = 1) => {
     })
 }
 
-
-export const fetchMoviesByIds = async (movieIds: string[]): Promise<SimpleMovie[]> => {
+export const fetchMoviesByIds = async (
+    movieIds: string[]
+): Promise<SimpleMovie[]> => {
     try {
-      const moviePromises = movieIds.map(id => 
-        axios.get(`${BASE_URL}/movie/${id}`, {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${TMDB_TOKEN}`,
-          },
+        const moviePromises = movieIds.map((id) =>
+            axios.get(`${BASE_URL}/movie/${id}`, {
+                headers: {
+                    accept: "application/json",
+                    Authorization: `Bearer ${TMDB_TOKEN}`,
+                },
+            })
+        )
+
+        const movieResponses = await Promise.all(moviePromises)
+
+        return movieResponses.map((response) => {
+            const movie: SimpleMovie = response.data
+            return {
+                id: movie.id.toString(),
+                title: movie.title,
+                poster_path: movie.poster_path,
+                release_date: movie.release_date,
+                backdrop_path: movie.backdrop_path,
+            }
         })
-      );
-  
-      const movieResponses = await Promise.all(moviePromises);
-  
-      return movieResponses.map(response => {
-        const movie: TMDBMovie = response.data;
-        return {
-          id: movie.id.toString(),
-          title: movie.title,
-          poster_path: movie.poster_path,
-          release_date: movie.release_date,
-        };
-      });
     } catch (error) {
-      console.error("Error fetching movies by IDs:", error);
-      throw error;
+        console.error("Error fetching movies by IDs:", error)
+        throw error
     }
-  };
+}

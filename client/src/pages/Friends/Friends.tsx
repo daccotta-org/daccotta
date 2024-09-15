@@ -16,6 +16,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { AxiosError } from "axios"
 
 const searchSchema = z
     .string()
@@ -64,6 +65,15 @@ const FriendsSearch: React.FC = () => {
                 toast.success("Friend request sent successfully.")
             },
             onError: (error) => {
+                // toast.error("Failed to send friend request. Please try again.")
+
+                const axiosError = error as AxiosError
+                const message: any = axiosError.response?.data
+                if (message.message === "Friend request already sent") {
+                    toast.warn("Friend request already sent.")
+                    return
+                }
+
                 toast.error("Failed to send friend request. Please try again.")
             },
         })
@@ -79,6 +89,7 @@ const FriendsSearch: React.FC = () => {
                 onSuccess: () => {
                     toast.success(`Friend request ${action}ed successfully.`)
                 },
+
                 onError: (error) => {
                     toast.error(
                         `Failed to ${action} friend request. Please try again.`

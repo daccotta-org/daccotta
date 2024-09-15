@@ -19,8 +19,8 @@ const SearchMovie: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen w-full p-4 bg-main text-white flex flex-col items-center justify-start">
-            <div className="w-full max-w-3xl rounded-2xl p-4 bg-main text-white shadow-2xl">
+        <div className="min-h-screen w-full p-4 bg-background text-white flex flex-col items-center justify-start">
+            <div className="w-full max-w-3xl rounded-2xl p-4 bg-background text-white shadow-2xl">
                 <h1 className="text-2xl font-bold mb-4 italic text-center font-Montserrat">
                     Find your favorite movies.
                 </h1>

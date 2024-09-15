@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction, Router } from "express"
 import User from "../models/User"
 import { verifyToken } from "../middleware/verifyToken"
+import { getFriendTopMovies } from "../controllers/friendcontroller"
 
 const router = Router()
 
@@ -173,5 +174,7 @@ router.get(
         }
     }
 )
+
+router.get("/top-movies", verifyToken, getFriendTopMovies)
 
 export { router as friendRoutes }

@@ -3,7 +3,20 @@ import axios from "axios"
 import { useAuth } from "@/hooks/useAuth"
 
 const API_URL = "http://localhost:8080/api"
+interface FriendMovie {
+    id: string
+    title: string
+    poster_path: string
+    backdrop_path: string
+    overview: string
+    release_date: string
+    friend: string
+}
 
+interface FriendMoviesResponse {
+    friend: string
+    movies: FriendMovie[]
+}
 export function useFriends() {
     const { user } = useAuth()
     const queryClient = useQueryClient()
@@ -100,4 +113,27 @@ export function useFriends() {
                 queryFn: getPendingRequests,
             }),
     }
+}
+
+const getFriendTopMovies = async (
+    idToken: string
+): Promise<FriendMoviesResponse[]> => {
+    const response = await axios.get(`${API_URL}/friends/top-movies`, {
+        headers: { Authorization: `Bearer ${idToken}` },
+    })
+    return response.data
+}
+
+export function useFriendTopMovies() {
+    const { user } = useAuth()
+
+    return useQuery({
+        queryKey: ["friendTopMovies"],
+        queryFn: async () => {
+            const idToken = await user?.getIdToken()
+            if (!idToken) throw new Error("No user token available")
+            return getFriendTopMovies(idToken)
+        },
+        enabled: !!user,
+    })
 }

@@ -12,7 +12,7 @@ const HomePage = () => {
                     <ProfileIcon />
                 </div>
 
-                <div className="flex flex-col p-2 mb-12 h-auto text-white">
+                <div className="flex flex-col  p-2 mb-12 h-auto text-white">
                     {" "}
                     <MovieCarouselCards
                         type="popular"

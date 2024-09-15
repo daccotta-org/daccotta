@@ -2,20 +2,21 @@ import { AnimatePresence, motion } from "framer-motion"
 import { FC, useState } from "react"
 import LazyImage from "../LazyLoadImage/LazyImage"
 import "./CarouselCard.css"
-export interface CardProps {
-    movie_id: string // movie id
-    release_date: string
-    friend: string
-    title: string
-    overview: string
-    poster_path: string
-    backdrop_path: string
-}
+import { SimpleMovie } from "@/Types/Movie"
+// export interface SimpleMovie {
+//     id: string // movie id
+//     release_date: string
+//     friend?: string
+//     title: string | undefined
+//     overview: string
+//     poster_path: string | undefined
+//     backdrop_path: string
+// }
 
 const image_url = "https://image.tmdb.org/t/p"
 
-const CarouselCard: FC<CardProps> = ({
-    movie_id,
+const CarouselCard: FC<SimpleMovie> = ({
+    id,
     friend,
     title,
     overview,
@@ -26,7 +27,7 @@ const CarouselCard: FC<CardProps> = ({
     const [isHovered, setIsHovered] = useState(false)
     return (
         <div
-            id={movie_id}
+            id={id}
             className="roboto-regular  carousel-item relative w-full h-[300px]  bg-cover bg-center rounded-lg overflow-hidden"
             style={{
                 backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.9) 90%, rgba(0, 0, 0, 1)), url(${image_url}/w1280${backdrop_path})`,
@@ -44,12 +45,12 @@ const CarouselCard: FC<CardProps> = ({
                 {/* Poster Image */}
                 <LazyImage
                     src={`${image_url}/w300${poster_path}`}
-                    alt={title}
+                    alt={title || "Movie Poster"}
                     className="w-[150px] h-auto rounded-lg shadow-lg z-10"
                 />
                 {/* Movie Details */}
                 <div className="ml-6 text-white z-10">
-                    <h2 className="text-3xl font-bold">{title}</h2>
+                    <h2 className="text-3xl font-bold font-heading">{title}</h2>
                     <div className="mt-4 flex space-x-4">
                         <button className="btn  btn-sm glass text-sm ">
                             {release_date}
@@ -61,7 +62,7 @@ const CarouselCard: FC<CardProps> = ({
                     </div>
                     {/* //animate presence used to animate things which are entering
                     and leaving the viewport */}
-                    <AnimatePresence>
+                    {/* <AnimatePresence>
                         {isHovered && (
                             <motion.p
                                 className="mt-4  text-lg max-w-3xl  h-[120px] overflow-auto scrollbar-hide "
@@ -76,14 +77,16 @@ const CarouselCard: FC<CardProps> = ({
                                 {overview}
                             </motion.p>
                         )}
-                    </AnimatePresence>
+                    </AnimatePresence> */}
                     {/* Release Date and Genre */}
-                    <p className="mt-4 text-sm">
-                        Watched by{" "}
-                        <span className="btn btn-sm glass text-red-400 font-semibold  ">
-                            {friend}
-                        </span>{" "}
-                    </p>
+                    {friend && (
+                        <p className="mt-4 text-sm">
+                            Watched by{" "}
+                            <span className="btn btn-sm glass text-red-400 font-semibold">
+                                {friend}
+                            </span>
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
