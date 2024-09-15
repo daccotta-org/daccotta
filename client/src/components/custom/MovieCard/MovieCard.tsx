@@ -16,8 +16,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const navigate = useNavigate()
 
     const handleClick = () => {
-        navigate(`/movie/${movie_id}`)
-    }
+        navigate(`/movie/${movie_id}`);
+      };
 
     return (
         <motion.div

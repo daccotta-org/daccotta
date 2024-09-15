@@ -13,6 +13,7 @@ import SearchMovie from "./pages/SearchMovie/SearchMovie"
 import FriendsPage from "./pages/Friends/FriendsPage"
 import FriendsSearch from "./pages/Friends/Friends"
 import CreateList from "./pages/CreateList/CreateList"
+import MovieDetailPage from "./pages/MoviePage/MovieDetailPage"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate()
@@ -46,7 +47,8 @@ export const router = createBrowserRouter([
                     { path: "/profile", element: <ProfilePage /> },
                     { path: "/friends", element: <FriendsSearch /> },
                     { path: "/search-movie", element: <SearchMovie /> },
-                    {path:"create-list",element:<CreateList/>}
+                    // {path:"create-list",element:<CreateList/>},
+                    {path:"/movie/:id", element:<MovieDetailPage />}
                 ],
             },
             { path: "*", element: <Navigate to="/" replace /> },

@@ -6,6 +6,11 @@ import "./profile.css"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 import { useNavigate } from "react-router-dom";
+// import Drawer from "@/components/custom/Drawer/Drawer"
+import { Drawer } from "@/components/ui/drawer"
+import CreateList from "../CreateList/CreateList"
+import { Button } from "@/components/ui/button"
+
 
 // Define the type for each carousel item
 interface MovieInList {
@@ -47,6 +52,17 @@ const Profile: React.FC = () => {
     const [movieData, setMovieData] = useState<SimpleMovie[]>([])
     const navigate = useNavigate();
 
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const handleCreateList = () => {
+        setIsDrawerOpen(true);
+      };
+    
+      const handleCloseDrawer = () => {
+        setIsDrawerOpen(false);
+      };
+    
+
     useEffect(() => {
         const fetchUserData = async () => {
             if (user?.uid) {
@@ -83,9 +99,9 @@ const Profile: React.FC = () => {
 
     
 
-  const handleCreateList = () => {
-    navigate("/create-list");
-  };
+//   const handleCreateList = () => {
+//     navigate("/create-list");
+//   };
 
     const handlePrev = () => {
         setDirection(-1)
@@ -145,12 +161,12 @@ const Profile: React.FC = () => {
     )
 
     return (
-        <div className="flex flex-col rounded-md items-center justify-center w-full h-full bg-gradient-to-tr from-primary to-secondary text-white">
+        <div className="flex flex-col rounded-md items-center justify-center w-full h-full  from-primary to-secondary text-white">
             <div className="flex flex-col md:flex-col sm:flex-row w-[90%] h-[90%] gap-4">
                 {/* Top Section */}
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Profile Card */}
-                    <motion.div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 ease-out transition duration-1000">
+                    <motion.div className="flex items-center justify-center w-full md:w-1/2 h-full  from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 ease-out transition duration-1000">
                         <div className="flex items-center">
                             <div className="flex-shrink-0 w-32 h-32">
                                 <img
@@ -176,7 +192,7 @@ const Profile: React.FC = () => {
                     </motion.div>
 
                     {/* Stats Card */}
-                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
+                    <div className="flex items-center justify-center w-full md:w-1/2 h-full  from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
                             Bento Stats
                         </h2>
@@ -185,7 +201,7 @@ const Profile: React.FC = () => {
 
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Map List Card */}
-                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
+                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
                             Your List
                         </h2>
@@ -204,7 +220,10 @@ const Profile: React.FC = () => {
                                 </button>
                             ))}
                         </div>
-                        <button
+                        {/* <Button variant="outline" onClick={handleCreateList}>
+        Create New List
+      </Button> */}
+      <button
                             className="mt-4 p-2 w-72 rounded-2xl text-center bg-green-500 hover:bg-green-600 transition-all duration-300 ease-in-out"
                             onClick={handleCreateList}
                         >
@@ -213,7 +232,7 @@ const Profile: React.FC = () => {
                     </div>
 
                     {/* Movie Grid */}
-                    <div className="flex items-center justify-center w-full md:w-1/2 h-full bg-gradient-to-br from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300 overflow-hidden">
+                    <div className="flex items-center justify-center w-full md:w-1/2 h-full  from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg relative hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300 overflow-hidden">
                         <AnimatePresence>
                             <motion.div
                                 key={activeIndex}
@@ -243,6 +262,9 @@ const Profile: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <CreateList onClose={handleCloseDrawer} />
+      </Drawer>
         </div>
     )
 }
