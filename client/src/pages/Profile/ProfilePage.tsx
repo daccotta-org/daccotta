@@ -96,12 +96,10 @@ const Profile: React.FC = () => {
         fetchMovies()
     }, [userData, activeIndex])
 
-
-    
-
-//   const handleCreateList = () => {
-//     navigate("/create-list");
-//   };
+    const handleSelectList = (listId: string) => {
+        console.log("Selected list:", listId)
+        navigate(`/list/${listId}`);
+    };
 
     const handlePrev = () => {
         setDirection(-1)
@@ -201,30 +199,27 @@ const Profile: React.FC = () => {
 
                 <div className="flex flex-col md:flex-row w-full h-1/2 gap-x-4">
                     {/* Map List Card */}
-                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full  from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
+                    <div className="flex flex-col items-center justify-center w-full md:w-1/2 h-full from-secondary to-primary p-4 md:p-6 lg:p-8 rounded-none md:rounded-3xl shadow-lg hover:ease-in ease-out border-r-2 border-b-2 hover:border-r-8 hover:border-b-8 transition duration-300">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4">
                             Your List
                         </h2>
-                        <div className="flex flex-col space-y-2">
-                            {userData?.lists.map((item, index) => (
-                                <button
-                                    key={index}
-                                    className={`p-2 w-72 rounded-2xl text-center transition-all duration-700 ease-in-out ${
-                                        activeIndex === index
-                                            ? "bg-gradient-to-r from-yellow-500 to-orange-500"
-                                            : "bg-gray-700 hover:bg-gray-600"
-                                    }`}
-                                    onClick={() => handleSelect(index)}
-                                >
-                                    {item.name}
-                                </button>
-                            ))}
-                        </div>
-                        {/* <Button variant="outline" onClick={handleCreateList}>
-        Create New List
-      </Button> */}
-      <button
-                            className="mt-4 p-2 w-72 rounded-2xl text-center bg-green-500 hover:bg-green-600 transition-all duration-300 ease-in-out"
+                        <div className="flex flex-col space-y-2 w-[70%] max-h-[calc(100%-10rem)] overflow-y-auto pr-2">
+                {userData?.lists.map((item, index) => (
+                    <button
+                        key={index}
+                        className={`p-2 w-full min-w-[12rem] rounded-2xl text-center transition-all duration-700 ease-in-out ${
+                            activeIndex === index
+                                ? "bg-gradient-to-r from-yellow-500 to-orange-500"
+                                : "bg-gray-700 hover:bg-gray-600"
+                        }`}
+                        onClick={() => handleSelectList(item.list_id)}
+                    >
+                        {item.name}
+                    </button>
+                ))}
+            </div>
+                        <button
+                            className="mt-4 p-2 w-full max-w-xs rounded-2xl text-center bg-green-500 hover:bg-green-600 transition-all duration-300 ease-in-out"
                             onClick={handleCreateList}
                         >
                             Create List +
