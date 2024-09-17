@@ -3,8 +3,9 @@ import { FC, useState } from "react"
 import LazyImage from "../LazyLoadImage/LazyImage"
 import "./CarouselCard.css"
 import { SimpleMovie } from "@/Types/Movie"
+import { useNavigate } from "react-router-dom"
 // export interface SimpleMovie {
-//     id: string // movie id
+//     movie_id: string // movie movie_id
 //     release_date: string
 //     friend?: string
 //     title: string | undefined
@@ -16,7 +17,7 @@ import { SimpleMovie } from "@/Types/Movie"
 const image_url = "https://image.tmdb.org/t/p"
 
 const CarouselCard: FC<SimpleMovie> = ({
-    id,
+    movie_id,
     friend,
     title,
     overview,
@@ -24,14 +25,20 @@ const CarouselCard: FC<SimpleMovie> = ({
     backdrop_path,
     release_date,
 }) => {
+    const navigate = useNavigate()
     const [isHovered, setIsHovered] = useState(false)
+    const handleClick = () => {
+        console.log("movie_id :", movie_id)
+        navigate(`/movie/${movie_id}`)
+    }
     return (
         <div
-            id={id}
+            id={movie_id}
             className="roboto-regular  carousel-item relative w-full h-[300px]  bg-cover bg-center rounded-lg overflow-hidden"
             style={{
                 backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.9) 90%, rgba(0, 0, 0, 1)), url(${image_url}/w1280${backdrop_path})`,
             }}
+            onClick={handleClick}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

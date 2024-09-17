@@ -19,10 +19,9 @@ const HomePage = () => {
                         heading="Top Movies This Week"
                     />
                     <MovieCarouselCards
-                        type="popular"
+                        type="top_rated"
                         heading="Top Movies This Week"
                     />
-                    <DialogCloseButton />
                 </div>
             </main>
         </>

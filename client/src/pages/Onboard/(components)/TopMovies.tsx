@@ -18,7 +18,7 @@ type TopMoviesData = z.infer<typeof topMoviesSchema>
 interface Props {
     onNext: () => void
     onPrevious: () => void
-    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void; 
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
 const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {

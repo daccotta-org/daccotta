@@ -82,6 +82,7 @@ const MovieCarousel = () => {
                     friend: friendData.friend,
                 }))
             )
+            console.log("movies :", movies)
             setCarouselMovies(movies)
         } else if (topMovies) {
             // If no friend movies, use top movies from TMDB
@@ -103,8 +104,8 @@ const MovieCarousel = () => {
         <div className="carousel w-full">
             {carouselMovies.map((movie) => (
                 <CarouselCard
-                    key={movie.id}
-                    id={movie.id}
+                    key={movie.movie_id}
+                    movie_id={movie.movie_id}
                     poster_path={movie.poster_path}
                     backdrop_path={movie.backdrop_path}
                     friend={movie.friend}

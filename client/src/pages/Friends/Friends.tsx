@@ -111,7 +111,7 @@ const FriendsSearch: React.FC = () => {
     }
 
     return (
-        <div className="w-full h-full mx-auto p-4">
+        <div className="w-full   h-full mx-auto p-4">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button className="mb-4">
@@ -145,16 +145,19 @@ const FriendsSearch: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
+                        className="text-white"
                     >
-                        <h2 className="text-2xl font-bold mb-4">All Friends</h2>
+                        <h2 className="text-2xl  font-bold mb-4">
+                            All Friends
+                        </h2>
                         {isLoadingFriends ? (
                             <p>Loading friends...</p>
                         ) : (
-                            <ul className="space-y-4">
+                            <ul className="space-y-4 text-white">
                                 {friends.map((friend: string) => (
                                     <motion.li
                                         key={friend}
-                                        className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
+                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors  rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
@@ -196,6 +199,7 @@ const FriendsSearch: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
+                        className="text-white"
                     >
                         <h2 className="text-2xl font-bold mb-4">
                             Pending Requests
@@ -207,7 +211,7 @@ const FriendsSearch: React.FC = () => {
                                 {pendingRequests.map((request: any) => (
                                     <motion.li
                                         key={request._id}
-                                        className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
+                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
@@ -252,6 +256,7 @@ const FriendsSearch: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
+                        className="text-white"
                     >
                         <h2 className="text-2xl font-bold mb-4">Add Friend</h2>
                         <div className="flex space-x-2 mb-4">
@@ -260,6 +265,7 @@ const FriendsSearch: React.FC = () => {
                                 placeholder="Search users..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                className="text-white"
                             />
                             <Button onClick={handleSearch}>Search</Button>
                         </div>
@@ -270,7 +276,7 @@ const FriendsSearch: React.FC = () => {
                                 {searchResults?.map((user: any) => (
                                     <motion.li
                                         key={user.userName}
-                                        className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
+                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >

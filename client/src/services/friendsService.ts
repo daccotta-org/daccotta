@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth"
 
 const API_URL = "http://localhost:8080/api"
 interface FriendMovie {
-    id: string
+    movie_id: string
     title: string
     poster_path: string
     backdrop_path: string

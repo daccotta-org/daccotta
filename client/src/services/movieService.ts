@@ -5,6 +5,35 @@ import { SimpleMovie, TMDBMovie } from "../Types/Movie"
 const TMDB_TOKEN = import.meta.env.VITE_ACCESS_KEY
 
 const BASE_URL = "https://api.themoviedb.org/3"
+// movieService.ts
+
+export const fetchMovieProviders = async (movieId: string) => {
+    const url = `${BASE_URL}/movie/${movieId}/watch/providers`
+
+    try {
+        const { data } = await axios.get(url, {
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${TMDB_TOKEN}`,
+            },
+        })
+
+        // Return providers for the country "IN"
+        return data.results?.IN || null
+    } catch (error) {
+        console.error(`Error fetching movie providers:`, error)
+        throw error
+    }
+}
+
+export const useMovieProviders = (movieId: string) => {
+    return useQuery({
+        queryKey: ["movieProviders", movieId],
+        queryFn: () => fetchMovieProviders(movieId),
+        enabled: !!movieId,
+    })
+}
+
 export const searchMovies = async (query: string): Promise<SimpleMovie[]> => {
     if (query.length < 3) return []
 
@@ -55,7 +84,7 @@ const fetchMovieList = async (
         })
 
         return data.results.map((movie: SimpleMovie) => ({
-            id: movie.id.toString(),
+            movie_id: movie.id.toString(),
             title: movie.title,
             poster_path: movie.poster_path,
             release_date: movie.release_date,

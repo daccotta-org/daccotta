@@ -5,16 +5,16 @@ import { getUserData } from "../../services/userService"
 import "./profile.css"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 // import Drawer from "@/components/custom/Drawer/Drawer"
 import { Drawer } from "@/components/ui/drawer"
 import CreateList from "../CreateList/CreateList"
 import { Button } from "@/components/ui/button"
 
-
 // Define the type for each carousel item
 interface MovieInList {
     movie_id: string
+    id: string
 }
 interface List {
     list_id: string
@@ -50,18 +50,17 @@ const Profile: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null)
 
     const [movieData, setMovieData] = useState<SimpleMovie[]>([])
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
     const handleCreateList = () => {
-        setIsDrawerOpen(true);
-      };
-    
-      const handleCloseDrawer = () => {
-        setIsDrawerOpen(false);
-      };
-    
+        setIsDrawerOpen(true)
+    }
+
+    const handleCloseDrawer = () => {
+        setIsDrawerOpen(false)
+    }
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -87,6 +86,7 @@ const Profile: React.FC = () => {
                 try {
                     const movies = await fetchMoviesByIds(movieIds)
                     setMovieData(movies)
+                    console.log("movies :", movies)
                 } catch (error) {
                     console.error("Error fetching movie data:", error)
                 }
@@ -96,12 +96,9 @@ const Profile: React.FC = () => {
         fetchMovies()
     }, [userData, activeIndex])
 
-
-    
-
-//   const handleCreateList = () => {
-//     navigate("/create-list");
-//   };
+    //   const handleCreateList = () => {
+    //     navigate("/create-list");
+    //   };
 
     const handlePrev = () => {
         setDirection(-1)
@@ -223,7 +220,7 @@ const Profile: React.FC = () => {
                         {/* <Button variant="outline" onClick={handleCreateList}>
         Create New List
       </Button> */}
-      <button
+                        <button
                             className="mt-4 p-2 w-72 rounded-2xl text-center bg-green-500 hover:bg-green-600 transition-all duration-300 ease-in-out"
                             onClick={handleCreateList}
                         >
@@ -248,13 +245,20 @@ const Profile: React.FC = () => {
                                 </h3>
                                 <div className="grid grid-cols-4 gap-4 overflow-y-auto max-h-[calc(100%-6rem)]">
                                     {movieData.map((movie, index) => (
-                                        <MovieCard
-                                            key={movie.id}
-                                            movie={movie}
-                                            isLast={
-                                                index === movieData.length - 1
+                                        <div
+                                            onClick={() =>
+                                                navigate(`/movie/${movie.id}`)
                                             }
-                                        />
+                                        >
+                                            <MovieCard
+                                                key={movie.id}
+                                                movie={movie}
+                                                isLast={
+                                                    index ===
+                                                    movieData.length - 1
+                                                }
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             </motion.div>
@@ -263,8 +267,8 @@ const Profile: React.FC = () => {
                 </div>
             </div>
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <CreateList onClose={handleCloseDrawer} />
-      </Drawer>
+                <CreateList onClose={handleCloseDrawer} />
+            </Drawer>
         </div>
     )
 }

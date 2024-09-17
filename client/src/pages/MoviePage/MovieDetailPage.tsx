@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Star, Play } from "lucide-react"
 import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
+import { useMovieProviders } from "@/services/movieService"
 
 const image_url = "https://image.tmdb.org/t/p"
 
@@ -49,12 +50,15 @@ const MovieDetailPage: React.FC = () => {
     const [movie, setMovie] = useState<MovieDetails | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
+    const { data: providers, isLoading: isProvidersLoading } =
+        useMovieProviders(id!)
+
     useEffect(() => {
         const fetchMovieDetails = async () => {
             setIsLoading(true)
             try {
                 const response = await fetch(
-                    `https://api.themoviedb.org/3/movie/${id}?api_key=ENTER_YOUR_API_KEY&append_to_response=credits`
+                    `https://api.themoviedb.org/3/movie/${id}?api_key=4c4ef9b2aa9b1e291e5bb2027855762e&append_to_response=credits`
                 )
                 const data: MovieDetails = await response.json()
                 setMovie(data)
@@ -68,7 +72,7 @@ const MovieDetailPage: React.FC = () => {
         fetchMovieDetails()
     }, [id])
 
-    if (isLoading) {
+    if (isLoading || isProvidersLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
                 Loading...
@@ -87,11 +91,11 @@ const MovieDetailPage: React.FC = () => {
     const director =
         movie.credits?.crew.find((person) => person.job === "Director")?.name ||
         "Unknown"
-
+    const firstRentProvider = providers?.rent?.[0]
+    const firstBuyProvider = providers?.buy?.[0]
     return (
-        <div className=" min-h-fit text-white ">        
-
-            <main className="container mx-auto px-4">
+        <div className=" max-h-screen text-white overflow-auto  ">
+            <main className=" mx-auto px-4">
                 <div className="md:flex md:space-x-6 mt-8">
                     <div className="md:w-1/3 mb-6 md:mb-0 ">
                         <LazyImage
@@ -116,17 +120,49 @@ const MovieDetailPage: React.FC = () => {
                                 </span>
                             ))}
                         </div>
-                        <div className="flex items-center space-x-4 mb-6">
+                        <div className="flex  items-center space-x-4 mb-6">
                             <div className="flex items-center">
                                 <Star className="text-yellow-400 w-6 h-6 mr-1" />
                                 <span className="text-2xl font-bold">
                                     {movie.vote_average.toFixed(1)}
                                 </span>
                             </div>
-                            <button className="flex items-center bg-white text-black px-4 py-2 rounded">
+                            {/* <button className="flex items-center bg-white text-black px-4 py-2 rounded">
                                 <Play className="w-4 h-4 mr-2" />
                                 Watch Trailer
-                            </button>
+                            </button> */}
+                            {firstRentProvider && (
+                                <button
+                                    className="flex items-center bg-white text-black px-4 py-2 rounded"
+                                    onClick={() =>
+                                        window.open(providers.link, "_blank")
+                                    }
+                                >
+                                    <img
+                                        src={`${image_url}/w45${firstRentProvider.logo_path}`}
+                                        alt={firstRentProvider.provider_name}
+                                        className="w-6 mr-2"
+                                    />
+                                    Rent at {firstRentProvider.provider_name}
+                                </button>
+                            )}
+
+                            {/* Buy Button */}
+                            {firstBuyProvider && (
+                                <button
+                                    className="flex items-center bg-white text-black px-4 py-2 rounded"
+                                    onClick={() =>
+                                        window.open(providers.link, "_blank")
+                                    }
+                                >
+                                    <img
+                                        src={`${image_url}/w45${firstBuyProvider.logo_path}`}
+                                        alt={firstBuyProvider.provider_name}
+                                        className="w-6 h-6 mr-2"
+                                    />
+                                    Buy at {firstBuyProvider.provider_name}
+                                </button>
+                            )}
                         </div>
                         <h3 className="text-xl font-semibold mb-2">Overview</h3>
                         <p className="mb-4">{movie.overview}</p>
@@ -158,7 +194,7 @@ const MovieDetailPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* <section className="mt-12">
+                <section className="mt-12">
                     <h3 className="text-2xl font-bold mb-4">Top Cast</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         {movie.credits?.cast.slice(0, 6).map((castMember) => (
@@ -177,7 +213,7 @@ const MovieDetailPage: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                </section> */}
+                </section>
 
                 {/* You can add the Official Videos section here if you have that data */}
 
