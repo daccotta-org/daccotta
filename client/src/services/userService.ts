@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { IUser } from "../Types/User";
 import { SignUpFormData } from "../Types/validationSchema";
 import { auth } from "../lib/firebase";
+import { SimpleMovie } from "@/Types/Movie";
 
 
 interface CreateListData {
@@ -220,5 +221,21 @@ export const getUserData = async (uid?: string) => {
     }
   });
   console.log("response :: ",response.data);
+  return response.data;
+};
+
+export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
+  const idToken = await auth.currentUser?.getIdToken();
+  const response = await axios.post(`http://localhost:8080/api/list/${listId}/add-movie`, {
+    movie_id: movie.id,
+    title: movie.title,
+    poster_path: movie.poster_path,
+    release_date: movie.release_date
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  });
   return response.data;
 };

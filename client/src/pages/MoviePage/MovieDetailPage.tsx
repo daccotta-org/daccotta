@@ -1,4 +1,4 @@
-const tmdb_api_key = import.meta.env.VITE_ACCESS_KEY
+const KEY = import.meta.env.VITE_TMDB_API
 
 import React, { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
@@ -58,7 +58,9 @@ const MovieDetailPage: React.FC = () => {
             setIsLoading(true)
             try {
                 const response = await fetch(
-                    `https://api.themoviedb.org/3/movie/${id}?api_key=4c4ef9b2aa9b1e291e5bb2027855762e&append_to_response=credits`
+                    `https://api.themoviedb.org/3/movie/${id}?api_key=` +
+                        `${KEY}` +
+                        `&append_to_response=credits`
                 )
                 const data: MovieDetails = await response.json()
                 setMovie(data)
