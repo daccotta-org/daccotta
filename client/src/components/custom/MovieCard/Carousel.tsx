@@ -41,6 +41,8 @@ interface MovieListProps {
 const MovieList: React.FC<MovieListProps> = ({ type, heading }) => {
     const { data: movies, isLoading, error } = useMovieList(type, 1)
 
+    console.log("movies", movies)
+
     if (isLoading) return <div className="text-center py-8">Loading...</div>
     if (error)
         return (
@@ -55,10 +57,10 @@ const MovieList: React.FC<MovieListProps> = ({ type, heading }) => {
             <div className="w-full overflow-x-auto scrollbar-hide">
                 <div className="flex flex-nowrap gap-4  pb-4">
                     {movies?.map((movie) => (
-                        <div key={movie.id} className="flex-shrink-0">
+                        <div key={movie.movie_id} className="flex-shrink-0">                            
                             <MovieCard
-                                poster_path={movie.poster_path}
-                                movie_id={movie.id}
+                                poster_path={movie.poster_path}                                
+                                movie_id={movie.movie_id}
                                 title={movie.title}
                             />
                         </div>

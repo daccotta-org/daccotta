@@ -8,7 +8,7 @@ export interface TMDBMovie {
     backdrop_path?: string
 }
 export interface SimpleMovie {
-    movie_id?: string
+    movie_id: string
     id: string
     title?: string | undefined
     poster_path?: string | undefined

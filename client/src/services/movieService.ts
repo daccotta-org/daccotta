@@ -123,6 +123,7 @@ export const fetchMoviesByIds = async (
             const movie: SimpleMovie = response.data
             return {
                 id: movie.id.toString(),
+                movie_id: movie.id.toString(),
                 title: movie.title,
                 poster_path: movie.poster_path,
                 release_date: movie.release_date,

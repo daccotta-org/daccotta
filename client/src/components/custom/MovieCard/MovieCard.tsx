@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 const image_url = "https://image.tmdb.org/t/p"
 interface MovieCardProps {
     poster_path: string | undefined
-    movie_id: string
+    movie_id: string 
     title: string | undefined
 }
 
@@ -16,6 +16,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const navigate = useNavigate()
 
     const handleClick = () => {
+        console.log("movie_id", movie_id)
         navigate(`/movie/${movie_id}`);
       };
 
