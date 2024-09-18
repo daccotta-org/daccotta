@@ -138,7 +138,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
                                         type="button"
                                         className=""
                                         onClick={() =>
-                                            handleRemoveMovie(movie.id)
+                                            handleRemoveMovie(movie.id!)
                                         }
                                     >
                                         <RxCrossCircled size="24px" />

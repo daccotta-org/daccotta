@@ -15,6 +15,8 @@ import FriendsSearch from "./pages/Friends/Friends"
 import CreateList from "./pages/CreateList/CreateList"
 import MovieDetailPage from "./pages/MoviePage/MovieDetailPage"
 import MovieList from "./pages/List/MovieList"
+import Profile from "./pages/Profile/Profile"
+import UserLists from "./pages/List/UserList"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate()
@@ -45,12 +47,13 @@ export const router = createBrowserRouter([
                 element: <AuthenticatedLayout />,
                 children: [
                     { path: "/", element: <HomePage /> },
-                    { path: "/profile", element: <ProfilePage /> },
+                    { path: "/profile", element: <Profile /> },
                     { path: "/friends", element: <FriendsSearch /> },
                     { path: "/search-movie", element: <SearchMovie /> },
-                    // {path:"create-list",element:<CreateList/>},                    
-                    {path:"/movie/:id", element:<MovieDetailPage />},
-                    {path:"/list/:listId", element:<MovieList/>}
+                    // {path:"create-list",element:<CreateList/>},
+                    { path: "/movie/:id", element: <MovieDetailPage /> },
+                    { path: "/lists", element: <UserLists /> },
+                    { path: "/list/:listId", element: <MovieList /> },
                 ],
             },
             { path: "*", element: <Navigate to="/" replace /> },

@@ -68,18 +68,19 @@ function SimpleDialog(props: SimpleDialogProps) {
             TransitionComponent={Transition}
             open={open}
             PaperProps={{
-                className: "absolute top-0 right-0 w-[200px] ", // Use Tailwind CSS for positioning
+                className:
+                    "absolute top-0 right-0 w-[200px] rounded-md bg-background ", // Use Tailwind CSS for positioning
             }}
         >
             <List
                 sx={{ pt: 0 }}
-                className="flex flex-col items-center bg-main text-white"
+                className="flex flex-col items-center bg-background font-heading text-white"
             >
                 {options.map((option) => (
                     <ListItem
                         disableGutters
                         key={option}
-                        className="border-b-2 border-b-gray-500"
+                        className="hover:bg-gradient-to-r hover:from-gray-800 hover:to-gray-700 hover:text-white transition duration-300 w-full"
                     >
                         <ListItemButton
                             onClick={() => handleListItemClick(option)}

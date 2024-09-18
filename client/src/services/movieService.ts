@@ -84,7 +84,7 @@ const fetchMovieList = async (
         })
 
         return data.results.map((movie: SimpleMovie) => ({
-            movie_id: movie.id.toString(),
+            movie_id: movie.id?.toString(),
             title: movie.title,
             poster_path: movie.poster_path,
             release_date: movie.release_date,
