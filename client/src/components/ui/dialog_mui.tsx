@@ -74,7 +74,7 @@ function SimpleDialog(props: SimpleDialogProps) {
         >
             <List
                 sx={{ pt: 0 }}
-                className="flex flex-col items-center bg-background font-heading text-white"
+                className="flex flex-col items-center bg-background text-white"
             >
                 {options.map((option) => (
                     <ListItem
@@ -87,7 +87,7 @@ function SimpleDialog(props: SimpleDialogProps) {
                         >
                             <ListItemText
                                 primary={option}
-                                className="text-center "
+                                className="text-center  font-heading "
                             />
                         </ListItemButton>
                     </ListItem>
