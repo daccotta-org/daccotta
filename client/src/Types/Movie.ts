@@ -9,7 +9,7 @@ export interface TMDBMovie {
 }
 export interface SimpleMovie {
     movie_id?: string
-    id: string
+    id?: string
     title?: string | undefined
     poster_path?: string | undefined
     release_date: string
@@ -19,14 +19,14 @@ export interface SimpleMovie {
 }
 
 export interface Movie {
-    id: string
+    id?: string
     title?: string
     poster_path?: string
     release_date?: string
 }
 
 export const movieSchema = z.object({
-    id: z.string(),
+    id: z.string().optional(),
     title: z.string().optional(),
     poster_path: z.string().optional(),
     release_date: z.string().optional(),
