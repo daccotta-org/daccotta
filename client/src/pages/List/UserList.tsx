@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "react-toastify"
-import CreateList from "../CreateList/CreateList"
+import CreateList from "../CreateList/CreateList" // Reusing CreateList component
+import { Drawer } from "@/components/ui/drawer" // Reusing Drawer component
 
 interface List {
     list_id: string
@@ -46,17 +47,15 @@ const UserLists: React.FC = () => {
     }
 
     const handleCreateList = () => {
-        setIsCreateListOpen(true)
+        setIsCreateListOpen(true) // Open the drawer
     }
 
-    const handleListCreated = (newList: List) => {
-        setLists((prevLists) => [...prevLists, newList])
-        setIsCreateListOpen(false)
-        toast.success("New list created successfully!")
+    const handleCloseDrawer = () => {
+        setIsCreateListOpen(false) // Close drawer without creating a list
     }
 
     return (
-        <div className="w-full min-h-screen overflow-auto py-6  px-12 ">
+        <div className="w-full max-h-screen overflow-auto scrollbar-hide py-6  px-12 ">
             <div className="w-full h-full flex lg:flex-row flex-col gap-1 justify-start items-start mb-6">
                 <h1 className="text-3xl font-bold mr-2 text-white">
                     Your Movie Lists
@@ -66,7 +65,11 @@ const UserLists: React.FC = () => {
                     onOpenChange={setIsCreateListOpen}
                 >
                     <DialogTrigger asChild>
-                        <Button variant="outline" className="rounded-full">
+                        <Button
+                            variant="outline"
+                            className="rounded-full"
+                            onClick={handleCreateList}
+                        >
                             <Plus className="h-5 w-5 mr-2" />
                             <span className="text-white">New List</span>
                         </Button>
@@ -98,6 +101,9 @@ const UserLists: React.FC = () => {
                     </Card>
                 ))}
             </div>
+            <Drawer open={isCreateListOpen} onOpenChange={setIsCreateListOpen}>
+                <CreateList onClose={handleCloseDrawer} />
+            </Drawer>
         </div>
     )
 }

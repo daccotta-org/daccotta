@@ -46,7 +46,7 @@ interface MovieDetails {
 
 const MovieDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>()
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [movie, setMovie] = useState<MovieDetails | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
@@ -76,8 +76,8 @@ const MovieDetailPage: React.FC = () => {
 
     if (isLoading || isProvidersLoading) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                Loading...
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
             </div>
         )
     }
@@ -95,15 +95,16 @@ const MovieDetailPage: React.FC = () => {
         "Unknown"
     const firstRentProvider = providers?.rent?.[0]
     const firstBuyProvider = providers?.buy?.[0]
+    
     return (
         <div className=" max-h-screen text-white overflow-auto  ">
             <main className=" mx-auto px-4">
                 <div className="md:flex md:space-x-6 mt-8">
-                    <div className="md:w-1/3 mb-6 md:mb-0 ">
+                    <div className="md:w-1/3 mb-6 md:mb-0 flex lg:justify-start justify-center">
                         <LazyImage
                             src={`${image_url}/w500${movie.poster_path}`}
                             alt={`${movie.title} poster`}
-                            className="rounded-lg shadow-lg w-full h-auto"
+                            className="rounded-lg shadow-lg lg:w-full lg:h-auto w-[15rem]  "
                         />
                     </div>
                     <div className="md:w-2/3 justify-center flex flex-col">
