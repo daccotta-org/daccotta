@@ -14,6 +14,7 @@ import { listRoutes } from "./routes/listRoutes"
 import * as fs from "fs"
 import * as path from "path"
 import { friendRoutes } from "./routes/friendRoutes"
+import { journalRoutes } from "./routes/journalRoutes"
 
 dotenv.config()
 
@@ -91,6 +92,7 @@ app.post("/api/users", async (req: Request, res: Response) => {
             badges: [],
             lists: [],
             actor: [],
+            journal: [],
             directorsold: [],
             profile_image: "",
         })
@@ -103,67 +105,11 @@ app.post("/api/users", async (req: Request, res: Response) => {
     }
 })
 
-// app.post('/api/users', async (req:Request, res: Response) => {
-
-//   console.log("call aa rhi h yaha");
-//   try {
-//     const { uid, email, userName, age } = req.body;
-//     console.log(uid, email, userName, age);
-
-//     // Verify the Firebase ID token
-//     const authHeader = req.headers.authorization;
-//     const idToken = authHeader && authHeader.split('Bearer ')[1];
-
-//     if (!idToken) {
-//       console.log('No token provided');
-//       return res.status(401).json({ error: 'No token provided' });
-//     }
-
-//     console.log("token ko decode kr rha h ")
-//      const decodedToken = await admin.auth().verifyIdToken(idToken);
-
-//      console.log("user tho h hi glt")
-//     if (decodedToken.uid !== uid) {
-//        console.log('Unauthorized');
-//       return res.status(403).json({ error: 'Unauthorized' });
-//     }
-
-//     // Check if username is already taken
-//     console.log("username check kr rha h")
-//     const existingUser = await User.findOne({ userName });
-//     if (existingUser) {
-//       console.log('Username is already taken');
-//       return res.status(400).json({ error: 'Username is already taken' });
-//     }
-
-//     // Create new user
-//     const newUser = new User({
-//       _id: uid,
-//       userName,
-//       email,
-//       age,
-//       groups: [],
-//       badges: [],
-//       lists: [],
-//       actor: [],
-//       directors: [],
-//       profile_image: '',
-//     });
-//     await newUser.save();
-
-//     res.status(201).json({ message: 'User created successfully' });
-//   }
-
-//   catch (error) {
-//     console.error('Failed to create user:', error);
-//     res.status(500).json({ error: 'Failed to create user' });
-//   }
-// });
-
 app.use("/api/user", userRoutes)
 app.use("/api/group", groupRoutes)
 app.use("/api/list", listRoutes)
 app.use("/api/friends", friendRoutes)
+app.use("/api/journal", journalRoutes)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World!")
