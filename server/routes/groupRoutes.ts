@@ -1,9 +1,4 @@
-import {  Router } from "express";
+import { Router } from "express";
 const router = Router();
 
-router.get("/",getAllGroups);
-
-
-
-
-export {router as groupRoutes};
+export { router as groupRoutes };
