@@ -45,6 +45,7 @@ const JournalPage: React.FC = () => {
                 title: selectedMovie.title,
                 poster_path: selectedMovie.poster_path,
                 release_date: selectedMovie.release_date,
+                genre_ids: selectedMovie.genre_ids,
             },
             dateWatched,
             rewatches,
