@@ -33,7 +33,6 @@ const OnboardingForm: React.FC = () => {
             onboarded: false,
         },
     })
-    
 
     // const { user } = useAuth();
     const navigate = useNavigate()
@@ -61,12 +60,13 @@ const OnboardingForm: React.FC = () => {
     })
 
     const onSubmit = (data: OnboardingData) => {
-        console.log("form data", data)  
+        console.log("form data", data)
         const topMoviesData = data.topMovies?.map((movie) => ({
             id: movie.id,
             title: movie.title,
             poster_path: movie.poster_path,
             release_date: movie.release_date,
+            genre_ids: movie.genre_ids,
         }))
 
         console.log("topMoviesData:", topMoviesData)
@@ -88,11 +88,11 @@ const OnboardingForm: React.FC = () => {
         setStep((prevStep) => prevStep - 1)
     }
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
+        if (e.key === "Enter") {
+            e.preventDefault()
             // Optionally, trigger your search or select action here
         }
-    };
+    }
 
     const renderStep = () => {
         switch (step) {

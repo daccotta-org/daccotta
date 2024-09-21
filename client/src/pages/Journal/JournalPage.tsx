@@ -76,8 +76,10 @@ const JournalPage: React.FC = () => {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">My Movie Journal</h1>
+        <div className="max-h-screen overflow-auto scrollbar-hide mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-4 text-white">
+                My Movie Journal
+            </h1>
 
             <Dialog open={isAddingEntry} onOpenChange={setIsAddingEntry}>
                 <DialogTrigger asChild>
@@ -89,7 +91,7 @@ const JournalPage: React.FC = () => {
                     </DialogHeader>
                     <div className="space-y-4">
                         <div>
-                            <Label htmlFor="movie-search">Search Movie</Label>
+                            <Label htmlFor="movie-search ">Search Movie</Label>
                             <div className="flex space-x-2">
                                 <Input
                                     id="movie-search"
@@ -182,9 +184,9 @@ const JournalPage: React.FC = () => {
                         </CardHeader>
                         <CardContent>
                             <img
-                                src={`https://image.tmdb.org/t/p/w200${entry.movie.poster_path}`}
+                                src={`https://image.tmdb.org/t/p/w92${entry.movie.poster_path}`}
                                 alt={entry.movie.title}
-                                className="w-full h-auto"
+                                className=""
                             />
                             <p>
                                 Date Watched:{" "}

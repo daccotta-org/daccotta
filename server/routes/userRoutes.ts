@@ -109,6 +109,7 @@ router.post(
             if (req.user?.uid !== uid) {
                 return res.status(403).json({ error: "Unauthorized" })
             }
+            console.log(topMovies)
 
             // Create the top 5 movies list object
             const top5MoviesList = {
@@ -119,6 +120,7 @@ router.post(
                     title: movie.title,
                     poster_path: movie.poster_path,
                     release_date: movie.release_date,
+                    genre_ids: movie.genre_ids,
                 })),
                 members: [{ user_id: uid, is_author: true }],
                 date_created: new Date(),

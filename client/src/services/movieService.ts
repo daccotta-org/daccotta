@@ -46,12 +46,13 @@ export const searchMovies = async (query: string): Promise<SimpleMovie[]> => {
                 Authorization: `Bearer ${TMDB_TOKEN}`,
             },
         })
-
+        console.log("data :: ", data.results)
         return data.results.map((movie: TMDBMovie) => ({
             id: movie.id.toString(),
             title: movie.title,
             poster_path: movie.poster_path,
             release_date: movie.release_date,
+            genre_ids: movie.genre_ids,
         }))
     } catch (error) {
         console.error("Error searching movies:", error)
@@ -89,6 +90,7 @@ const fetchMovieList = async (
             poster_path: movie.poster_path,
             release_date: movie.release_date,
             backdrop_path: movie.backdrop_path,
+            genre_ids: movie.genre_ids,
         }))
     } catch (error) {
         console.error(`Error fetching ${type} movies:`, error)
@@ -128,6 +130,7 @@ export const fetchMoviesByIds = async (
                 poster_path: movie.poster_path,
                 release_date: movie.release_date,
                 backdrop_path: movie.backdrop_path,
+                genre_ids: movie.genre_ids,
             }
         })
     } catch (error) {

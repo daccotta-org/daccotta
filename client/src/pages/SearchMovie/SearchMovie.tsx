@@ -7,11 +7,10 @@ import { useSearchMovies } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 
 const SearchMovie: React.FC = () => {
-
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState<string>("")
     const { data: movies, isLoading, error } = useSearchMovies(searchTerm)
-
+    console.log("searched movies are :: ", movies)
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value)
     }
@@ -21,8 +20,8 @@ const SearchMovie: React.FC = () => {
     }
 
     const handleclick = (id: string) => () => {
-        console.log(id);
-        navigate(`/movie/${id}`);
+        console.log(id)
+        navigate(`/movie/${id}`)
     }
 
     return (
@@ -57,7 +56,7 @@ const SearchMovie: React.FC = () => {
                                   <li
                                       key={movie.id}
                                       className="flex items-center space-x-4 p-3 hover:bg-white hover:bg-opacity-20 cursor-pointer border-b border-white border-opacity-20"
-                                        onClick={handleclick(   movie.id)}
+                                      onClick={handleclick(movie.id)}
                                   >
                                       {movie.poster_path && (
                                           <img

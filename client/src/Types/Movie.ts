@@ -6,6 +6,7 @@ export interface TMDBMovie {
     poster_path?: string
     release_date?: string
     backdrop_path?: string
+    genre_ids?: number[]
 }
 export interface SimpleMovie {
     movie_id: string
@@ -16,6 +17,7 @@ export interface SimpleMovie {
     overview?: string
     backdrop_path?: string
     friend?: string
+    genre_ids?: number[]
 }
 
 export interface Movie {
@@ -23,6 +25,7 @@ export interface Movie {
     title?: string
     poster_path?: string
     release_date?: string
+    genre_ids?: number[]
 }
 
 export const movieSchema = z.object({
@@ -30,4 +33,5 @@ export const movieSchema = z.object({
     title: z.string().optional(),
     poster_path: z.string().optional(),
     release_date: z.string().optional(),
+    genre_ids: z.array(z.number()).optional(),
 })
