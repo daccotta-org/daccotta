@@ -1,5 +1,5 @@
-import { config } from "dotenv";
-config();
+import { config } from "dotenv"
+config()
 
 const PORT = process.env.PORT || 8080;
 const password = process.env.MONGO_PASSWORD;
