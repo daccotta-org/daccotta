@@ -78,6 +78,16 @@ export function useFriends() {
         })
         return response.data
     }
+    
+    // New function to get friend data
+    const getFriendData = async (username: string) => {
+        const idToken = await user?.getIdToken()
+        const response = await axios.get(`${API_URL}/friends/data/${username}`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+        })
+        return response.data
+    }
+
 
     return {
         useGetFriends: () =>
@@ -112,6 +122,12 @@ export function useFriends() {
                 queryKey: ["friendRequests"],
                 queryFn: getPendingRequests,
             }),
+            useGetFriendData: (username: string) =>
+                useQuery({
+                    queryKey: ["friendData", username],
+                    queryFn: () => getFriendData(username),
+                    enabled: !!username && !!user,
+                }),
     }
 }
 

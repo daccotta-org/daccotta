@@ -1,4 +1,4 @@
-export const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "",
     authDomain: "",
     projectId: "",
@@ -6,4 +6,3 @@ export const firebaseConfig = {
     messagingSenderId: "",
     appId: "",
 }
-//rename this file to firebaseConfig.ts and fill in the values from your firebase project

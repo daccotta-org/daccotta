@@ -168,7 +168,7 @@ const MovieDetailPage: React.FC = () => {
                             )}
                         </div>
                         <h3 className="text-xl font-semibold mb-2">Overview</h3>
-                        <p className="mb-4">{movie.overview}</p>
+                        <p className="mb-4 w-[85%]">{movie.overview}</p>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="font-semibold">Status:</p>
