@@ -111,10 +111,10 @@ const FriendsSearch: React.FC = () => {
     }
 
     return (
-        <div className="w-full   h-full mx-auto p-4">
+        <div className="w-full h-full   max-h-screen overflow-auto scrollbar-hide mx-auto p-4">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button className="mb-4">
+                    <Button className="mb-4 bg-gradient-to-br from-gray-900 to-gray-800 ">
                         {activeTab === "all"
                             ? "All Friends"
                             : activeTab === "pending"
@@ -122,7 +122,7 @@ const FriendsSearch: React.FC = () => {
                               : "Add Friend"}
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent className="outline-none  bg-gradient-to-br from-gray-900  to-gray-800">
                     <DropdownMenuLabel>Options</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setActiveTab("all")}>
@@ -157,7 +157,7 @@ const FriendsSearch: React.FC = () => {
                                 {friends.map((friend: string) => (
                                     <motion.li
                                         key={friend}
-                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors  rounded-lg shadow"
+                                        className="flex items-center justify-between p-4 hover:bg-gradient-to-br hover:from-gray-900  hover:to-gray-800 transition-colors  rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
@@ -211,7 +211,7 @@ const FriendsSearch: React.FC = () => {
                                 {pendingRequests.map((request: any) => (
                                     <motion.li
                                         key={request._id}
-                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
+                                        className="flex items-center justify-between p-4  hover:bg-gradient-to-br hover:from-gray-900  hover:to-gray-800 transition-colors rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
@@ -220,6 +220,7 @@ const FriendsSearch: React.FC = () => {
                                         </span>
                                         <div className="space-x-2">
                                             <Button
+                                                className="bg-gradient-to-tr from-gray-900  to-gray-700"
                                                 onClick={() =>
                                                     handleRespondToRequest(
                                                         request._id,
@@ -231,6 +232,7 @@ const FriendsSearch: React.FC = () => {
                                                 Accept
                                             </Button>
                                             <Button
+                                                className="bg-gradient-to-tr from-gray-900  to-gray-700"
                                                 onClick={() =>
                                                     handleRespondToRequest(
                                                         request._id,
@@ -267,7 +269,12 @@ const FriendsSearch: React.FC = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="text-white"
                             />
-                            <Button onClick={handleSearch}>Search</Button>
+                            <Button
+                                className="bg-gradient-to-tr from-gray-900  to-gray-700"
+                                onClick={handleSearch}
+                            >
+                                Search
+                            </Button>
                         </div>
                         {isLoadingSearch ? (
                             <p>Searching...</p>
@@ -276,7 +283,7 @@ const FriendsSearch: React.FC = () => {
                                 {searchResults?.map((user: any) => (
                                     <motion.li
                                         key={user.userName}
-                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
+                                        className="flex items-center justify-between p-4  hover:bg-gradient-to-br hover:from-gray-900  hover:to-gray-800 transition-colors rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
@@ -300,6 +307,7 @@ const FriendsSearch: React.FC = () => {
                                             onClick={() =>
                                                 handleSendRequest(user.userName)
                                             }
+                                            className=" bg-gradient-to-tr from-gray-900  to-gray-700"
                                         >
                                             Send Request
                                         </Button>

@@ -84,7 +84,7 @@ const JournalPage: React.FC = () => {
 
             <Dialog open={isAddingEntry} onOpenChange={setIsAddingEntry}>
                 <DialogTrigger asChild>
-                    <Button>Add New Entry</Button>
+                    <Button className="bg-background">Add New Entry</Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
