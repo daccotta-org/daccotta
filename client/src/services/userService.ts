@@ -256,6 +256,18 @@ export const getUserData = async (uid?: string) => {
     console.log("response :: ", response.data)
     return response.data
 }
+export const getUserData_page = async (uid?: string) => {
+    const idToken = await auth.currentUser?.getIdToken()
+
+    const response = await axios.get(`http://localhost:8080/api/user/${uid}/other`, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+        },
+    })
+    console.log("response :: ", response.data)
+    return response.data
+}
 
 export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
     const idToken = await auth.currentUser?.getIdToken()

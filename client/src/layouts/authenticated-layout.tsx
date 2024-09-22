@@ -27,7 +27,7 @@ const AuthenticatedLayout: React.FC = () => {
                     <Navbar/>
                 </div>
                 {/* Main Content */}
-                <div className="w-[90vw] lg:rounded-3xl bg-background flex-1 relative flex justify-center items-center">
+                <div className="w-[90vw] lg:rounded-3xl bg-background flex-1 relative flex  items-center">
                     <Outlet />
                     <div className="absolute z-50 block lg:hidden bottom-10">
                         <DockDemo />

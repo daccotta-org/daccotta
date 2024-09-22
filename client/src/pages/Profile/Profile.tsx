@@ -150,7 +150,7 @@ const Profile: React.FC = () => {
             {/* <h1 className="text-4xl font-bold mb-8 text-center">
                 Your Profile
             </h1> */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full  scrollbar-hide mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full scrollbar-hide mx-auto">
                 <BentoGridItem
                     title="Profile Info"
                     description="Your profile details and stats"

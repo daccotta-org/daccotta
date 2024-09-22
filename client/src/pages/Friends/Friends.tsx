@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { z } from "zod"
 import { useAuth } from "@/hooks/useAuth"
 import { useFriends } from "@/services/friendsService"
+import { useNavigate } from "react-router-dom"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -26,6 +27,11 @@ const FriendsSearch: React.FC = () => {
     const [activeTab, setActiveTab] = useState<"all" | "pending" | "add">("all")
     const [searchTerm, setSearchTerm] = useState("")
     const { user } = useAuth()
+    const navigate = useNavigate()
+    const handleUserClick = (username: string) => {
+        console.log(username)
+        navigate(`/user/${username}`)
+    }
 
     const {
         useGetFriends,
@@ -100,7 +106,7 @@ const FriendsSearch: React.FC = () => {
     }
 
     const handleRemoveFriend = (friendUserName: string) => {
-        removeFriendMutation.mutate(friendUserName, {
+        removeFriendMutation.mutate(friendUserName, { 
             onSuccess: () => {
                 toast.success("Friend removed successfully.")
             },
@@ -160,6 +166,7 @@ const FriendsSearch: React.FC = () => {
                                         className="flex items-center justify-between p-4 hover:bg-primary transition-colors  rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
+                                        onClick={() => handleUserClick(friend)}
                                     >
                                         <div className="flex items-center">
                                             <Avatar>
@@ -214,6 +221,7 @@ const FriendsSearch: React.FC = () => {
                                         className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
+                                        onClick={() => handleUserClick(request._id)}
                                     >
                                         <span className="font-semibold">
                                             {request.from}
@@ -249,66 +257,68 @@ const FriendsSearch: React.FC = () => {
                     </motion.div>
                 )}
 
-                {activeTab === "add" && (
-                    <motion.div
-                        key="add-friend"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-white"
-                    >
-                        <h2 className="text-2xl font-bold mb-4">Add Friend</h2>
-                        <div className="flex space-x-2 mb-4">
-                            <Input
-                                type="text"
-                                placeholder="Search users..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="text-white"
-                            />
-                            <Button onClick={handleSearch}>Search</Button>
-                        </div>
-                        {isLoadingSearch ? (
-                            <p>Searching...</p>
-                        ) : (
-                            <ul className="space-y-4">
-                                {searchResults?.map((user: any) => (
-                                    <motion.li
-                                        key={user.userName}
-                                        className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
+{activeTab === "add" && (
+                <motion.div
+                    key="add-friend"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-white"
+                >
+                    <h2 className="text-2xl font-bold mb-4">Add Friend</h2>
+                    <div className="flex space-x-2 mb-4">
+                        <Input
+                            type="text"
+                            placeholder="Search users..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="text-white"
+                        />
+                        <Button onClick={handleSearch}>Search</Button>
+                    </div>
+                    {isLoadingSearch ? (
+                        <p>Searching...</p>
+                    ) : (
+                        <ul className="space-y-4">
+                            {searchResults?.map((user: any) => (
+                                <motion.li
+                                    key={user.uid}
+                                    className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow cursor-pointer"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    onClick={() => handleUserClick(user.userName)}
+                                >
+                                    <div className="flex items-center">
+                                        <Avatar>
+                                            <AvatarImage
+                                                src={`/api/avatar/${user.userName}`}
+                                                alt={user.userName}
+                                            />
+                                            <AvatarFallback>
+                                                {user.userName
+                                                    .substring(0, 2)
+                                                    .toUpperCase()}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <span className="ml-4 font-semibold">
+                                            {user.userName}
+                                        </span>
+                                    </div>
+                                    <Button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleSendRequest(user.userName)
+                                        }}
                                     >
-                                        <div className="flex items-center">
-                                            <Avatar>
-                                                <AvatarImage
-                                                    src={`/api/avatar/${user.userName}`}
-                                                    alt={user.userName}
-                                                />
-                                                <AvatarFallback>
-                                                    {user.userName
-                                                        .substring(0, 2)
-                                                        .toUpperCase()}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className="ml-4 font-semibold">
-                                                {user.userName}
-                                            </span>
-                                        </div>
-                                        <Button
-                                            onClick={() =>
-                                                handleSendRequest(user.userName)
-                                            }
-                                        >
-                                            Send Request
-                                        </Button>
-                                    </motion.li>
-                                ))}
-                            </ul>
-                        )}
-                    </motion.div>
-                )}
+                                        Send Request
+                                    </Button>
+                                </motion.li>
+                            ))}
+                        </ul>
+                    )}
+                </motion.div>
+            )}
             </AnimatePresence>
         </div>
     )
