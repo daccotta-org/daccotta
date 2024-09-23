@@ -1,11 +1,10 @@
----
+# 🌟 **Daccotta** 🌟
 
-# 🌟 **Daccotta** 🌟  
 **A Social Network for Movie Lovers**
 
 Hey movie lovers! Welcome to **Daccotta**, a web app designed to simplify your movie-watching experience and make it easy to share your favorite films with friends. Think of us as your go-to social network for everything movies! 🎥🍿
 
-**Love it?** 👉 *Don't forget to star this repo!* 🌟
+**Love it?** 👉 _Don't forget to star this repo!_ 🌟
 
 ---
 
