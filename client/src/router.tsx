@@ -18,6 +18,7 @@ import MovieList from "./pages/List/MovieList"
 import Profile from "./pages/Profile/Profile"
 import UserLists from "./pages/List/UserList"
 import JournalPage from "./pages/Journal/JournalPage"
+import StatsPage2 from "./pages/Stats/StatsPage2"
 import UserDescriptivePage from "./pages/UserDescriptive/UserDescriptive"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -57,7 +58,8 @@ export const router = createBrowserRouter([
                     { path: "/lists", element: <UserLists /> },
                     { path: "/list/:listId", element: <MovieList /> },
                     { path: "/journal", element: <JournalPage /> },
-                    {path:"/user/:userId",element : <UserDescriptivePage/>}
+                    { path: "/stats", element: <StatsPage2 /> },
+                    { path: "/user/:userId", element: <UserDescriptivePage /> },
                 ],
             },
             { path: "*", element: <Navigate to="/" replace /> },

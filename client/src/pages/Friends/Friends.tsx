@@ -106,7 +106,7 @@
 //     }
 
 //     const handleRemoveFriend = (friendUserName: string) => {
-//         removeFriendMutation.mutate(friendUserName, { 
+//         removeFriendMutation.mutate(friendUserName, {
 //             onSuccess: () => {
 //                 toast.success("Friend removed successfully.")
 //             },
@@ -326,8 +326,6 @@
 
 // export default FriendsSearch
 
-
-
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
@@ -361,14 +359,19 @@ const FriendsSearch: React.FC = () => {
     } = useFriends()
 
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
-    const { data: pendingRequests, isLoading: isLoadingRequests } = useGetPendingRequests()
-    const { data: searchResults, isLoading: isLoadingSearch, refetch: refetchSearch } = useSearchUsers(searchTerm, user?.uid)
+    const { data: pendingRequests, isLoading: isLoadingRequests } =
+        useGetPendingRequests()
+    const {
+        data: searchResults,
+        isLoading: isLoadingSearch,
+        refetch: refetchSearch,
+    } = useSearchUsers(searchTerm, user?.uid)
 
     const sendFriendRequestMutation = useSendFriendRequest()
     const respondToFriendRequestMutation = useRespondToFriendRequest()
     const removeFriendMutation = useRemoveFriend()
 
-        const handleSearch = () => {
+    const handleSearch = () => {
         try {
             searchSchema.parse(searchTerm)
             refetchSearch()
@@ -378,8 +381,6 @@ const FriendsSearch: React.FC = () => {
             }
         }
     }
-
-       
 
     const handleSendRequest = (friendUserName: string) => {
         sendFriendRequestMutation.mutate(friendUserName, {
@@ -422,7 +423,7 @@ const FriendsSearch: React.FC = () => {
     }
 
     const handleRemoveFriend = (friendUserName: string) => {
-        removeFriendMutation.mutate(friendUserName, { 
+        removeFriendMutation.mutate(friendUserName, {
             onSuccess: () => {
                 toast.success("Friend removed successfully.")
             },
@@ -450,20 +451,20 @@ const FriendsSearch: React.FC = () => {
                     <nav className="flex flex-wrap items-center gap-2">
                         <Button
                             variant="ghost"
-                            className={`text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === 'all' ? 'bg-gray-800' : ''}`}
+                            className={`text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === "all" ? "bg-gray-800" : ""}`}
                             onClick={() => setActiveTab("all")}
                         >
                             All
                         </Button>
                         <Button
                             variant="ghost"
-                            className={`text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === 'pending' ? 'bg-gray-800' : ''}`}
+                            className={`text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === "pending" ? "bg-gray-800" : ""}`}
                             onClick={() => setActiveTab("pending")}
                         >
                             Pending
                         </Button>
                         <Button
-                            className={`bg-green-600 hover:bg-green-700 ${activeTab === 'add' ? 'bg-green-700' : ''}`}
+                            className={`bg-green-600 hover:bg-green-700 ${activeTab === "add" ? "bg-green-700" : ""}`}
                             onClick={() => setActiveTab("add")}
                         >
                             Add Friend
@@ -488,7 +489,9 @@ const FriendsSearch: React.FC = () => {
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <h2 className="text-lg font-semibold mb-4">ALL FRIENDS — {friends?.length || 0}</h2>
+                            <h2 className="text-lg font-semibold mb-4">
+                                ALL FRIENDS — {friends?.length || 0}
+                            </h2>
                             {isLoadingFriends ? (
                                 <p>Loading friends...</p>
                             ) : (
@@ -499,23 +502,47 @@ const FriendsSearch: React.FC = () => {
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            onClick={() => handleUserClick(friend)}
+                                            onClick={() =>
+                                                handleUserClick(friend)
+                                            }
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Avatar>
-                                                    <AvatarImage src={`/api/avatar/${friend}`} alt={friend} />
-                                                    <AvatarFallback>{friend.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                                    <AvatarImage
+                                                        src={`/api/avatar/${friend}`}
+                                                        alt={friend}
+                                                    />
+                                                    <AvatarFallback>
+                                                        {friend
+                                                            .substring(0, 2)
+                                                            .toUpperCase()}
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <h3 className="font-semibold">{friend}</h3>
-                                                    <p className="text-sm text-gray-400">Online</p>
+                                                    <h3 className="font-semibold">
+                                                        {friend}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-400">
+                                                        Online
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Button size="icon" variant="ghost" >
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                >
                                                     <MessageCircle className="h-5 w-5" />
                                                 </Button>
-                                                <Button size="icon" variant="ghost" onClick={() => handleRemoveFriend(friend)}>
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    onClick={() =>
+                                                        handleRemoveFriend(
+                                                            friend
+                                                        )
+                                                    }
+                                                >
                                                     <MoreVertical className="h-5 w-5" />
                                                 </Button>
                                             </div>
@@ -534,7 +561,10 @@ const FriendsSearch: React.FC = () => {
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <h2 className="text-lg font-semibold mb-4">PENDING REQUESTS — {pendingRequests?.length || 0}</h2>
+                            <h2 className="text-lg font-semibold mb-4">
+                                PENDING REQUESTS —{" "}
+                                {pendingRequests?.length || 0}
+                            </h2>
                             {isLoadingRequests ? (
                                 <p>Loading requests...</p>
                             ) : (
@@ -545,28 +575,51 @@ const FriendsSearch: React.FC = () => {
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            onClick={() => handleUserClick(request.from)}
+                                            onClick={() =>
+                                                handleUserClick(request.from)
+                                            }
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Avatar>
-                                                    <AvatarImage src={`/api/avatar/${request.from}`} alt={request.from} />
-                                                    <AvatarFallback>{request.from.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                                    <AvatarImage
+                                                        src={`/api/avatar/${request.from}`}
+                                                        alt={request.from}
+                                                    />
+                                                    <AvatarFallback>
+                                                        {request.from
+                                                            .substring(0, 2)
+                                                            .toUpperCase()}
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <h3 className="font-semibold">{request.from}</h3>
-                                                    <p className="text-sm text-gray-400">Incoming Request</p>
+                                                    <h3 className="font-semibold">
+                                                        {request.from}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-400">
+                                                        Incoming Request
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="space-x-2">
                                                 <Button
-                                                    onClick={() => handleRespondToRequest(request._id, "accept")}
+                                                    onClick={() =>
+                                                        handleRespondToRequest(
+                                                            request._id,
+                                                            "accept"
+                                                        )
+                                                    }
                                                     variant="default"
                                                     size="sm"
                                                 >
                                                     Accept
                                                 </Button>
                                                 <Button
-                                                    onClick={() => handleRespondToRequest(request._id, "reject")}
+                                                    onClick={() =>
+                                                        handleRespondToRequest(
+                                                            request._id,
+                                                            "reject"
+                                                        )
+                                                    }
                                                     variant="outline"
                                                     size="sm"
                                                 >
@@ -587,15 +640,18 @@ const FriendsSearch: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.2 }}
-                            
                         >
-                            <h2 className="text-lg font-semibold mb-4">ADD FRIEND</h2>
+                            <h2 className="text-lg font-semibold mb-4">
+                                ADD FRIEND
+                            </h2>
                             <div className="flex space-x-2 mb-4">
                                 <Input
                                     type="text"
                                     placeholder="Search users..."
                                     value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                    }
                                     className="bg-gray-800 border-gray-700 focus:border-gray-600"
                                 />
                                 <Button onClick={handleSearch}>Search</Button>
@@ -609,22 +665,40 @@ const FriendsSearch: React.FC = () => {
                                             key={user.uid}
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
                                             initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}                                           
+                                            animate={{ opacity: 1, y: 0 }}
+                                            onClick={() =>
+                                                handleUserClick(user.userName)
+                                            }
                                         >
                                             <div className="flex items-center gap-3"
                                              onClick={() => handleUserClick(user.userName)}
                                             >
                                                 <Avatar>
-                                                    <AvatarImage src={`/api/avatar/${user.userName}`} alt={user.userName} />
-                                                    <AvatarFallback>{user.userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                                    <AvatarImage
+                                                        src={`/api/avatar/${user.userName}`}
+                                                        alt={user.userName}
+                                                    />
+                                                    <AvatarFallback>
+                                                        {user.userName
+                                                            .substring(0, 2)
+                                                            .toUpperCase()}
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <h3 className="font-semibold">{user.userName}</h3>
-                                                    <p className="text-sm text-gray-400">User</p>
+                                                    <h3 className="font-semibold">
+                                                        {user.userName}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-400">
+                                                        User
+                                                    </p>
                                                 </div>
                                             </div>
                                             <Button
-                                                onClick={() => handleSendRequest(user.userName)}
+                                                onClick={() =>
+                                                    handleSendRequest(
+                                                        user.userName
+                                                    )
+                                                }
                                                 size="sm"
                                             >
                                                 Send Request

@@ -166,27 +166,26 @@ const JournalPage: React.FC = () => {
                                 </div>
                                 {selectedMovie && (
                                     <div className="p-4 bg-muted rounded-lg">
-                                       
                                         <div className="flex items-center space-x-4">
                                             <img
                                                 src={`https://image.tmdb.org/t/p/w92${selectedMovie.poster_path}`}
                                                 alt={selectedMovie.title}
                                                 className="w-10 h-auto rounded"
                                             />
-                                             <div className="flex flex-row">
-                                             <h3 className="font-semibold mb-2">
-                                            {/* Selected Movie:{" "} */}
-                                            {selectedMovie.title}
-                                            <p className="text-sm text-muted-foreground">
-                                                {/* Release Year:{" "} */}
-                                                {
-                                                    selectedMovie.release_date?.split(
-                                                        "-"
-                                                    )[0]
-                                                }
-                                            </p>
-                                             </h3>                                            
-                                             </div>
+                                            <div className="flex flex-row">
+                                                <h3 className="font-semibold mb-2">
+                                                    {/* Selected Movie:{" "} */}
+                                                    {selectedMovie.title}
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {/* Release Year:{" "} */}
+                                                        {
+                                                            selectedMovie.release_date?.split(
+                                                                "-"
+                                                            )[0]
+                                                        }
+                                                    </p>
+                                                </h3>
+                                            </div>
                                         </div>
                                     </div>
                                 )}

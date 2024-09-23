@@ -4,6 +4,7 @@ import LazyImage from "../LazyLoadImage/LazyImage"
 import "./CarouselCard.css"
 import { SimpleMovie } from "@/Types/Movie"
 import { useNavigate } from "react-router-dom"
+import { genreMap } from "@/lib/stats"
 // export interface SimpleMovie {
 //     movie_id: string // movie movie_id
 //     release_date: string
@@ -24,7 +25,12 @@ const CarouselCard: FC<SimpleMovie> = ({
     poster_path,
     backdrop_path,
     release_date,
+    genre_ids,
 }) => {
+    const genreNames = genre_ids
+        ?.map((id) => genreMap[id]) // map genre_ids to their respective names
+        .filter(Boolean) // remove undefined genres in case there are any missing ids
+        .slice(0, 3) //
     const navigate = useNavigate()
     const [isHovered, setIsHovered] = useState(false)
     const handleClick = () => {
@@ -62,9 +68,14 @@ const CarouselCard: FC<SimpleMovie> = ({
                         <button className="btn  btn-sm glass text-sm ">
                             {release_date}
                         </button>
-                        <button className="btn  btn-sm glass text-sm lg:w-fit  overflow-hidden">
+                        {/* <button className="btn  btn-sm glass text-sm lg:w-fit  overflow-hidden">
                             <span className="lg:visible hidden "> Genre:</span>{" "}
-                            Action, Drama
+                            {genre}
+                        </button> */}
+                        <button className="btn btn-sm glass text-sm lg:w-fit overflow-hidden">
+                            <span className="lg:visible hidden">Genres:</span>
+                            {/* Display the genre names */}
+                            {genreNames?.join(", ")}
                         </button>
                     </div>
                     {/* //animate presence used to animate things which are entering
