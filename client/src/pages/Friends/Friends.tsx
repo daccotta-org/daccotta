@@ -609,10 +609,11 @@ const FriendsSearch: React.FC = () => {
                                             key={user.uid}
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
                                             initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            onClick={() => handleUserClick(user.userName)}
+                                            animate={{ opacity: 1, y: 0 }}                                           
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-3"
+                                             onClick={() => handleUserClick(user.userName)}
+                                            >
                                                 <Avatar>
                                                     <AvatarImage src={`/api/avatar/${user.userName}`} alt={user.userName} />
                                                     <AvatarFallback>{user.userName.substring(0, 2).toUpperCase()}</AvatarFallback>
