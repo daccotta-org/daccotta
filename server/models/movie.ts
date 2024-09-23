@@ -1,15 +1,17 @@
-import { Schema } from 'mongoose';
+import { Schema } from "mongoose"
 
 export interface MovieInList {
-  movie_id: string;
-  title: string;
-  poster_path: string;
-  release_date: string;
+    movie_id: string
+    title: string
+    poster_path: string
+    release_date: string
+    genre_ids?: number[]
 }
 
 export const movieInListSchema = new Schema<MovieInList>({
-  movie_id: { type: String, required: true },
-  title: { type: String, required: true },
-  poster_path: { type: String, required: true },
-  release_date: { type: String, required: true },
-});
+    movie_id: { type: String, required: true },
+    title: { type: String, required: true },
+    poster_path: { type: String, required: true },
+    release_date: { type: String, required: true },
+    genre_ids: [{ type: Number }],
+})

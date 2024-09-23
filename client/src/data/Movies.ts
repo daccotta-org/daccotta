@@ -1,4 +1,4 @@
-import { MovieDetails } from "../components/custom/MovieCard/MovieCard"
+import {type  MovieDetails}  from "../components/custom/MovieCard/MovieCard"
 
 export const MovieList: MovieDetails[] = [
     {

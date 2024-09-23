@@ -11,11 +11,12 @@ export interface List extends Document {
     is_author: boolean;
   }[];
   date_created: Date;
-  description:string;
+  description: string;
+  isPublic: boolean;
 }
 
-export const listSchema = new Schema<List>({
-  list_id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
+const listSchema = new Schema<List>({
+   list_id: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId().toString() },
   name: { type: String, required: true },
   list_type: {
     type: String,
@@ -28,8 +29,29 @@ export const listSchema = new Schema<List>({
     is_author: { type: Boolean, required: true },
   }],
   date_created: { type: Date, default: Date.now },
-  description:{type:String, required:false}
+  description: { type: String, required: false },
+  isPublic: { type: Boolean, required: true }
 });
+
+const ListModel = mongoose.model<List>('List', listSchema);
+
+export default ListModel;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // import mongoose, { Schema, model, Document } from 'mongoose';
 

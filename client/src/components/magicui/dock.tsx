@@ -12,6 +12,7 @@ export interface DockProps extends VariantProps<typeof dockVariants> {
   distance?: number;
   direction?: "top" | "middle" | "bottom";
   children: React.ReactNode;
+  onClick?: () => void;
 }
 
 const DEFAULT_MAGNIFICATION = 60;
@@ -29,6 +30,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
       magnification = DEFAULT_MAGNIFICATION,
       distance = DEFAULT_DISTANCE,
       direction = "bottom",
+      onClick,
       ...props
     },
     ref,
@@ -72,6 +74,7 @@ export interface DockIconProps {
   mouseX?: any;
   className?: string;
   children?: React.ReactNode;
+  onClick?: () => void;
   props?: PropsWithChildren;
 }
 

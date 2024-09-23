@@ -1,7 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+  :root {
+    --background: 294 55% 98%;
+    --foreground: 294 67% 3%;
+    --muted: 264 35% 86%;
+    --muted-foreground: 264 15% 36%;
+    --popover: 294 55% 98%;
+    --popover-foreground: 294 67% 3%;
+    --card: 294 55% 98%;
+    --card-foreground: 294 67% 3%;
+    --border: 294 3% 93%;
+    --input: 294 3% 93%;
+    --primary: 294 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 264 85% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 324 85% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 21 87% 38%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 294 85% 45%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 294 44% 3%;
+    --foreground: 294 23% 98%;
+    --muted: 264 35% 14%;
+    --muted-foreground: 264 15% 64%;
+    --popover: 294 44% 3%;
+    --popover-foreground: 294 23% 98%;
+    --card: 294 44% 3%;
+    --card-foreground: 294 23% 98%;
+    --border: 294 3% 10%;
+    --input: 294 3% 10%;
+    --primary: 294 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 264 85% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 324 85% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 21 87% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 294 85% 45%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+
 .scrollbar-hide {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
@@ -10,8 +65,37 @@
     display: none;  /* Chrome, Safari and Opera */
   }
 
-.bg-gradient
+/* .bg-gradient
 {
     background: rgb(131,58,180);
 background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(225,29,72,1) 50%, rgba(252,176,69,1) 100%);
+} */
+
+/* .bg-main{
+
+  background: linear-gradient(to bottom, rgb(30,32,30) 1%, rgba(0,0,0,0.55) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+background-blend-mode: multiply,multiply;
+} */
+.bg-bar{
+
+  background: linear-gradient(to bottom, rgb(30,32,30) 1%, rgba(0,0,0,0.55) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+background-blend-mode: multiply,multiply;
+opacity: 0.8;
 }
+
+
+
+.font-heading {
+    font-family: "Montserrat", serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+.font-body {
+    font-family: "Roboto", system-ui;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  
+
