@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+
+import React, { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,11 +25,13 @@ import {
 import { searchMovies } from "@/services/movieService"
 import { toast } from "react-toastify"
 import { motion } from "framer-motion"
+import { useNavigate } from "react-router-dom"
 
 const JournalPage: React.FC = () => {
     const { useGetJournalEntries, useAddJournalEntry } = useJournal()
     const { data: journalEntries, isLoading } = useGetJournalEntries()
     const addJournalEntry = useAddJournalEntry()
+    const navigate = useNavigate()
 
     const [searchQuery, setSearchQuery] = useState("")
     const [searchResults, setSearchResults] = useState<SimpleMovie[]>([])
@@ -84,6 +87,31 @@ const JournalPage: React.FC = () => {
         setSearchResults([])
         setSearchQuery("")
     }
+
+    const handleClick = (_id: string) => {
+        navigate(`/movie/${_id}`)
+    }
+
+    const sortedEntries = useMemo(() => {
+        if (!journalEntries) return []
+
+        const sorted = [...journalEntries].sort(
+            (a, b) =>
+                new Date(b.dateWatched).getTime() -
+                new Date(a.dateWatched).getTime()
+        )
+
+        const groupedByMonth: { [key: string]: typeof journalEntries } = {}
+        sorted.forEach((entry) => {
+            const monthYear = format(new Date(entry.dateWatched), "MMMM yyyy")
+            if (!groupedByMonth[monthYear]) {
+                groupedByMonth[monthYear] = []
+            }
+            groupedByMonth[monthYear].push(entry)
+        })
+
+        return groupedByMonth
+    }, [journalEntries])
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -254,56 +282,66 @@ const JournalPage: React.FC = () => {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {journalEntries?.map((entry) => (
-                        <div
-                            key={entry._id}
-                            className="relative w-full h-full"
-                            onMouseEnter={() => setHoveredEntry(entry._id)}
-                            onMouseLeave={() => setHoveredEntry(null)}
-                        >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
-                                alt={`${entry.movie.title} poster`}
-                                className="w-full h-full rounded-lg shadow-lg"
-                            />
-                            {hoveredEntry === entry._id && (
-                                <motion.div
-                                    className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4"
-                                    initial={{ opacity: 0 }}
-                                    whileHover={{ opacity: 1 }}
+                {Object.entries(sortedEntries).map(([monthYear, entries]) => (
+                    <div key={monthYear} className="mb-8">
+                        <h2 className="text-md font-semibold mb-4">
+                            {monthYear}
+                        </h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {entries.map((entry) => (
+                                <div
+                                    key={entry._id}
+                                    className="relative w-full h-full"
+                                    onMouseEnter={() =>
+                                        setHoveredEntry(entry._id)
+                                    }
+                                    onMouseLeave={() => setHoveredEntry(null)}
+                                    onClick={() => handleClick(entry.movie.movie_id)}
                                 >
-                                    <h3 className="text-lg font-bold">
-                                        {entry.movie.title}
-                                    </h3>
-                                    <p className="text-sm text-gray-300">
-                                        Watched:{" "}
-                                        {format(
-                                            new Date(entry.dateWatched),
-                                            "PPP"
-                                        )}
-                                    </p>
-                                    <p className="text-sm text-gray-300">
-                                        Times Watched: {entry.rewatches}
-                                    </p>
-                                </motion.div>
-                            )}
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
+                                        alt={`${entry.movie.title} poster`}
+                                        className="w-full h-full rounded-lg shadow-lg"
+                                    />
+                                    {hoveredEntry === entry._id && (
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4"
+                                            initial={{ opacity: 0 }}
+                                            whileHover={{ opacity: 1 }}
+                                        >
+                                            <h3 className="text-lg font-bold">
+                                                {entry.movie.title}
+                                            </h3>
+                                            <p className="text-sm text-gray-300">
+                                                Watched:{" "}
+                                                {format(
+                                                    new Date(entry.dateWatched),
+                                                    "PPP"
+                                                )}
+                                            </p>
+                                            <p className="text-sm text-gray-300">
+                                                Times Watched: {entry.rewatches}
+                                            </p>
+                                        </motion.div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                    <Card className="overflow-hidden border-dashed w-[200px]">
-                        <CardContent className="p-0 flex items-center justify-center h-[300px]">
-                            <div
-                                className="text-center p-4 cursor-pointer"
-                                onClick={() => setIsAddingEntry(true)}
-                            >
-                                <Plus className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                                <p className="text-sm text-muted-foreground">
-                                    Add Journal Entry
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                    </div>
+                ))}
+                <Card className="overflow-hidden border-dashed w-[200px]">
+                    <CardContent className="p-0 flex items-center justify-center h-[300px]">
+                        <div
+                            className="text-center p-4 cursor-pointer"
+                            onClick={() => setIsAddingEntry(true)}
+                        >
+                            <Plus className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                            <p className="text-sm text-muted-foreground">
+                                Add Journal Entry
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     )
