@@ -76,7 +76,7 @@ const Navbar: FC = () => {
         <nav className="flex flex-col h-screen w-16 bg-black text-white">
             <div className="p-4">
                 <Link to="/" className="block">
-                    <img src={logo} className="" alt="" />
+                    <img src={logo} className="rounded-md" alt="" />
                 </Link>
             </div>
             <ul className="flex-1 px-2">

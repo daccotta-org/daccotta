@@ -1,11 +1,16 @@
 const KEY = import.meta.env.VITE_TMDB_API
 
+import { useAuth } from "@/hooks/useAuth"
+import { getUserData, addMovieToList, createList } from "@/services/userService"
+import { toast } from "react-toastify"
 import React, { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { Star, Play } from "lucide-react"
+import { Star, Play, Heart } from "lucide-react"
 import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
 import { useMovieProviders } from "@/services/movieService"
+import { List } from "../List/MovieList"
+import { SimpleMovie } from "@/Types/Movie"
 
 const image_url = "https://image.tmdb.org/t/p"
 
@@ -46,9 +51,11 @@ interface MovieDetails {
 
 const MovieDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>()
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [movie, setMovie] = useState<MovieDetails | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [isFavourite, setIsFavourite] = useState(false)
+    const { user } = useAuth()
 
     const { data: providers, isLoading: isProvidersLoading } =
         useMovieProviders(id!)
@@ -58,13 +65,26 @@ const MovieDetailPage: React.FC = () => {
             setIsLoading(true)
             try {
                 const response = await fetch(
-                    `https://api.themoviedb.org/3/movie/${id}?api_key=` +
-                        `${KEY}` +
-                        `&append_to_response=credits`
+                    `https://api.themoviedb.org/3/movie/${id}?api_key=${KEY}&append_to_response=credits`
                 )
                 const data: MovieDetails = await response.json()
                 setMovie(data)
                 console.log("Movie data:", data)
+
+                // Check if the movie is in the user's Favourites list
+                if (user?.uid) {
+                    const userData = await getUserData(user.uid)
+                    const favouritesList = userData.lists.find(
+                        (list: List) => list.name === "Favourites"
+                    )
+                    if (favouritesList) {
+                        setIsFavourite(
+                            favouritesList.movies.some(
+                                (m: SimpleMovie) => m.movie_id === id
+                            )
+                        )
+                    }
+                }
             } catch (error) {
                 console.error("Error fetching movie details:", error)
             }
@@ -72,7 +92,52 @@ const MovieDetailPage: React.FC = () => {
         }
 
         fetchMovieDetails()
-    }, [id])
+    }, [id, user])
+    const handleFavouriteClick = async () => {
+        if (!user) {
+            toast.error("Please log in to add movies to your Favourites.")
+            return
+        }
+
+        if (!movie) return
+
+        try {
+            const userData = await getUserData(user.uid)
+            let favouritesList = userData.lists.find(
+                (list: List) => list.name === "Favourites"
+            )
+
+            if (!favouritesList) {
+                // Create a new Favourites list if it doesn't exist
+                const createListData = {
+                    name: "Favourites",
+
+                    description: "My favourite movies",
+                    isPublic: true,
+                }
+                favouritesList = await createList(user.uid, {
+                    ...createListData,
+                    list_type: "user",
+                })
+            }
+
+            const movieToAdd = {
+                id: id!,
+                movie_id: id!,
+                title: movie.title,
+                poster_path: movie.poster_path,
+                release_date: movie.release_date,
+                genre_ids: movie.genres.map((genre) => genre.id),
+            }
+
+            await addMovieToList(favouritesList.list_id, movieToAdd)
+            setIsFavourite(true)
+            toast.success(`${movie.title} has been added to your Favourites.`)
+        } catch (error) {
+            console.error("Error adding movie to Favourites:", error)
+            toast.error("Failed to add movie to Favourites. Please try again.")
+        }
+    }
 
     if (isLoading || isProvidersLoading) {
         return (
@@ -95,7 +160,7 @@ const MovieDetailPage: React.FC = () => {
         "Unknown"
     const firstRentProvider = providers?.rent?.[0]
     const firstBuyProvider = providers?.buy?.[0]
-    
+
     return (
         <div className=" max-h-screen text-white overflow-auto  ">
             <main className=" mx-auto px-4">
@@ -134,6 +199,19 @@ const MovieDetailPage: React.FC = () => {
                                 <Play className="w-4 h-4 mr-2" />
                                 Watch Trailer
                             </button> */}
+                            <button
+                                className={`flex items-center bg-white text-black px-4 py-2 rounded ${
+                                    isFavourite ? "bg-red-500 text-white" : ""
+                                }`}
+                                onClick={handleFavouriteClick}
+                            >
+                                <Heart
+                                    className={`w-4 h-4 mr-2 ${isFavourite ? "fill-current" : ""}`}
+                                />
+                                {isFavourite
+                                    ? "Added to Favourites"
+                                    : "Add to Favourites"}
+                            </button>
                             {firstRentProvider && (
                                 <button
                                     className="flex items-center bg-white text-black px-4 py-2 rounded"

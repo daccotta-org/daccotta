@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Plus, Star } from "lucide-react"
@@ -14,7 +12,7 @@ import { toast } from "react-toastify"
 import { motion } from "framer-motion"
 import MovieCard from "@/components/custom/MovieCard/MovieCard"
 
-interface List {
+export interface List {
     list_id: string
     name: string
     movies: SimpleMovie[]
@@ -145,7 +143,7 @@ export default function MovieList() {
                         //     )}
                         // </div>
                         <MovieCard
-                         movie_id={movie.movie_id}
+                            movie_id={movie.movie_id}
                             title={movie.title}
                             poster_path={movie.poster_path}
                         />
