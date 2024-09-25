@@ -283,7 +283,7 @@ const JournalPage: React.FC = () => {
                 </div>
                 {Object.entries(sortedEntries).map(([monthYear, entries]) => (
                     <div key={monthYear} className="mb-8">
-                        <h2 className="text-xl underline font-semibold mb-4">
+                        <h2 className="text-xl  font-semibold mb-4">
                             {monthYear}
                         </h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

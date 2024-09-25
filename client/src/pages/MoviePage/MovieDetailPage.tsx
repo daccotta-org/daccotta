@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useMovieProviders } from "@/services/movieService"
 import { addMovieToList, createList, getUserData } from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
-import { Heart, Star } from "lucide-react"
+import { Heart, Star,Bookmark } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
@@ -174,9 +174,11 @@ const MovieDetailPage: React.FC = () => {
                     <div className="md:w-2/3 justify-center flex flex-col">
                         <h2 className="text-4xl font-bold mb-2">
                             {movie.title} (
-                            {new Date(movie.release_date).getFullYear()})
+                            {new Date(movie.release_date).getFullYear()})                            
                         </h2>
+                        
                         <p className="text-gray-400 mb-4">{movie.tagline}</p>
+                        
                         <div className="flex space-x-2 mb-4">
                             {movie.genres.map((genre) => (
                                 <span
@@ -198,21 +200,31 @@ const MovieDetailPage: React.FC = () => {
                                 <Play className="w-4 h-4 mr-2" />
                                 Watch Trailer
                             </button> */}
-                            <div className="flex lg:flex-row flex-col gap-1 items-center ">
+                            <div className="flex lg:flex-row flex-row gap-4 items-center "  >
                                 <button
-                                    className={`flex items-center  text-black px-4 py-2 rounded ${
+                                    className={`flex items-center shadow-2xl  text-black px-2 py-2 rounded-xl tooltip tooltip-bottom ${
                                         isFavourite
-                                            ? "bg-red-500 text-white"
+                                            ? "bg-red-600 text-white"
                                             : "bg-white"
                                     }`}
+                                    data-tip="Favourites"
                                     onClick={handleFavouriteClick}
                                 >
                                     <Heart
-                                        className={`w-4 h-4 mr-2 ${isFavourite ? "fill-current" : ""}`}
+                                        className={`w-6 h-6  ${isFavourite ? "fill-current" : ""}`}
                                     />
-                                    {isFavourite
+                                    {/* {isFavourite
                                         ? "Added to Favourites"
-                                        : "Add to Favourites"}
+                                        : "Add to Favourites"} */}
+                                </button>
+                                <button
+                                    className={`flex items-center shadow-2xl  bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom` }
+                                    data-tip="Favourites"
+                                    onClick={()=>console.log("Bookmark Clicked")}
+                                >
+                                    <Bookmark
+                                        className={`w-6 h-6 fill-current`}
+                                    />                                    
                                 </button>
                                 {firstRentProvider && (
                                     <button
@@ -232,14 +244,14 @@ const MovieDetailPage: React.FC = () => {
                                             className="w-6 mr-2"
                                         />
                                         Rent at{" "}
-                                        {firstRentProvider.provider_name}
+                                        {/* {firstRentProvider.provider_name} */}
                                     </button>
                                 )}
 
                                 {/* Buy Button */}
                                 {firstBuyProvider && (
                                     <button
-                                        className="flex items-center bg-white text-black px-4 py-2 rounded"
+                                        className="flex items-center bg-white text-black rounded "
                                         onClick={() =>
                                             window.open(
                                                 providers.link,
@@ -250,9 +262,9 @@ const MovieDetailPage: React.FC = () => {
                                         <img
                                             src={`${image_url}/w45${firstBuyProvider.logo_path}`}
                                             alt={firstBuyProvider.provider_name}
-                                            className="w-6 h-6 mr-2"
+                                            className="w-10 h-10"
                                         />
-                                        Buy at {firstBuyProvider.provider_name}
+                                        {/* Buy at {firstBuyProvider.provider_name} */}
                                     </button>
                                 )}
                             </div>
