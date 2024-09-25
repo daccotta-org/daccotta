@@ -53,8 +53,6 @@ To set up and run **Daccotta** locally, follow the steps below:
 
 #### Installing Bun
 
-[bun installation | docs](https://bun.sh/docs/installation)
-
 ##### For macOS:
 
 1. Open your terminal.
@@ -104,26 +102,7 @@ npm install -g bun
         bun i
         ```
 
-4. Setting Up TMDB API
-
-To fetch movie data in Daccotta, you'll need to set up an account with **The Movie Database (TMDB)** and get an API key.
-
--   **Create a TMDB Account**:
-
-    -   Go to [TMDB's website](https://www.themoviedb.org/) and sign up for a free account.
-
--   **Get Your API Key**:
-
-    -   Once your account is created, navigate to your account settings, go to the **API** section, and generate a new API key.
-
--   **Add API Key to Environment File**:
-    -   In the `client` folder, create a `.env` file if it doesn’t already exist.
-    -   Add your TMDB API key with the following variable name:
-        ```env
-        VITE_ACCESS_KEY=your_tmdb_api_key
-        ```
-
-5. **Setting Up MongoDB Atlas**:
+4. **Setting Up MongoDB Atlas**:
 
     - Visit the [MongoDB Atlas website](https://www.mongodb.com/cloud/atlas) and sign up for an account.
     - After logging in, create a new project, then click on **Build a Cluster** to set up a free-tier cluster.
@@ -133,12 +112,12 @@ To fetch movie data in Daccotta, you'll need to set up an account with **The Mov
         mongodb+srv://<username>:<password>@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
         ```
     - Replace `<username>`, `<password>`, and `myFirstDatabase` with your actual MongoDB Atlas username, password, and the database name you wish to use.
-    - Set the `MONGO_URL` in your project's `.env` file with the copied connection string:
+    - Set the `MONGO_URI` in your project's `.env` file with the copied connection string:
         ```bash
-        MONGO_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/daccotta?retryWrites=true&w=majority
+        MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/daccotta?retryWrites=true&w=majority
         ```
 
-6. **Setting Up Firebase**:
+5. **Setting Up Firebase**:
 
     - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
     - After setting up, download the `firebaseConfig` and add it to your project.
@@ -155,7 +134,7 @@ To fetch movie data in Daccotta, you'll need to set up an account with **The Mov
     }
     ```
 
-7. **Running the Project**:
+6. **Running the Project**:
 
     - Return to the root directory:
         ```bash
@@ -170,7 +149,7 @@ To fetch movie data in Daccotta, you'll need to set up an account with **The Mov
         bun start
         ```
 
-8. Your app should now be running! 🎉 Open your browser and go to `http://localhost:3000`.
+7. Your app should now be running! 🎉 Open your browser and go to `http://localhost:3000`.
 
 ---
 
@@ -185,6 +164,12 @@ We'd love your help to make **Daccotta** even better! If you're interested in co
 Feel free to reach out to us for any queries or suggestions:  
 **Email**: contact@daccotta.com  
 **Website**: [daccotta.com](https://daccotta.com)
+
+---
+
+## ⚠️ Attribution
+
+Daccotta uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.
 
 ---
 
