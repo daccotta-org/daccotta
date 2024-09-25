@@ -66,6 +66,14 @@ export function useJournal() {
         return response.data.results
     }
 
+    const deleteJournalEntry = async (entryId: string) => {
+        const idToken = await getIdTokenFromUser()
+        const response = await axios.delete(`${API_URL}/journal/delete/${entryId}`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+        })
+        return response.data
+    }
+
     return {
         useGetJournalEntries: () =>
             useQuery({
@@ -91,5 +99,13 @@ export function useJournal() {
             useMutation({
                 mutationFn: searchMovie,
             }),
+            useDeleteJournalEntry: () =>
+                useMutation({
+                    mutationFn: deleteJournalEntry,
+                    onSuccess: () =>
+                        queryClient.invalidateQueries({
+                            queryKey: ["journalEntries"],
+                        }),
+                }),
     }
 }
