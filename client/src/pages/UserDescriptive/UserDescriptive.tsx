@@ -12,6 +12,9 @@ import { Users, Award } from "lucide-react"
 import { BarChart1 } from "@/components/charts/BarChart"
 import { useFriends } from "@/services/friendsService"
 import { fetchMoviesByIds } from "@/services/movieService"
+import DynamicBarChart from "@/components/charts/DynamicChart"
+import { useJournal } from "@/services/journalService"
+import { calculateStats, MovieStats } from "@/lib/stats"
 
 interface MovieInList {
     movie_id: string
@@ -45,12 +48,23 @@ interface UserData {
 }
 
 const UserDescriptivePage: React.FC = () => {
-    const { userId } = useParams<{ userId: string }>()
+    const { userName } = useParams<{ userName: string }>()
     const [activeIndex, setActiveIndex] = useState<number>(0)
     const [movieData, setMovieData] = useState<SimpleMovie[]>([])
     const navigate = useNavigate()
     const { useGetFriendData } = useFriends()
-    const { data: userData, isLoading, error } = useGetFriendData(userId || "")
+    const {
+        data: userData,
+        isLoading,
+        error,
+    } = useGetFriendData(userName || "")
+    const { useGetFriendJournalEntries } = useJournal()
+    const {
+        data: journalEntries,
+        isLoading: isJournalLoading,
+        error: Journalerror,
+    } = useGetFriendJournalEntries(userName!)
+    const [stats, setStats] = useState<MovieStats | null>(null)
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -66,9 +80,28 @@ const UserDescriptivePage: React.FC = () => {
                 }
             }
         }
+        if (journalEntries) {
+            const movieStats = calculateStats(journalEntries)
+            setStats(movieStats)
+        }
 
         fetchMovies()
-    }, [userData, activeIndex])
+    }, [userData, activeIndex, journalEntries])
+    if (isJournalLoading) {
+        ;<div>Loading...</div>
+    }
+    if (error || !stats) {
+        return <div>Error loading stats. Please try again later.</div>
+    }
+    const monthlyWatchedData = stats.monthlyWatched.map((item) => ({
+        month: item.month,
+        desktop: item.count,
+    }))
+    const currentMonth = stats.monthlyWatched[stats.monthlyWatched.length - 1]
+    const lastMonth = stats.monthlyWatched[stats.monthlyWatched.length - 2]
+    const moviesDiff = currentMonth
+        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
+        : 0
 
     const handleSelectList = (listId: string) => {
         navigate(`/list/${listId}`)
@@ -155,13 +188,13 @@ const UserDescriptivePage: React.FC = () => {
                     description="View and explore user's movie lists"
                     icon={<IconList className="h-6 w-6 text-green-400" />}
                 >
-                    <div className="space-y-2 max-h-40 overflow-auto scrollbar-hide">
+                    <div className="space-y-2 h-12 overflow-auto ">
                         {userData.lists.map((item: any, index: number) => (
                             <button
                                 key={index}
                                 className={`p-2 w-full rounded-md text-left transition-all duration-300 ${
                                     activeIndex === index
-                                        ? "bg-gradient-to-r from-green-500 to-blue-500"
+                                        ? "bg-gradient-to-tr from-gray-900 to-gray-800"
                                         : "bg-gray-700 hover:bg-gray-600"
                                 }`}
                                 onClick={() => setActiveIndex(index)}
@@ -183,7 +216,7 @@ const UserDescriptivePage: React.FC = () => {
                     >
                         view user stats
                     </h2>
-                    <BarChart1 />
+                    <DynamicBarChart data={monthlyWatchedData} />
                 </BentoGridItem>
                 <BentoGridItem
                     title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
@@ -207,7 +240,7 @@ const UserDescriptivePage: React.FC = () => {
                                     />
                                 ))}
                             </div>
-                            <button
+                            {/* <button
                                 onClick={() =>
                                     handleSelectList(
                                         userData.lists[activeIndex].list_id
@@ -216,7 +249,7 @@ const UserDescriptivePage: React.FC = () => {
                                 className="mt-4 text-blue-400 hover:text-blue-300 transition-colors"
                             >
                                 View Full List
-                            </button>
+                            </button> */}
                         </motion.div>
                     </AnimatePresence>
                 </BentoGridItem>

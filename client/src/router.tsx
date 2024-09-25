@@ -61,7 +61,10 @@ export const router = createBrowserRouter([
                     { path: "/journal", element: <JournalPage /> },
                     { path: "/stats", element: <StatsPage2 /> },
                     { path: "/stats/:userName", element: <StatsPageFriends /> },
-                    { path: "/user/:userId", element: <UserDescriptivePage /> },
+                    {
+                        path: "/user/:userName",
+                        element: <UserDescriptivePage />,
+                    },
                 ],
             },
             { path: "*", element: <Navigate to="/" replace /> },

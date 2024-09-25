@@ -30,7 +30,7 @@ import { calculateStats, MovieStats } from "@/lib/stats"
 const StatsPage2: React.FC = () => {
     const { user } = useAuth()
     const { useGetJournalEntries } = useJournal()
-    const { data: journalEntries } = useGetJournalEntries()
+    const { data: journalEntries, isLoading, error } = useGetJournalEntries()
     const [stats, setStats] = useState<MovieStats | null>(null)
 
     useEffect(() => {
@@ -39,17 +39,21 @@ const StatsPage2: React.FC = () => {
             setStats(movieStats)
         }
     }, [journalEntries])
-
-    if (!stats) {
+    if (isLoading) {
         return <div>Loading stats...</div>
     }
 
-    const monthlyWatchedData = Object.entries(stats.monthlyWatched).map(
-        ([month, count]) => ({
-            month,
-            desktop: count,
-        })
-    )
+    if (error || !stats) {
+        return <div>Error loading stats. Please try again later.</div>
+    }
+
+    // const monthlyWatchedData = Object.entries(stats.monthlyWatched).map(
+    //     ([month, count]) => ({
+    //         month,
+    //         desktop: count,
+    //     })
+    // )
+    const monthlyWatchedData = stats.monthlyWatched
 
     const genreDistributionData = stats.genreDistribution.map((genre) => ({
         browser: genre.genre,
@@ -62,13 +66,11 @@ const StatsPage2: React.FC = () => {
         0
     )
 
-    const currentMonth = new Date().toLocaleString("default", { month: "long" })
-    const lastMonth = new Date(
-        new Date().setMonth(new Date().getMonth() - 1)
-    ).toLocaleString("default", { month: "long" })
-    const moviesDiff =
-        (stats.monthlyWatched[currentMonth] || 0) -
-        (stats.monthlyWatched[lastMonth] || 0)
+    const currentMonth = monthlyWatchedData[monthlyWatchedData.length - 1]
+    const lastMonth = monthlyWatchedData[monthlyWatchedData.length - 2]
+    const moviesDiff = currentMonth
+        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
+        : 0
 
     const chartConfig: ChartConfig = {
         desktop: {
@@ -126,7 +128,7 @@ const StatsPage2: React.FC = () => {
                     className="md:col-span-1 row-span-1"
                 >
                     <ChartContainer config={chartConfig}>
-                        <BarChart data={monthlyWatchedData}>
+                        {/* <BarChart data={monthlyWatchedData}>
                             <CartesianGrid vertical={false} />
                             <XAxis
                                 dataKey="month"
@@ -141,6 +143,24 @@ const StatsPage2: React.FC = () => {
                             />
                             <Bar
                                 dataKey="desktop"
+                                fill="var(--color-desktop)"
+                                radius={8}
+                            />
+                        </BarChart> */}
+                        <BarChart data={monthlyWatchedData}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="month"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent hideLabel />}
+                            />
+                            <Bar
+                                dataKey="count"
                                 fill="var(--color-desktop)"
                                 radius={8}
                             />

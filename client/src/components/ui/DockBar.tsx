@@ -32,8 +32,8 @@ export function DockDemo() {
                     <IoSearch size="1rem" className="text-white" />
                 </DockIcon>
                 <DockIcon
-                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/search-movie") ? "bg-primary" : ""}`}
-                    onClick={() => navigate("/search-movie")}
+                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/journal") ? "bg-primary" : ""}`}
+                    onClick={() => navigate("/journal")}
                 >
                     <NotebookPenIcon size="1rem" className=" text-purple-400" />
                 </DockIcon>

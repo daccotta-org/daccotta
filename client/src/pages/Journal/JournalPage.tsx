@@ -132,14 +132,14 @@ const JournalPage: React.FC = () => {
                                 className="rounded-full w-10 h-10"
                             >
                                 <Plus className="h-6 w-6" />
-                                <span className="sr-only">
+                                <span className="sr-only text-white">
                                     Add journal entry
                                 </span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent className=" xs:w-[400px] sm:max-w-[400px] max-w-[400px]">
                             <DialogHeader>
-                                <DialogTitle className="text-2xl font-bold">
+                                <DialogTitle className="text-2xl text-white font-bold">
                                     Add New Journal Entry
                                 </DialogTitle>
                             </DialogHeader>
@@ -216,10 +216,10 @@ const JournalPage: React.FC = () => {
                                         </div>
                                     </div>
                                 )}
-                                <div className="space-y-2">
+                                <div className="space-y-2 text-gray-300">
                                     <Label
                                         htmlFor="rewatches"
-                                        className="text-sm font-medium"
+                                        className="text-sm   font-medium"
                                     >
                                         Times Watched
                                     </Label>
@@ -237,7 +237,7 @@ const JournalPage: React.FC = () => {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">
+                                    <Label className="text-sm text-gray-300 font-medium">
                                         Date Watched
                                     </Label>
                                     <Popover>

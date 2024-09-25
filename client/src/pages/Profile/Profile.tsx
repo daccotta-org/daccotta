@@ -59,7 +59,7 @@ const Profile: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState<number>(0)
     const [stats, setStats] = useState<MovieStats | null>(null)
     const { useGetJournalEntries } = useJournal()
-    const { data: journalEntries } = useGetJournalEntries()
+    const { data: journalEntries, isLoading, error } = useGetJournalEntries()
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -87,13 +87,15 @@ const Profile: React.FC = () => {
 
         fetchUserData()
     }, [user, activeIndex])
+    if (isLoading) return <div>Loading...</div>
     if (!stats) return <div>Loading ...</div>
-    const monthlyWatchedData = Object.entries(stats.monthlyWatched).map(
-        ([month, count]) => ({
-            month,
-            desktop: count,
-        })
-    )
+
+    if (error) return <div>Error loading stats. Please try again later.</div>
+
+    const monthlyWatchedData = stats.monthlyWatched.map((item) => ({
+        month: item.month,
+        desktop: item.count,
+    }))
     const handleSelectList = (listId: string) => {
         navigate(`/list/${listId}`)
     }
@@ -106,13 +108,11 @@ const Profile: React.FC = () => {
         setIsDrawerOpen(false)
     }
 
-    const currentMonth = new Date().toLocaleString("default", { month: "long" })
-    const lastMonth = new Date(
-        new Date().setMonth(new Date().getMonth() - 1)
-    ).toLocaleString("default", { month: "long" })
-    const moviesDiff =
-        (stats?.monthlyWatched[currentMonth] || 0) -
-        (stats?.monthlyWatched[lastMonth] || 0)
+    const currentMonth = stats.monthlyWatched[stats.monthlyWatched.length - 1]
+    const lastMonth = stats.monthlyWatched[stats.monthlyWatched.length - 2]
+    const moviesDiff = currentMonth
+        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
+        : 0
 
     const chartConfig = {
         desktop: {
