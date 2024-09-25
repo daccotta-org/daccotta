@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
@@ -12,8 +10,8 @@ import { useAuth } from "@/hooks/useAuth"
 import { useFriends } from "@/services/friendsService"
 import { useNavigate } from "react-router-dom"
 import { AxiosError } from "axios"
-import { MessageCircle, MoreVertical, Users, Trash, AlertTriangle } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
+import { Users, Trash, AlertTriangle } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 const searchSchema = z
     .string()
@@ -37,8 +35,6 @@ const FriendsSearch: React.FC = () => {
 
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
     const { data: pendingRequests } = useGetPendingRequests()
-        useGetPendingRequests();
-
     const {
         data: searchResults,
         isLoading: isLoadingSearch,
@@ -88,8 +84,7 @@ const FriendsSearch: React.FC = () => {
                 onSuccess: () => {
                     toast.success(`Friend request ${action}ed successfully.`)
                 },
-
-                onError: (error) => {
+                onError: () => {
                     toast.error(
                         `Failed to ${action} friend request. Please try again.`
                     )
@@ -104,14 +99,13 @@ const FriendsSearch: React.FC = () => {
                 toast.success("Friend removed successfully.")
                 setIsRemoveDialogOpen(false)
             },
-            onError: (error) => {
+            onError: () => {
                 toast.error("Failed to remove friend. Please try again.")
             },
         })
     }
 
     const handleUserClick = (username: string) => {
-        console.log(username)
         navigate(`/user/${username}`)
     }
 
@@ -162,7 +156,7 @@ const FriendsSearch: React.FC = () => {
                                 <p>Loading friends...</p>
                             ) : (
                                 <ul className="space-y-4">
-                                    {friends.map((friend: string) => (
+                                    {friends?.map((friend: string) => (
                                         <motion.li
                                             key={friend}
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
@@ -213,8 +207,160 @@ const FriendsSearch: React.FC = () => {
                         </motion.section>
                     )}
 
-                    {/* ... (pending and add sections remain unchanged) ... */}
+                    {activeTab === "pending" && (
+                        <motion.section
+                            key="pending-requests"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <h2 className="text-lg font-semibold mb-4">
+                                PENDING REQUESTS — {pendingRequests?.length || 0}
+                            </h2>
+                            {!pendingRequests ? (
+                                <p>Loading requests...</p>
+                            ) : (
+                                <ul className="space-y-4">
+                                    {pendingRequests.map((request: any) => (
+                                        <motion.li
+                                            key={request._id}
+                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Avatar>
+                                                    <AvatarImage
+                                                        src={`/api/avatar/${request.from}`}
+                                                        alt={request.from}
+                                                    />
+                                                    <AvatarFallback>
+                                                        {request.from
+                                                            .substring(0, 2)
+                                                            .toUpperCase()}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <h3 className="font-semibold">
+                                                        {request.from}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-400">
+                                                        Incoming Request
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="space-x-2">
+                                                <Button
+                                                    onClick={() =>
+                                                        handleRespondToRequest(
+                                                            request._id,
+                                                            "accept"
+                                                        )
+                                                    }
+                                                    variant="default"
+                                                    size="sm"
+                                                >
+                                                    Accept
+                                                </Button>
+                                                <Button
+                                                    onClick={() =>
+                                                        handleRespondToRequest(
+                                                            request._id,
+                                                            "reject"
+                                                        )
+                                                    }
+                                                    variant="outline"
+                                                    size="sm"
+                                                >
+                                                    Reject
+                                                </Button>
+                                            </div>
+                                        </motion.li>
+                                    ))}
+                                </ul>
+                            )}
+                        </motion.section>
+                    )}
 
+                    {activeTab === "add" && (
+                        <motion.section
+                            key="add-friend"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <h2 className="text-lg font-semibold mb-4">
+                                ADD FRIEND
+                            </h2>
+                            <div className="flex space-x-2 mb-4">
+                                <Input
+                                    type="text"
+                                    placeholder="Search users..."
+                                    value={searchTerm}
+                                    onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                    }
+                                    className="bg-gray-800 border-gray-700 focus:border-gray-600"
+                                />
+                                <Button onClick={handleSearch}>Search</Button>
+                            </div>
+                            {isLoadingSearch ? (
+                                <p>Searching...</p>
+                            ) : (
+                                <ul className="space-y-4">
+                                    {searchResults?.map((user: any) => (
+                                        <motion.li
+                                            key={user.uid}
+                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                        >
+                                            <div
+                                                className="flex items-center gap-3"
+                                                onClick={() =>
+                                                    handleUserClick(
+                                                        user.userName
+                                                    )
+                                                }
+                                            >
+                                                <Avatar>
+                                                    <AvatarImage
+                                                        src={`/api/avatar/${user.userName}`}
+                                                        alt={user.userName}
+                                                    />
+                                                    <AvatarFallback>
+                                                        {user.userName
+                                                            .substring(0, 2)
+                                                            .toUpperCase()}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <h3 className="font-semibold">
+                                                        {user.userName}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-400">
+                                                        User
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <Button
+                                                onClick={() =>
+                                                    handleSendRequest(
+                                                        user.userName
+                                                    )
+                                                }
+                                                size="sm"
+                                            >
+                                                Send Request
+                                            </Button>
+                                        </motion.li>
+                                    ))}
+                                </ul>
+                            )}
+                        </motion.section>
+                    )}
                 </AnimatePresence>
             </div>
 
