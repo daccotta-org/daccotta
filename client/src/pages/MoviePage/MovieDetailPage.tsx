@@ -141,8 +141,8 @@ const MovieDetailPage: React.FC = () => {
     if (isLoading || isProvidersLoading) {
         return (
             <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-            </div>
+            <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+        </div>
         )
     }
 
@@ -157,7 +157,7 @@ const MovieDetailPage: React.FC = () => {
     const director =
         movie.credits?.crew.find((person) => person.job === "Director")?.name ||
         "Unknown"
-    const firstRentProvider = providers?.rent?.[0]
+     const firstRentProvider = providers?.rent?.[0]
     const firstBuyProvider = providers?.buy?.[0]
 
     return (
@@ -228,7 +228,7 @@ const MovieDetailPage: React.FC = () => {
                                 </button>
                                 {firstRentProvider && (
                                     <button
-                                        className="flex items-center bg-white text-black px-4 py-2 rounded"
+                                        className="flex items-center bg-white text-black px-4 py-2 rounded-xl"
                                         onClick={() =>
                                             window.open(
                                                 providers.link,

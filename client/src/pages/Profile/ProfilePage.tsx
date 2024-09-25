@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 // import Drawer from "@/components/custom/Drawer/Drawer"
 import { Drawer } from "@/components/ui/drawer"
 import CreateList from "../CreateList/CreateList"
-import { Button } from "@/components/ui/button"
+
 
 // Define the type for each carousel item
 interface MovieInList {
