@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { SimpleMovie } from "@/Types/Movie"
-import { IconUser, IconList, IconChartBar, IconMovie } from "@tabler/icons-react"
+import {
+    IconUser,
+    IconList,
+    IconChartBar,
+    IconMovie,
+} from "@tabler/icons-react"
 import { Users, Award } from "lucide-react"
 import { BarChart1 } from "@/components/charts/BarChart"
 import { useFriends } from "@/services/friendsService"
@@ -51,7 +56,7 @@ const UserDescriptivePage: React.FC = () => {
         const fetchMovies = async () => {
             if (userData?.lists[activeIndex]?.movies) {
                 const movieIds = userData.lists[activeIndex].movies.map(
-                    (m:any) => m.movie_id
+                    (m: any) => m.movie_id
                 )
                 try {
                     const movies = await fetchMoviesByIds(movieIds)
@@ -110,8 +115,8 @@ const UserDescriptivePage: React.FC = () => {
             <div className="text-center flex flex-col">
                 <h2 className="text-3xl font-bold">{userData?.userName}</h2>
                 <div className="flex flex-col items-center">
-                    <div className="flex gap-1 items-center justify-center">
-                        <Users className="w-4 mr-2 text-blue-400" />
+                    <div className="flex gap-1 items-center justify-center ">
+                        <Users className="w-4 mr-2 text-blue-400  font-bold" />
                         <p className="">{userData?.friends.length}</p>
                     </div>
                     <div className="flex gap-1 items-center justify-center">
@@ -151,7 +156,7 @@ const UserDescriptivePage: React.FC = () => {
                     icon={<IconList className="h-6 w-6 text-green-400" />}
                 >
                     <div className="space-y-2 max-h-40 overflow-auto scrollbar-hide">
-                        {userData.lists.map((item:any, index:number) => (
+                        {userData.lists.map((item: any, index: number) => (
                             <button
                                 key={index}
                                 className={`p-2 w-full rounded-md text-left transition-all duration-300 ${
@@ -172,10 +177,16 @@ const UserDescriptivePage: React.FC = () => {
                     icon={<IconChartBar className="h-6 w-6 text-yellow-400" />}
                     className="md:row-span-2"
                 >
+                    <h2
+                        className="hover:cursor-pointer hover:text-gray-300"
+                        onClick={() => navigate(`/stats/${userData.userName}`)}
+                    >
+                        view user stats
+                    </h2>
                     <BarChart1 />
                 </BentoGridItem>
                 <BentoGridItem
-                    title="Selected List Preview"
+                    title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
                     description={`Movies in ${userData.lists[activeIndex]?.name || "selected list"}`}
                     icon={<IconMovie className="h-6 w-6 text-purple-400" />}
                     className="md:col-span-2"
@@ -190,11 +201,18 @@ const UserDescriptivePage: React.FC = () => {
                         >
                             <div className="space-y-3 max-h-40 overflow-auto scrollbar-hide">
                                 {movieData.map((movie) => (
-                                    <MoviePreview key={movie.id} movie={movie} />
+                                    <MoviePreview
+                                        key={movie.id}
+                                        movie={movie}
+                                    />
                                 ))}
                             </div>
                             <button
-                                onClick={() => handleSelectList(userData.lists[activeIndex].list_id)}
+                                onClick={() =>
+                                    handleSelectList(
+                                        userData.lists[activeIndex].list_id
+                                    )
+                                }
                                 className="mt-4 text-blue-400 hover:text-blue-300 transition-colors"
                             >
                                 View Full List

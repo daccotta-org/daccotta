@@ -146,16 +146,6 @@ router.post(
                 isPublic: true,
                 isShared: false,
             }
-            const FavouritesList = {
-                name: "Favourites",
-                list_type: "user" as const,
-                movies: [],
-                members: [{ user_id: uid, is_author: true }],
-                date_created: new Date(),
-                description: "favourites",
-                isPublic: true,
-                isShared: false,
-            }
 
             const top5DirectorsList = {
                 names: directors.map((director: any) => ({
@@ -177,7 +167,7 @@ router.post(
                         onboarded: true,
                     },
                     $push: {
-                        lists: { top5MoviesList, FavouritesList },
+                        lists: top5MoviesList,
                         directorsold: top5DirectorsList,
                     }, // Directly push the list object
                 },

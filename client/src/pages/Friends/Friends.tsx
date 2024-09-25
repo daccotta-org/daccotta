@@ -1,4 +1,3 @@
-
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
@@ -111,8 +110,6 @@ const FriendsSearch: React.FC = () => {
         navigate(`/user/${username}`)
     }
 
-    // ... (keep all the handler functions as they were)
-
     return (
         <div className="min-h-screen pt-[5rem]  md:pt[5rem] lg:pt-[5rem]  max-h-screen overflow-auto scrollbar-hide  text-gray-100 lg:p-4 px-[4rem] w-full ">
             <div className="max-w-4xl mx-auto">
@@ -175,12 +172,12 @@ const FriendsSearch: React.FC = () => {
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                           
                                         >
-                                            <div className="flex items-center gap-3 button cursor-pointer"
-                                             onClick={() =>                                               
-                                                handleUserClick(friend)
-                                            }
+                                            <div
+                                                className="flex items-center gap-3 button cursor-pointer"
+                                                onClick={() =>
+                                                    handleUserClick(friend)
+                                                }
                                             >
                                                 <Avatar>
                                                     <AvatarImage
@@ -202,15 +199,17 @@ const FriendsSearch: React.FC = () => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2">                                                
+                                            <div className="flex items-center gap-2">
                                                 <Button
                                                     size="icon"
-                                                    variant="ghost"
                                                     onClick={() =>
                                                         // handleRemoveFriend(
                                                         //     friend
                                                         // )
-                                                        console.log("Remove friend", friend)
+                                                        console.log(
+                                                            "Remove friend",
+                                                            friend
+                                                        )
                                                     }
                                                 >
                                                     <MoreVertical className="h-5 w-5" />
@@ -244,7 +243,7 @@ const FriendsSearch: React.FC = () => {
                                             key={request._id}
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                                             initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}                                            
+                                            animate={{ opacity: 1, y: 0 }}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Avatar>
@@ -332,10 +331,15 @@ const FriendsSearch: React.FC = () => {
                                             key={user.uid}
                                             className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                                             initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}                                            
+                                            animate={{ opacity: 1, y: 0 }}
                                         >
-                                            <div className="flex items-center gap-3"
-                                             onClick={() => handleUserClick(user.userName)}
+                                            <div
+                                                className="flex items-center gap-3"
+                                                onClick={() =>
+                                                    handleUserClick(
+                                                        user.userName
+                                                    )
+                                                }
                                             >
                                                 <Avatar>
                                                     <AvatarImage

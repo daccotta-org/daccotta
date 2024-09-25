@@ -31,6 +31,7 @@ const MovieList: React.FC<MovieListProps> = ({
 }) => {
     const { user } = useAuth()
     const { data: movies, isLoading, error } = useMovieList(type, 1)
+
     const { useGetJournalEntries } = useJournal()
     const { data: journalEntries } = useGetJournalEntries()
     const [favGenre, setFavGenre] = useState<number | null>(null)
@@ -59,6 +60,7 @@ const MovieList: React.FC<MovieListProps> = ({
             } else if (user?.uid) {
                 try {
                     const userData: UserData = await getUserData(user.uid)
+
                     const topMovies =
                         userData.lists.find((l) => l.name === "Top 5 Movies")
                             ?.movies || []

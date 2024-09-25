@@ -36,6 +36,18 @@ export function useJournal() {
         })
         return response.data.journalEntries
     }
+    const fetchFriendJournalEntries = async (
+        userName: string
+    ): Promise<Journal[]> => {
+        const idToken = await getIdTokenFromUser()
+        const response = await axios.get(
+            `${API_URL}/journal/entries/${userName}`,
+            {
+                headers: { Authorization: `Bearer ${idToken}` },
+            }
+        )
+        return response.data.journalEntries
+    }
 
     const addJournalEntry = async (entry: Omit<Journal, "_id">) => {
         const idToken = await getIdTokenFromUser()
@@ -58,7 +70,13 @@ export function useJournal() {
         useGetJournalEntries: () =>
             useQuery({
                 queryKey: ["journalEntries"],
-                queryFn: fetchJournalEntries,
+                queryFn: () => fetchJournalEntries(),
+                enabled: !!user,
+            }),
+        useGetFriendJournalEntries: (userName: string) =>
+            useQuery({
+                queryKey: ["friendjournalEntries"],
+                queryFn: () => fetchFriendJournalEntries(userName),
                 enabled: !!user,
             }),
         useAddJournalEntry: () =>

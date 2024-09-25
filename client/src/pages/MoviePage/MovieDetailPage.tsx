@@ -1,16 +1,15 @@
 const KEY = import.meta.env.VITE_TMDB_API
 
-import { useAuth } from "@/hooks/useAuth"
-import { getUserData, addMovieToList, createList } from "@/services/userService"
-import { toast } from "react-toastify"
-import React, { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
-import { Star, Play, Heart } from "lucide-react"
 import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
+import { useAuth } from "@/hooks/useAuth"
 import { useMovieProviders } from "@/services/movieService"
-import { List } from "../List/MovieList"
+import { addMovieToList, createList, getUserData } from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
+import { Heart, Star } from "lucide-react"
+import React, { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { toast } from "react-toastify"
+import { List } from "../List/MovieList"
 
 const image_url = "https://image.tmdb.org/t/p"
 
@@ -135,7 +134,7 @@ const MovieDetailPage: React.FC = () => {
             toast.success(`${movie.title} has been added to your Favourites.`)
         } catch (error) {
             console.error("Error adding movie to Favourites:", error)
-            toast.error("Failed to add movie to Favourites. Please try again.")
+            toast.error("Failed to add movie. Please try again.")
         }
     }
 
@@ -199,51 +198,64 @@ const MovieDetailPage: React.FC = () => {
                                 <Play className="w-4 h-4 mr-2" />
                                 Watch Trailer
                             </button> */}
-                            <button
-                                className={`flex items-center bg-white text-black px-4 py-2 rounded ${
-                                    isFavourite ? "bg-red-500 text-white" : ""
-                                }`}
-                                onClick={handleFavouriteClick}
-                            >
-                                <Heart
-                                    className={`w-4 h-4 mr-2 ${isFavourite ? "fill-current" : ""}`}
-                                />
-                                {isFavourite
-                                    ? "Added to Favourites"
-                                    : "Add to Favourites"}
-                            </button>
-                            {firstRentProvider && (
+                            <div className="flex lg:flex-row flex-col gap-1 items-center ">
                                 <button
-                                    className="flex items-center bg-white text-black px-4 py-2 rounded"
-                                    onClick={() =>
-                                        window.open(providers.link, "_blank")
-                                    }
+                                    className={`flex items-center  text-black px-4 py-2 rounded ${
+                                        isFavourite
+                                            ? "bg-red-500 text-white"
+                                            : "bg-white"
+                                    }`}
+                                    onClick={handleFavouriteClick}
                                 >
-                                    <img
-                                        src={`${image_url}/w45${firstRentProvider.logo_path}`}
-                                        alt={firstRentProvider.provider_name}
-                                        className="w-6 mr-2"
+                                    <Heart
+                                        className={`w-4 h-4 mr-2 ${isFavourite ? "fill-current" : ""}`}
                                     />
-                                    Rent at {firstRentProvider.provider_name}
+                                    {isFavourite
+                                        ? "Added to Favourites"
+                                        : "Add to Favourites"}
                                 </button>
-                            )}
+                                {firstRentProvider && (
+                                    <button
+                                        className="flex items-center bg-white text-black px-4 py-2 rounded"
+                                        onClick={() =>
+                                            window.open(
+                                                providers.link,
+                                                "_blank"
+                                            )
+                                        }
+                                    >
+                                        <img
+                                            src={`${image_url}/w45${firstRentProvider.logo_path}`}
+                                            alt={
+                                                firstRentProvider.provider_name
+                                            }
+                                            className="w-6 mr-2"
+                                        />
+                                        Rent at{" "}
+                                        {firstRentProvider.provider_name}
+                                    </button>
+                                )}
 
-                            {/* Buy Button */}
-                            {firstBuyProvider && (
-                                <button
-                                    className="flex items-center bg-white text-black px-4 py-2 rounded"
-                                    onClick={() =>
-                                        window.open(providers.link, "_blank")
-                                    }
-                                >
-                                    <img
-                                        src={`${image_url}/w45${firstBuyProvider.logo_path}`}
-                                        alt={firstBuyProvider.provider_name}
-                                        className="w-6 h-6 mr-2"
-                                    />
-                                    Buy at {firstBuyProvider.provider_name}
-                                </button>
-                            )}
+                                {/* Buy Button */}
+                                {firstBuyProvider && (
+                                    <button
+                                        className="flex items-center bg-white text-black px-4 py-2 rounded"
+                                        onClick={() =>
+                                            window.open(
+                                                providers.link,
+                                                "_blank"
+                                            )
+                                        }
+                                    >
+                                        <img
+                                            src={`${image_url}/w45${firstBuyProvider.logo_path}`}
+                                            alt={firstBuyProvider.provider_name}
+                                            className="w-6 h-6 mr-2"
+                                        />
+                                        Buy at {firstBuyProvider.provider_name}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">Overview</h3>
                         <p className="mb-4 w-[85%]">{movie.overview}</p>
