@@ -56,7 +56,7 @@ const LoadingSpinner: React.FC = () => {
         </div>
     )
 }
-
+console.log("Hello", import.meta.env.VITE_PROJECT_ID)
 const SignUp: React.FC = () => {
     const [isUsernameAvailable, setIsUsernameAvailable] = useState<
         boolean | null
