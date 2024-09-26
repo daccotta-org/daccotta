@@ -1,51 +1,19 @@
-import React, { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import DynamicBarChart from "@/components/charts/DynamicChart"
+import { calculateStats, MovieStats } from "@/lib/stats"
+import { useFriends } from "@/services/friendsService"
+import { useJournal } from "@/services/journalService"
+import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 import {
-    IconUser,
-    IconList,
     IconChartBar,
+    IconList,
     IconMovie,
+    IconUser,
 } from "@tabler/icons-react"
-import { Users, Award } from "lucide-react"
-import { BarChart1 } from "@/components/charts/BarChart"
-import { useFriends } from "@/services/friendsService"
-import { fetchMoviesByIds } from "@/services/movieService"
-import DynamicBarChart from "@/components/charts/DynamicChart"
-import { useJournal } from "@/services/journalService"
-import { calculateStats, MovieStats } from "@/lib/stats"
-
-interface MovieInList {
-    movie_id: string
-    id: string
-}
-
-interface List {
-    list_id: string
-    name: string
-    list_type: "user" | "group"
-    movies: MovieInList[]
-    members: {
-        user_id: string
-        is_author: boolean
-    }[]
-    description: string
-    date_created: Date
-}
-
-interface UserData {
-    userName: string
-    email: string
-    age: number
-    badges: string[]
-    groups: string[]
-    lists: List[]
-    directors: string[]
-    actors: string[]
-    profile_image: string
-    friends: string[]
-}
+import { AnimatePresence, motion } from "framer-motion"
+import { Award, Users } from "lucide-react"
+import React, { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 
 const UserDescriptivePage: React.FC = () => {
     const { userName } = useParams<{ userName: string }>()
@@ -59,11 +27,8 @@ const UserDescriptivePage: React.FC = () => {
         error,
     } = useGetFriendData(userName || "")
     const { useGetFriendJournalEntries } = useJournal()
-    const {
-        data: journalEntries,
-        isLoading: isJournalLoading,
-        error: Journalerror,
-    } = useGetFriendJournalEntries(userName!)
+    const { data: journalEntries, isLoading: isJournalLoading } =
+        useGetFriendJournalEntries(userName!)
     const [stats, setStats] = useState<MovieStats | null>(null)
 
     useEffect(() => {
@@ -97,15 +62,6 @@ const UserDescriptivePage: React.FC = () => {
         month: item.month,
         desktop: item.count,
     }))
-    const currentMonth = stats.monthlyWatched[stats.monthlyWatched.length - 1]
-    const lastMonth = stats.monthlyWatched[stats.monthlyWatched.length - 2]
-    const moviesDiff = currentMonth
-        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
-        : 0
-
-    const handleSelectList = (listId: string) => {
-        navigate(`/list/${listId}`)
-    }
 
     const MoviePreview = ({ movie }: { movie: SimpleMovie }) => (
         <div className="flex items-center space-x-2">
@@ -162,9 +118,11 @@ const UserDescriptivePage: React.FC = () => {
     )
 
     if (isLoading) {
-        return  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-    </div>
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
     }
 
     if (error) {

@@ -1,9 +1,6 @@
 import { FriendsRequest } from "@/components/friends-request"
-import React from "react"
 
-type Props = {}
-
-const FriendsPage = (props: Props) => {
+const FriendsPage = () => {
     return <FriendsRequest />
 }
 

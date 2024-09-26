@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 import { getUserData } from "@/services/userService"
-import { Plus, ChevronRight, Heart, MessageSquare, Eye } from "lucide-react"
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "react-toastify"
 import CreateList from "../CreateList/CreateList"
 import { Drawer } from "@/components/ui/drawer"
-import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
 
 interface Movie {
     movie_id: string
@@ -88,11 +86,11 @@ const UserLists: React.FC = () => {
                     {lists.map((list) => (
                         <div
                             key={list.list_id}
-                            className="bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700" 
+                            className="bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                             onClick={() => handleListClick(list.list_id)}
                         >
                             <div className="flex flex-col md:flex-row">
-                            <div className="flex-shrink-0 md:w-1/3 w-full flex space-x-1 p-4 justify-center">
+                                <div className="flex-shrink-0 md:w-1/3 w-full flex space-x-1 p-4 justify-center">
                                     {list.movies.slice(0, 4).map((movie) => (
                                         <div
                                             key={movie.id}

@@ -87,12 +87,18 @@ const Profile: React.FC = () => {
 
         fetchUserData()
     }, [user, activeIndex])
-    if (isLoading) return <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-</div>
-    if (!stats) return <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-</div>
+    if (isLoading)
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
+    if (!stats)
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
 
     if (error) return <div>Error loading stats. Please try again later.</div>
 
@@ -104,25 +110,8 @@ const Profile: React.FC = () => {
         navigate(`/list/${listId}`)
     }
 
-    const handleCreateList = () => {
-        setIsDrawerOpen(true)
-    }
-
     const handleCloseDrawer = () => {
         setIsDrawerOpen(false)
-    }
-
-    const currentMonth = stats.monthlyWatched[stats.monthlyWatched.length - 1]
-    const lastMonth = stats.monthlyWatched[stats.monthlyWatched.length - 2]
-    const moviesDiff = currentMonth
-        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
-        : 0
-
-    const chartConfig = {
-        desktop: {
-            label: "Movies Watched",
-            color: "hsl(var(--chart-1))",
-        },
     }
 
     const ProfileInfo = () => (

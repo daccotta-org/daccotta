@@ -6,13 +6,6 @@ import { SimpleMovie } from "@/Types/Movie"
 
 const API_URL = "http://localhost:8080/api"
 
-interface MovieInList {
-    movie_id: string
-    title: string
-    poster_path: string
-    release_date: string
-}
-
 interface Journal {
     _id: string
     movie: SimpleMovie
@@ -68,9 +61,12 @@ export function useJournal() {
 
     const deleteJournalEntry = async (entryId: string) => {
         const idToken = await getIdTokenFromUser()
-        const response = await axios.delete(`${API_URL}/journal/delete/${entryId}`, {
-            headers: { Authorization: `Bearer ${idToken}` },
-        })
+        const response = await axios.delete(
+            `${API_URL}/journal/delete/${entryId}`,
+            {
+                headers: { Authorization: `Bearer ${idToken}` },
+            }
+        )
         return response.data
     }
 
@@ -99,13 +95,13 @@ export function useJournal() {
             useMutation({
                 mutationFn: searchMovie,
             }),
-            useDeleteJournalEntry: () =>
-                useMutation({
-                    mutationFn: deleteJournalEntry,
-                    onSuccess: () =>
-                        queryClient.invalidateQueries({
-                            queryKey: ["journalEntries"],
-                        }),
-                }),
+        useDeleteJournalEntry: () =>
+            useMutation({
+                mutationFn: deleteJournalEntry,
+                onSuccess: () =>
+                    queryClient.invalidateQueries({
+                        queryKey: ["journalEntries"],
+                    }),
+            }),
     }
 }

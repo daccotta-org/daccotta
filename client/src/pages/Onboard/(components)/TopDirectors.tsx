@@ -1,10 +1,10 @@
 import React, { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { z } from "zod"
-import { useSearchPerson } from "../../../services/directorService"
 import { RxCrossCircled } from "react-icons/rx"
 import { toast } from "react-toastify"
+import { z } from "zod"
 import "../../../index.css"
+import { useSearchPerson } from "../../../services/directorService"
 
 // Define the Director schema
 const directorSchema = z.object({
@@ -25,10 +25,10 @@ export type TopDirectorsData = z.infer<typeof topDirectorsSchema>
 interface Props {
     onNext: () => void
     onPrevious: () => void
-    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void; 
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-const directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown  }) => {
+const directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
     const {
         setValue,
         watch,
