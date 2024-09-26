@@ -36,14 +36,15 @@ interface AuthProviderProps {
   navigate: NavigateFunction;
 }
 
-export function AuthProvider({ children, navigate }: AuthProviderProps) {
+export function AuthProvider({ children, navigate }: AuthProviderProps) {  
   const [authState, setAuthState] = useState<AuthState>(initialAuthState);
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const checkOnboardingStatus = useCallback(async () => {
     if (authState.user) {
       try {
         const idToken = await getIdToken(authState.user);
-        const response = await axios.get(`http://localhost:8080/api/user/${authState.user.uid}/onboarded`, {
+        const response = await axios.get(`${VITE_API_BASE_URL}/api/user/${authState.user.uid}/onboarded`, {
           headers: {
             Authorization: `Bearer ${idToken}`,
           },

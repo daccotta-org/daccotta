@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuth } from "@/hooks/useAuth"
 
-const API_URL = "http://localhost:8080/api"
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api`
 interface FriendMovie {
     id: string
     movie_id: string
