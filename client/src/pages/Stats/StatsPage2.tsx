@@ -1,34 +1,29 @@
-import React, { useEffect, useState } from "react"
-import { useAuth } from "@/hooks/useAuth"
-import { useJournal } from "@/services/journalService"
-import { SimpleMovie } from "@/Types/Movie"
-import { useNavigate } from "react-router-dom"
 import {
+    ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
+import { calculateStats, MovieStats } from "@/lib/stats"
+import { useJournal } from "@/services/journalService"
+import {
+    IconChartBar,
+    IconList,
+    IconMovie,
+    IconUser,
+} from "@tabler/icons-react"
+import React, { useEffect, useState } from "react"
 import {
     Bar,
     BarChart,
     CartesianGrid,
-    XAxis,
-    PieChart,
-    Pie,
     Label,
-    ResponsiveContainer,
+    Pie,
+    PieChart,
+    XAxis,
 } from "recharts"
-import {
-    IconChartBar,
-    IconMovie,
-    IconList,
-    IconUser,
-} from "@tabler/icons-react"
-import { ChartConfig } from "@/components/ui/chart"
-import { calculateStats, MovieStats } from "@/lib/stats"
 
 const StatsPage2: React.FC = () => {
-    const { user } = useAuth()
     const { useGetJournalEntries } = useJournal()
     const { data: journalEntries, isLoading, error } = useGetJournalEntries()
     const [stats, setStats] = useState<MovieStats | null>(null)
@@ -40,9 +35,11 @@ const StatsPage2: React.FC = () => {
         }
     }, [journalEntries])
     if (isLoading) {
-        return  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-    </div>
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
     }
 
     if (error || !stats) {

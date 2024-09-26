@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { useAuth } from "@/hooks/useAuth"
 import { useJournal } from "@/services/journalService"
 import { useParams } from "react-router-dom"
 import {
@@ -19,7 +18,6 @@ import { Label, Pie, PieChart } from "recharts"
 import DynamicBarChart from "@/components/charts/DynamicChart"
 
 const StatsPageFriends: React.FC = () => {
-    const { user } = useAuth()
     const userName = useParams<{ userName: string }>().userName
     const { useGetFriendJournalEntries } = useJournal()
     const {
@@ -37,9 +35,9 @@ const StatsPageFriends: React.FC = () => {
     }, [journalEntries])
 
     if (isLoading) {
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-            </div>
+        ;<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+        </div>
     }
 
     if (error || !stats) {

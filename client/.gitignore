@@ -27,4 +27,4 @@ dist-ssr
 *.sw?
 
 dist
-firebaseConfig.ts
+

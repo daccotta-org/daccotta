@@ -1,8 +1,6 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
-import TopNavbar from "@/components/custom/Navbar/TopNavbar"
-import Groups from "../components/custom/Groups/Groups"
-import { groups } from "../data/Groups"
+
 import "./layout.css"
 import { DockDemo } from "@/components/ui/DockBar"
 import Navbar from "@/components/custom/Navbar/TestNavbar"
@@ -24,7 +22,7 @@ const AuthenticatedLayout: React.FC = () => {
                     //     <Bottom />
                     // </div> */}
 
-                    <Navbar/>
+                    <Navbar />
                 </div>
                 {/* Main Content */}
                 <div className="w-[90vw] lg:rounded-3xl bg-background flex-1 relative flex justify-center  items-center">

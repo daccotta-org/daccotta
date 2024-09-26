@@ -1,10 +1,9 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { FC, useState } from "react"
+import { genreMap } from "@/lib/stats"
+import { SimpleMovie } from "@/Types/Movie"
+import { FC } from "react"
+import { useNavigate } from "react-router-dom"
 import LazyImage from "../LazyLoadImage/LazyImage"
 import "./CarouselCard.css"
-import { SimpleMovie } from "@/Types/Movie"
-import { useNavigate } from "react-router-dom"
-import { genreMap } from "@/lib/stats"
 // export interface SimpleMovie {
 //     movie_id: string // movie movie_id
 //     release_date: string
@@ -21,7 +20,7 @@ const CarouselCard: FC<SimpleMovie> = ({
     movie_id,
     friend,
     title,
-    overview,
+
     poster_path,
     backdrop_path,
     release_date,
@@ -32,7 +31,7 @@ const CarouselCard: FC<SimpleMovie> = ({
         .filter(Boolean) // remove undefined genres in case there are any missing ids
         .slice(0, 3) //
     const navigate = useNavigate()
-    const [isHovered, setIsHovered] = useState(false)
+
     const handleClick = () => {
         console.log("movie_id :", movie_id)
         navigate(`/movie/${movie_id}`)
@@ -45,8 +44,6 @@ const CarouselCard: FC<SimpleMovie> = ({
                 backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.9) 90%, rgba(0, 0, 0, 1)), url(${image_url}/w1280${backdrop_path})`,
             }}
             onClick={handleClick}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
             <div
                 className="absolute inset-0 bg-black bg-opacity-50 blur-sm"

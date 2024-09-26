@@ -1,8 +1,6 @@
+import MovieList from "@/components/custom/MovieCard/Carousel"
 import MovieCarousel from "@/components/custom/MovieCarousel/MovieCarousel"
 import ProfileIcon from "@/components/custom/ProfileIcon/ProfileIcon"
-import PopoverRadix from "@/components/custom/PopoverRadix"
-import MovieList from "@/components/custom/MovieCard/Carousel"
-import { DialogCloseButton } from "@/components/custom/Share/Share"
 const HomePage = () => {
     return (
         <>

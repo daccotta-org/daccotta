@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { Plus, Star } from "lucide-react"
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SimpleMovie } from "@/Types/Movie"
@@ -27,7 +27,6 @@ export default function MovieList() {
     const [movies, setMovies] = useState<SimpleMovie[]>([])
     const [listName, setListName] = useState<string>("")
     const [isSearchOpen, setIsSearchOpen] = useState(false)
-    const [hoveredMovie, setHoveredMovie] = useState<SimpleMovie | null>(null)
 
     useEffect(() => {
         const fetchListData = async () => {
@@ -94,7 +93,7 @@ export default function MovieList() {
                     </Dialog>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {movies.map((movie, index) => (                    
+                    {movies.map((movie) => (
                         <MovieCard
                             movie_id={movie.movie_id}
                             title={movie.title}
