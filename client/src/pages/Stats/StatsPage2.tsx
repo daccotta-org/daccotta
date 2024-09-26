@@ -37,12 +37,23 @@ const StatsPage2: React.FC = () => {
         if (journalEntries) {
             const movieStats = calculateStats(journalEntries)
             setStats(movieStats)
+        } else {
+            const nullstats = {
+                totalWatched: 0,
+                monthlyWatched: [],
+                topGenres: [],
+                genreDistribution: [],
+                topDecade: { decade: "2000", count: 0 },
+            }
+            setStats(nullstats)
         }
     }, [journalEntries])
     if (isLoading) {
-        return  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-    </div>
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
     }
 
     if (error || !stats) {
@@ -261,10 +272,10 @@ const StatsPage2: React.FC = () => {
                 >
                     <div className="text-center">
                         <div className="text-4xl font-bold mb-2">
-                            {stats.topDecade.decade}
+                            {stats?.topDecade?.decade}
                         </div>
                         <p className="text-sm text-gray-400">
-                            {stats.topDecade.count} movies watched
+                            {stats?.topDecade?.count} movies watched
                         </p>
                     </div>
                 </BentoGridItem>

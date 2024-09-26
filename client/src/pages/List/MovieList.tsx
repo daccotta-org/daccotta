@@ -71,9 +71,7 @@ export default function MovieList() {
         <div className="min-h-screen text-white p-8 max-h-screen overflow-auto scrollbar-hide w-full">
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between w-full items-center mb-6">
-                    <h1 className="text-4xl font-bold">
-                        {listName || "My Movie List"}
-                    </h1>
+                    <h1 className="text-4xl font-bold">{"Top 5 movies"}</h1>
                     <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
                         <DialogTrigger asChild>
                             <Button
@@ -94,7 +92,7 @@ export default function MovieList() {
                     </Dialog>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {movies.map((movie, index) => (                    
+                    {movies.map((movie, index) => (
                         <MovieCard
                             movie_id={movie.movie_id}
                             title={movie.title}
