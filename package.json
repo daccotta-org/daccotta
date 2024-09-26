@@ -3,9 +3,11 @@
   "scripts": {
     "start:client": "cd client && bunx --bun vite",
     "start:server": " cd server && bun --watch main.ts",
-    "start": "concurrently \"bun start:client\" \"bun start:server\"",
+     "start:all": "concurrently \"bun start:client\" \"bun start:server\"",
     "lint": "eslint 'client/**/*.{ts,tsx,js,jsx}' 'server/**/*.{ts,js}'",
-    "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'"
+    "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'",
+    "build": "cd client && bun install && bunx --bun vite build",
+  "start": "cd server && bun main.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

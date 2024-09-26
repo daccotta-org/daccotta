@@ -15,7 +15,9 @@ import * as fs from "fs"
 import * as path from "path"
 import { friendRoutes } from "./routes/friendRoutes"
 import { journalRoutes } from "./routes/journalRoutes"
-
+import { fileURLToPath } from "url"
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 dotenv.config()
 
 const app = express()
@@ -24,11 +26,12 @@ connectDatabase()
 console.log("console log ho bhi rha h ya nhi ?")
 app.use(cors())
 app.use(express.json())
-app.use(express.static(path.join(__dirname, "..", "client", "dist")))
+app.use(express.static(path.join(__dirname, "../client/dist")))
 
-// Adjust the catch-all route
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"))
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"))
 })
 
 try {
