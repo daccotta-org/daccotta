@@ -11,12 +11,12 @@ export default defineConfig({
     },
 },
   server: {
-    // proxy: {
-    //   '/api': {
-    //     target: 'https://mock-backend-32tp.onrender.com',
-    //     changeOrigin: true,
-    //     secure: false,
-    //   }
-    // }
+    proxy: {
+      '/api': {
+        target: 'https://mock-backend-32tp.onrender.com',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   }
 })
