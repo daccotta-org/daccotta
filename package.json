@@ -7,7 +7,7 @@
     "lint": "eslint 'client/**/*.{ts,tsx,js,jsx}' 'server/**/*.{ts,js}'",
     "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'",
     "build": "cd client && bun install && bunx --bun vite build",
-  "start": "cd server && bun main.ts"
+  "start": "cd server && bun install && bun main.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
