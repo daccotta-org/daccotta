@@ -167,6 +167,12 @@ Feel free to reach out to us for any queries or suggestions:
 
 ---
 
+## ⚠️ Attribution
+
+Daccotta uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.
+
+---
+
 **Made with ❤️ by movie lovers for movie lovers!**
 
 ---

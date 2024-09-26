@@ -9,9 +9,9 @@ const LayoutWrapper: React.FC = () => {
 
   if (!isLoaded) {
     return (
-      <div className="flex flex-col h-[100vh] justify-center items-center">
-        <img className="opacity-80" src="/logo.png" alt="Loading" width="100px" />
-      </div>
+      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+    </div>
     );
   }
 

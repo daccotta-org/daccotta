@@ -1,36 +1,32 @@
 import React, { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/useAuth"
 import { useJournal } from "@/services/journalService"
-import { SimpleMovie } from "@/Types/Movie"
-import { useNavigate } from "react-router-dom"
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    XAxis,
-    PieChart,
-    Pie,
-    Label,
-    ResponsiveContainer,
-} from "recharts"
+import { useParams } from "react-router-dom"
 import {
     IconChartBar,
     IconMovie,
     IconList,
     IconUser,
 } from "@tabler/icons-react"
-import { ChartConfig } from "@/components/ui/chart"
 import { calculateStats, MovieStats } from "@/lib/stats"
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "@/components/ui/chart"
+import { Label, Pie, PieChart } from "recharts"
+import DynamicBarChart from "@/components/charts/DynamicChart"
 
-const StatsPage2: React.FC = () => {
+const StatsPageFriends: React.FC = () => {
     const { user } = useAuth()
-    const { useGetJournalEntries } = useJournal()
-    const { data: journalEntries, isLoading, error } = useGetJournalEntries()
+    const userName = useParams<{ userName: string }>().userName
+    const { useGetFriendJournalEntries } = useJournal()
+    const {
+        data: journalEntries,
+        isLoading,
+        error,
+    } = useGetFriendJournalEntries(userName!)
     const [stats, setStats] = useState<MovieStats | null>(null)
 
     useEffect(() => {
@@ -39,48 +35,16 @@ const StatsPage2: React.FC = () => {
             setStats(movieStats)
         }
     }, [journalEntries])
+
     if (isLoading) {
-        return  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-    </div>
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
     }
 
     if (error || !stats) {
         return <div>Error loading stats. Please try again later.</div>
     }
-
-    // const monthlyWatchedData = Object.entries(stats.monthlyWatched).map(
-    //     ([month, count]) => ({
-    //         month,
-    //         desktop: count,
-    //     })
-    // )
-    const monthlyWatchedData = stats.monthlyWatched
-
-    const genreDistributionData = stats.genreDistribution.map((genre) => ({
-        browser: genre.genre,
-        visitors: genre.count,
-        fill: `hsl(${Math.random() * 360}, 70%, 50%)`, // Generate random color for each genre
-    }))
-
-    const totalGenreCount = genreDistributionData.reduce(
-        (acc, curr) => acc + curr.visitors,
-        0
-    )
-
-    const currentMonth = monthlyWatchedData[monthlyWatchedData.length - 1]
-    const lastMonth = monthlyWatchedData[monthlyWatchedData.length - 2]
-    const moviesDiff = currentMonth
-        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
-        : 0
-
-    const chartConfig: ChartConfig = {
-        desktop: {
-            label: "Movies Watched",
-            color: "hsl(var(--chart-1))",
-        },
-    }
-
     const pieChartConfig: ChartConfig = stats.genreDistribution.reduce(
         (acc, genre) => {
             acc[genre.genre] = {
@@ -91,6 +55,29 @@ const StatsPage2: React.FC = () => {
         },
         {} as ChartConfig
     )
+
+    const monthlyWatchedData = stats.monthlyWatched.map((item) => ({
+        month: item.month,
+        desktop: item.count,
+    }))
+
+    const genreDistributionData = stats.genreDistribution.map((genre) => ({
+        browser: genre.genre,
+        visitors: genre.count,
+        fill: `hsl(${Math.random() * 360}, 70%, 50%)`,
+    }))
+
+    const totalGenreCount = genreDistributionData.reduce(
+        (acc, curr) => acc + curr.visitors,
+        0
+    )
+
+    const currentMonth = stats.monthlyWatched[stats.monthlyWatched.length - 1]
+    const lastMonth = stats.monthlyWatched[stats.monthlyWatched.length - 2]
+    const moviesDiff = currentMonth
+        ? currentMonth.count - (lastMonth ? lastMonth.count : 0)
+        : 0
+
     const BentoGridItem: React.FC<{
         title: string
         description: string
@@ -115,7 +102,7 @@ const StatsPage2: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full scrollbar-hide mx-auto">
                 <BentoGridItem
                     title="Total Movies Watched"
-                    description="Your lifetime movie count"
+                    description=" lifetime movie count"
                     icon={<IconMovie className="h-6 w-6 text-blue-400" />}
                 >
                     <div className="text-4xl font-bold text-center">
@@ -125,49 +112,11 @@ const StatsPage2: React.FC = () => {
 
                 <BentoGridItem
                     title="Monthly Trend"
-                    description="Your movie watching pattern"
+                    description="movie watching pattern"
                     icon={<IconChartBar className="h-6 w-6 text-green-400" />}
                     className="md:col-span-1 row-span-1"
                 >
-                    <ChartContainer config={chartConfig}>
-                        {/* <BarChart data={monthlyWatchedData}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                tickMargin={10}
-                                axisLine={false}
-                                tickFormatter={(value) => value.slice(0, 3)}
-                            />
-                            <ChartTooltip
-                                cursor={false}
-                                content={<ChartTooltipContent hideLabel />}
-                            />
-                            <Bar
-                                dataKey="desktop"
-                                fill="var(--color-desktop)"
-                                radius={8}
-                            />
-                        </BarChart> */}
-                        <BarChart data={monthlyWatchedData}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                tickMargin={10}
-                                axisLine={false}
-                            />
-                            <ChartTooltip
-                                cursor={false}
-                                content={<ChartTooltipContent hideLabel />}
-                            />
-                            <Bar
-                                dataKey="count"
-                                fill="var(--color-desktop)"
-                                radius={8}
-                            />
-                        </BarChart>
-                    </ChartContainer>
+                    <DynamicBarChart data={monthlyWatchedData} />
                     <div className="flex items-center justify-center mt-4">
                         <span className="text-sm">
                             {moviesDiff > 0 ? "Up" : "Down"} by{" "}
@@ -178,7 +127,7 @@ const StatsPage2: React.FC = () => {
 
                 <BentoGridItem
                     title="Top 3 Genres"
-                    description="Your most watched genres"
+                    description="most watched genres"
                     icon={<IconList className="h-6 w-6 text-yellow-400" />}
                 >
                     <ul className="space-y-2">
@@ -193,7 +142,7 @@ const StatsPage2: React.FC = () => {
 
                 <BentoGridItem
                     title="Genre Distribution"
-                    description="Breakdown of your watched genres"
+                    description="Breakdown of  watched genres"
                     icon={<IconChartBar className="h-6 w-6 text-purple-400" />}
                     className="md:col-span-2"
                 >
@@ -256,7 +205,7 @@ const StatsPage2: React.FC = () => {
 
                 <BentoGridItem
                     title="Favorite Decade"
-                    description="Your most watched era"
+                    description=" most watched era"
                     icon={<IconUser className="h-6 w-6 text-red-400" />}
                 >
                     <div className="text-center">
@@ -273,4 +222,4 @@ const StatsPage2: React.FC = () => {
     )
 }
 
-export default StatsPage2
+export default StatsPageFriends

@@ -1,51 +1,59 @@
-import React from "react";
+import React from "react"
 import { IoHome } from "react-icons/io5"
 import { IoSearch } from "react-icons/io5"
 import { FaUserFriends } from "react-icons/fa"
 import { FaUser } from "react-icons/fa"
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"
 
-import { Dock, DockIcon } from "@/components/magicui/dock";
+import { Dock, DockIcon } from "@/components/magicui/dock"
+import { NotebookPenIcon } from "lucide-react"
 
-export type IconProps = React.HTMLAttributes<SVGElement>;
-
+export type IconProps = React.HTMLAttributes<SVGElement>
 
 export function DockDemo() {
-  const navigate = useNavigate();
-  const location = useLocation();
+    const navigate = useNavigate()
+    const location = useLocation()
 
-  const isActive = (path: string) => location.pathname === path;
+    const isActive = (path: string) => location.pathname === path
 
-  return (
-    <div className="relative w-[320px]">
-      <Dock magnification={60} distance={100} className="gap-10">
-        <DockIcon 
-          className={`bg-black/10 dark:bg-white/10 p-3 ${isActive('/') ? 'bg-primary' : ''}`}
-          onClick={() => navigate('/')}
-        >
-          <IoHome size="1rem" className="text-white" />
-        </DockIcon>
-        <DockIcon 
-          className={`bg-black/10 dark:bg-white/10 p-3 ${isActive('/search') ? 'bg-primary' : ''}`}
-          onClick={() => navigate('/friends')}
-        >
-          <IoSearch size="1rem" className="text-white" />
-        </DockIcon>
-        <DockIcon 
-          className={`bg-black/10 dark:bg-white/10 p-3 ${isActive('/groups') ? 'bg-primary' : ''}`}
-          onClick={() => {(navigate('/'), alert("coming soon"))}}
-        >
-          <FaUserFriends size="1rem" className="text-white" />
-        </DockIcon>
-        <DockIcon 
-          className={`bg-black/10 dark:bg-white/10 p-3 ${isActive('/profile') ? 'bg-primary' : ''}`}
-          onClick={() => navigate('/profile')}
-        >
-          <FaUser size="1rem" className="text-white" />
-        </DockIcon>
-      </Dock>
-    </div>
-  );
+    return (
+        <div className="relative w-[335px]">
+            <Dock magnification={60} distance={60} className="gap-8">
+                <DockIcon
+                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/") ? "bg-primary" : ""}`}
+                    onClick={() => navigate("/")}
+                >
+                    <IoHome size="1rem" className="text-white" />
+                </DockIcon>
+                <DockIcon
+                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/search-movie") ? "bg-primary" : ""}`}
+                    onClick={() => navigate("/search-movie")}
+                >
+                    <IoSearch size="1rem" className="text-white" />
+                </DockIcon>
+                <DockIcon
+                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/journal") ? "bg-primary" : ""}`}
+                    onClick={() => navigate("/journal")}
+                >
+                    <NotebookPenIcon size="1rem" className=" text-purple-400" />
+                </DockIcon>
+                <DockIcon
+                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/groups") ? "bg-primary" : ""}`}
+                    onClick={() => {
+                        navigate("/"), alert("coming soon")
+                    }}
+                >
+                    <FaUserFriends size="1rem" className="text-white" />
+                </DockIcon>
+                <DockIcon
+                    className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/friends") ? "bg-primary" : ""}`}
+                    onClick={() => navigate("/friends")}
+                >
+                    <FaUser size="1rem" className="text-white" />
+                </DockIcon>
+            </Dock>
+        </div>
+    )
 }
 
 // const Icons = {

@@ -20,6 +20,7 @@ import UserLists from "./pages/List/UserList"
 import JournalPage from "./pages/Journal/JournalPage"
 import StatsPage2 from "./pages/Stats/StatsPage2"
 import UserDescriptivePage from "./pages/UserDescriptive/UserDescriptive"
+import StatsPageFriends from "./pages/Stats/statsPageFriend"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate()
@@ -59,7 +60,11 @@ export const router = createBrowserRouter([
                     { path: "/list/:listId", element: <MovieList /> },
                     { path: "/journal", element: <JournalPage /> },
                     { path: "/stats", element: <StatsPage2 /> },
-                    { path: "/user/:userId", element: <UserDescriptivePage /> },
+                    { path: "/stats/:userName", element: <StatsPageFriends /> },
+                    {
+                        path: "/user/:userName",
+                        element: <UserDescriptivePage />,
+                    },
                 ],
             },
             { path: "*", element: <Navigate to="/" replace /> },

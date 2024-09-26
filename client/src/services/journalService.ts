@@ -36,6 +36,18 @@ export function useJournal() {
         })
         return response.data.journalEntries
     }
+    const fetchFriendJournalEntries = async (
+        userName: string
+    ): Promise<Journal[]> => {
+        const idToken = await getIdTokenFromUser()
+        const response = await axios.get(
+            `${API_URL}/journal/entries/${userName}`,
+            {
+                headers: { Authorization: `Bearer ${idToken}` },
+            }
+        )
+        return response.data.journalEntries
+    }
 
     const addJournalEntry = async (entry: Omit<Journal, "_id">) => {
         const idToken = await getIdTokenFromUser()
@@ -54,11 +66,25 @@ export function useJournal() {
         return response.data.results
     }
 
+    const deleteJournalEntry = async (entryId: string) => {
+        const idToken = await getIdTokenFromUser()
+        const response = await axios.delete(`${API_URL}/journal/delete/${entryId}`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+        })
+        return response.data
+    }
+
     return {
         useGetJournalEntries: () =>
             useQuery({
                 queryKey: ["journalEntries"],
-                queryFn: fetchJournalEntries,
+                queryFn: () => fetchJournalEntries(),
+                enabled: !!user,
+            }),
+        useGetFriendJournalEntries: (userName: string) =>
+            useQuery({
+                queryKey: ["friendjournalEntries"],
+                queryFn: () => fetchFriendJournalEntries(userName),
                 enabled: !!user,
             }),
         useAddJournalEntry: () =>
@@ -73,5 +99,13 @@ export function useJournal() {
             useMutation({
                 mutationFn: searchMovie,
             }),
+            useDeleteJournalEntry: () =>
+                useMutation({
+                    mutationFn: deleteJournalEntry,
+                    onSuccess: () =>
+                        queryClient.invalidateQueries({
+                            queryKey: ["journalEntries"],
+                        }),
+                }),
     }
 }

@@ -15,8 +15,8 @@ interface CreateListData {
 }
 
 export const createList = async (userId: string, data: CreateListData) => {
-    console.log("in create list token is : ", auth.currentUser?.getIdToken())
-    console.log("in create list userId is : ", userId)
+    //console.log("in create list token is : ", auth.currentUser?.getIdToken())
+    //console.log("in create list userId is : ", userId)
     console.log("in create list data is : ", data)
     try {
         const idToken = await auth.currentUser?.getIdToken()
@@ -259,12 +259,15 @@ export const getUserData = async (uid?: string) => {
 export const getUserData_page = async (uid?: string) => {
     const idToken = await auth.currentUser?.getIdToken()
 
-    const response = await axios.get(`http://localhost:8080/api/user/${uid}/other`, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-        },
-    })
+    const response = await axios.get(
+        `http://localhost:8080/api/user/${uid}/other`,
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+        }
+    )
     console.log("response :: ", response.data)
     return response.data
 }

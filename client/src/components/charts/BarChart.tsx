@@ -38,7 +38,7 @@ export function BarChart1() {
     return (
         <Card className="mt-2 bg-gradient-to-tr from-gray-900 to-gray-700 border-0">
             <CardHeader>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-gray-300 text-center">
                     January - June 2024
                 </CardDescription>
             </CardHeader>

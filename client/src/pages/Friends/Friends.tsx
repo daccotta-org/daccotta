@@ -1,331 +1,3 @@
-// import React, { useState } from "react"
-// import { motion, AnimatePresence } from "framer-motion"
-// import { toast } from "react-toastify"
-// import { useSearchUsers } from "@/services/userService"
-// import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-// import { z } from "zod"
-// import { useAuth } from "@/hooks/useAuth"
-// import { useFriends } from "@/services/friendsService"
-// import { useNavigate } from "react-router-dom"
-// import {
-//     DropdownMenu,
-//     DropdownMenuContent,
-//     DropdownMenuItem,
-//     DropdownMenuLabel,
-//     DropdownMenuSeparator,
-//     DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
-// import { AxiosError } from "axios"
-
-// const searchSchema = z
-//     .string()
-//     .min(3, "Search term must be at least 3 characters long")
-
-// const FriendsSearch: React.FC = () => {
-//     const [activeTab, setActiveTab] = useState<"all" | "pending" | "add">("all")
-//     const [searchTerm, setSearchTerm] = useState("")
-//     const { user } = useAuth()
-//     const navigate = useNavigate()
-//     const handleUserClick = (username: string) => {
-//         console.log(username)
-//         navigate(`/user/${username}`)
-//     }
-
-//     const {
-//         useGetFriends,
-//         useSendFriendRequest,
-//         useRespondToFriendRequest,
-//         useRemoveFriend,
-//         useGetPendingRequests,
-//     } = useFriends()
-
-//     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
-//     const { data: pendingRequests, isLoading: isLoadingRequests } =
-//         useGetPendingRequests()
-//     const {
-//         data: searchResults,
-//         isLoading: isLoadingSearch,
-//         refetch: refetchSearch,
-//     } = useSearchUsers(searchTerm, user?.uid)
-
-//     const sendFriendRequestMutation = useSendFriendRequest()
-//     const respondToFriendRequestMutation = useRespondToFriendRequest()
-//     const removeFriendMutation = useRemoveFriend()
-
-//     const handleSearch = () => {
-//         try {
-//             searchSchema.parse(searchTerm)
-//             refetchSearch()
-//         } catch (error) {
-//             if (error instanceof z.ZodError) {
-//                 toast.error(error.errors[0].message)
-//             }
-//         }
-//     }
-
-//     const handleSendRequest = (friendUserName: string) => {
-//         sendFriendRequestMutation.mutate(friendUserName, {
-//             onSuccess: () => {
-//                 toast.success("Friend request sent successfully.")
-//             },
-//             onError: (error) => {
-//                 // toast.error("Failed to send friend request. Please try again.")
-
-//                 const axiosError = error as AxiosError
-//                 const message: any = axiosError.response?.data
-//                 if (message.message === "Friend request already sent") {
-//                     toast.warn("Friend request already sent.")
-//                     return
-//                 }
-
-//                 toast.error("Failed to send friend request. Please try again.")
-//             },
-//         })
-//     }
-
-//     const handleRespondToRequest = (
-//         requestId: string,
-//         action: "accept" | "reject"
-//     ) => {
-//         respondToFriendRequestMutation.mutate(
-//             { requestId, action },
-//             {
-//                 onSuccess: () => {
-//                     toast.success(`Friend request ${action}ed successfully.`)
-//                 },
-
-//                 onError: (error) => {
-//                     toast.error(
-//                         `Failed to ${action} friend request. Please try again.`
-//                     )
-//                 },
-//             }
-//         )
-//     }
-
-//     const handleRemoveFriend = (friendUserName: string) => {
-//         removeFriendMutation.mutate(friendUserName, {
-//             onSuccess: () => {
-//                 toast.success("Friend removed successfully.")
-//             },
-//             onError: (error) => {
-//                 toast.error("Failed to remove friend. Please try again.")
-//             },
-//         })
-//     }
-
-//     return (
-//         <div className="w-full   h-full mx-auto p-4">
-//             <DropdownMenu>
-//                 <DropdownMenuTrigger asChild>
-//                     <Button className="mb-4">
-//                         {activeTab === "all"
-//                             ? "All Friends"
-//                             : activeTab === "pending"
-//                               ? "Pending Requests"
-//                               : "Add Friend"}
-//                     </Button>
-//                 </DropdownMenuTrigger>
-//                 <DropdownMenuContent>
-//                     <DropdownMenuLabel>Options</DropdownMenuLabel>
-//                     <DropdownMenuSeparator />
-//                     <DropdownMenuItem onClick={() => setActiveTab("all")}>
-//                         All Friends
-//                     </DropdownMenuItem>
-//                     <DropdownMenuItem onClick={() => setActiveTab("pending")}>
-//                         Pending Requests
-//                     </DropdownMenuItem>
-//                     <DropdownMenuItem onClick={() => setActiveTab("add")}>
-//                         Add Friend
-//                     </DropdownMenuItem>
-//                 </DropdownMenuContent>
-//             </DropdownMenu>
-
-//             <AnimatePresence mode="wait">
-//                 {activeTab === "all" && (
-//                     <motion.div
-//                         key="all-friends"
-//                         initial={{ opacity: 0, y: 20 }}
-//                         animate={{ opacity: 1, y: 0 }}
-//                         exit={{ opacity: 0, y: -20 }}
-//                         transition={{ duration: 0.2 }}
-//                         className="text-white"
-//                     >
-//                         <h2 className="text-2xl  font-bold mb-4">
-//                             All Friends
-//                         </h2>
-//                         {isLoadingFriends ? (
-//                             <p>Loading friends...</p>
-//                         ) : (
-//                             <ul className="space-y-4 text-white">
-//                                 {friends.map((friend: string) => (
-//                                     <motion.li
-//                                         key={friend}
-//                                         className="flex items-center justify-between p-4 hover:bg-primary transition-colors  rounded-lg shadow"
-//                                         initial={{ opacity: 0, y: 20 }}
-//                                         animate={{ opacity: 1, y: 0 }}
-//                                         onClick={() => handleUserClick(friend)}
-//                                     >
-//                                         <div className="flex items-center">
-//                                             <Avatar>
-//                                                 <AvatarImage
-//                                                     src={`/api/avatar/${friend}`}
-//                                                     alt={friend}
-//                                                 />
-//                                                 <AvatarFallback>
-//                                                     {friend
-//                                                         .substring(0, 2)
-//                                                         .toUpperCase()}
-//                                                 </AvatarFallback>
-//                                             </Avatar>
-//                                             <span className="ml-4 font-semibold">
-//                                                 {friend}
-//                                             </span>
-//                                         </div>
-//                                         <Button
-//                                             onClick={() =>
-//                                                 handleRemoveFriend(friend)
-//                                             }
-//                                             variant="destructive"
-//                                         >
-//                                             Remove
-//                                         </Button>
-//                                     </motion.li>
-//                                 ))}
-//                             </ul>
-//                         )}
-//                     </motion.div>
-//                 )}
-
-//                 {activeTab === "pending" && (
-//                     <motion.div
-//                         key="pending-requests"
-//                         initial={{ opacity: 0, y: 20 }}
-//                         animate={{ opacity: 1, y: 0 }}
-//                         exit={{ opacity: 0, y: -20 }}
-//                         transition={{ duration: 0.2 }}
-//                         className="text-white"
-//                     >
-//                         <h2 className="text-2xl font-bold mb-4">
-//                             Pending Requests
-//                         </h2>
-//                         {isLoadingRequests ? (
-//                             <p>Loading requests...</p>
-//                         ) : (
-//                             <ul className="space-y-4">
-//                                 {pendingRequests.map((request: any) => (
-//                                     <motion.li
-//                                         key={request._id}
-//                                         className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow"
-//                                         initial={{ opacity: 0, y: 20 }}
-//                                         animate={{ opacity: 1, y: 0 }}
-//                                         onClick={() => handleUserClick(request._id)}
-//                                     >
-//                                         <span className="font-semibold">
-//                                             {request.from}
-//                                         </span>
-//                                         <div className="space-x-2">
-//                                             <Button
-//                                                 onClick={() =>
-//                                                     handleRespondToRequest(
-//                                                         request._id,
-//                                                         "accept"
-//                                                     )
-//                                                 }
-//                                                 variant="default"
-//                                             >
-//                                                 Accept
-//                                             </Button>
-//                                             <Button
-//                                                 onClick={() =>
-//                                                     handleRespondToRequest(
-//                                                         request._id,
-//                                                         "reject"
-//                                                     )
-//                                                 }
-//                                                 variant="outline"
-//                                             >
-//                                                 Reject
-//                                             </Button>
-//                                         </div>
-//                                     </motion.li>
-//                                 ))}
-//                             </ul>
-//                         )}
-//                     </motion.div>
-//                 )}
-
-// {activeTab === "add" && (
-//                 <motion.div
-//                     key="add-friend"
-//                     initial={{ opacity: 0, y: 20 }}
-//                     animate={{ opacity: 1, y: 0 }}
-//                     exit={{ opacity: 0, y: -20 }}
-//                     transition={{ duration: 0.2 }}
-//                     className="text-white"
-//                 >
-//                     <h2 className="text-2xl font-bold mb-4">Add Friend</h2>
-//                     <div className="flex space-x-2 mb-4">
-//                         <Input
-//                             type="text"
-//                             placeholder="Search users..."
-//                             value={searchTerm}
-//                             onChange={(e) => setSearchTerm(e.target.value)}
-//                             className="text-white"
-//                         />
-//                         <Button onClick={handleSearch}>Search</Button>
-//                     </div>
-//                     {isLoadingSearch ? (
-//                         <p>Searching...</p>
-//                     ) : (
-//                         <ul className="space-y-4">
-//                             {searchResults?.map((user: any) => (
-//                                 <motion.li
-//                                     key={user.uid}
-//                                     className="flex items-center justify-between p-4 hover:bg-primary transition-colors rounded-lg shadow cursor-pointer"
-//                                     initial={{ opacity: 0, y: 20 }}
-//                                     animate={{ opacity: 1, y: 0 }}
-//                                     onClick={() => handleUserClick(user.userName)}
-//                                 >
-//                                     <div className="flex items-center">
-//                                         <Avatar>
-//                                             <AvatarImage
-//                                                 src={`/api/avatar/${user.userName}`}
-//                                                 alt={user.userName}
-//                                             />
-//                                             <AvatarFallback>
-//                                                 {user.userName
-//                                                     .substring(0, 2)
-//                                                     .toUpperCase()}
-//                                             </AvatarFallback>
-//                                         </Avatar>
-//                                         <span className="ml-4 font-semibold">
-//                                             {user.userName}
-//                                         </span>
-//                                     </div>
-//                                     <Button
-//                                         onClick={(e) => {
-//                                             e.stopPropagation()
-//                                             handleSendRequest(user.userName)
-//                                         }}
-//                                     >
-//                                         Send Request
-//                                     </Button>
-//                                 </motion.li>
-//                             ))}
-//                         </ul>
-//                     )}
-//                 </motion.div>
-//             )}
-//             </AnimatePresence>
-//         </div>
-//     )
-// }
-
-// export default FriendsSearch
-
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
@@ -338,7 +10,8 @@ import { useAuth } from "@/hooks/useAuth"
 import { useFriends } from "@/services/friendsService"
 import { useNavigate } from "react-router-dom"
 import { AxiosError } from "axios"
-import { MessageCircle, MoreVertical, Users } from "lucide-react"
+import { Users, Trash, AlertTriangle } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 const searchSchema = z
     .string()
@@ -347,6 +20,8 @@ const searchSchema = z
 const FriendsSearch: React.FC = () => {
     const [activeTab, setActiveTab] = useState<"all" | "pending" | "add">("all")
     const [searchTerm, setSearchTerm] = useState("")
+    const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false)
+    const [friendToRemove, setFriendToRemove] = useState("")
     const { user } = useAuth()
     const navigate = useNavigate()
 
@@ -359,8 +34,7 @@ const FriendsSearch: React.FC = () => {
     } = useFriends()
 
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
-    const { data: pendingRequests, isLoading: isLoadingRequests } =
-        useGetPendingRequests()
+    const { data: pendingRequests } = useGetPendingRequests()
     const {
         data: searchResults,
         isLoading: isLoadingSearch,
@@ -388,8 +62,6 @@ const FriendsSearch: React.FC = () => {
                 toast.success("Friend request sent successfully.")
             },
             onError: (error) => {
-                // toast.error("Failed to send friend request. Please try again.")
-
                 const axiosError = error as AxiosError
                 const message: any = axiosError.response?.data
                 if (message.message === "Friend request already sent") {
@@ -412,8 +84,7 @@ const FriendsSearch: React.FC = () => {
                 onSuccess: () => {
                     toast.success(`Friend request ${action}ed successfully.`)
                 },
-
-                onError: (error) => {
+                onError: () => {
                     toast.error(
                         `Failed to ${action} friend request. Please try again.`
                     )
@@ -422,28 +93,26 @@ const FriendsSearch: React.FC = () => {
         )
     }
 
-    const handleRemoveFriend = (friendUserName: string) => {
-        removeFriendMutation.mutate(friendUserName, {
+    const handleRemoveFriend = () => {
+        removeFriendMutation.mutate(friendToRemove, {
             onSuccess: () => {
                 toast.success("Friend removed successfully.")
+                setIsRemoveDialogOpen(false)
             },
-            onError: (error) => {
+            onError: () => {
                 toast.error("Failed to remove friend. Please try again.")
             },
         })
     }
 
     const handleUserClick = (username: string) => {
-        console.log(username)
         navigate(`/user/${username}`)
     }
 
-    // ... (keep all the handler functions as they were)
-
     return (
-        <div className="min-h-screen  text-gray-100 p-4 w-full">
+        <div className="min-h-screen pt-[5rem] md:pt[5rem] lg:pt-[5rem] max-h-screen overflow-auto scrollbar-hide text-gray-100 lg:p-4 px-[4rem] w-full">
             <div className="max-w-4xl mx-auto">
-                <header className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <header className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-6">
                     <div className="flex items-center gap-2">
                         <Users className="h-6 w-6" />
                         <h1 className="text-2xl font-bold">Friends</h1>
@@ -471,15 +140,6 @@ const FriendsSearch: React.FC = () => {
                         </Button>
                     </nav>
                 </header>
-                {/* <div className="mb-6">
-                    <Input
-                        className="w-full bg-gray-800 border-gray-700 focus:border-gray-600"
-                        placeholder="Search"
-                        type="search"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div> */}
                 <AnimatePresence mode="wait">
                     {activeTab === "all" && (
                         <motion.section
@@ -496,17 +156,19 @@ const FriendsSearch: React.FC = () => {
                                 <p>Loading friends...</p>
                             ) : (
                                 <ul className="space-y-4">
-                                    {friends.map((friend: string) => (
+                                    {friends?.map((friend: string) => (
                                         <motion.li
                                             key={friend}
-                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
+                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            onClick={() =>
-                                                handleUserClick(friend)
-                                            }
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div
+                                                className="flex items-center gap-3 button cursor-pointer"
+                                                onClick={() =>
+                                                    handleUserClick(friend)
+                                                }
+                                            >
                                                 <Avatar>
                                                     <AvatarImage
                                                         src={`/api/avatar/${friend}`}
@@ -530,20 +192,12 @@ const FriendsSearch: React.FC = () => {
                                             <div className="flex items-center gap-2">
                                                 <Button
                                                     size="icon"
-                                                    variant="ghost"
+                                                    onClick={() => {
+                                                        setFriendToRemove(friend)
+                                                        setIsRemoveDialogOpen(true)
+                                                    }}
                                                 >
-                                                    <MessageCircle className="h-5 w-5" />
-                                                </Button>
-                                                <Button
-                                                    size="icon"
-                                                    variant="ghost"
-                                                    onClick={() =>
-                                                        handleRemoveFriend(
-                                                            friend
-                                                        )
-                                                    }
-                                                >
-                                                    <MoreVertical className="h-5 w-5" />
+                                                    <Trash className="h-5 w-5" />
                                                 </Button>
                                             </div>
                                         </motion.li>
@@ -562,22 +216,18 @@ const FriendsSearch: React.FC = () => {
                             transition={{ duration: 0.2 }}
                         >
                             <h2 className="text-lg font-semibold mb-4">
-                                PENDING REQUESTS —{" "}
-                                {pendingRequests?.length || 0}
+                                PENDING REQUESTS — {pendingRequests?.length || 0}
                             </h2>
-                            {isLoadingRequests ? (
+                            {!pendingRequests ? (
                                 <p>Loading requests...</p>
                             ) : (
                                 <ul className="space-y-4">
                                     {pendingRequests.map((request: any) => (
                                         <motion.li
                                             key={request._id}
-                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
+                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            onClick={() =>
-                                                handleUserClick(request.from)
-                                            }
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Avatar>
@@ -663,14 +313,18 @@ const FriendsSearch: React.FC = () => {
                                     {searchResults?.map((user: any) => (
                                         <motion.li
                                             key={user.uid}
-                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
+                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            onClick={() =>
-                                                handleUserClick(user.userName)
-                                            }
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div
+                                                className="flex items-center gap-3"
+                                                onClick={() =>
+                                                    handleUserClick(
+                                                        user.userName
+                                                    )
+                                                }
+                                            >
                                                 <Avatar>
                                                     <AvatarImage
                                                         src={`/api/avatar/${user.userName}`}
@@ -709,6 +363,28 @@ const FriendsSearch: React.FC = () => {
                     )}
                 </AnimatePresence>
             </div>
+
+            <Dialog open={isRemoveDialogOpen} onOpenChange={setIsRemoveDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-white" />
+                            Remove Friend
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <p>Are you sure you want to remove this friend? This action cannot be undone.</p>
+                    </div>
+                    <DialogFooter>
+                        <Button className="bg-white text-black" onClick={() => setIsRemoveDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button  onClick={handleRemoveFriend}>
+                            Remove Friend
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

@@ -120,24 +120,24 @@ const UserLists: React.FC = () => {
                                     </h2>
                                     <div className="flex items-center space-x-4 text-sm text-gray-400 mb-2">
                                         <span>{list.movies.length} films</span>
-                                        <span className="flex items-center">
+                                        {/* <span className="flex items-center">
                                             <Heart className="w-4 h-4 mr-1" />{" "}
                                             {list.likes || 0}
-                                        </span>
-                                        <span className="flex items-center">
+                                        </span> */}
+                                        {/* <span className="flex items-center">
                                             <MessageSquare className="w-4 h-4 mr-1" />{" "}
                                             {list.comments || 0}
-                                        </span>
+                                        </span> */}
                                     </div>
-                                    <div className="mb-4">
+                                    {/* <div className="mb-4">
                                         <span className="font-bold">
                                             Average Rating:{" "}
                                             {list.averageRating
                                                 ? list.averageRating.toFixed(1)
                                                 : "N/A"}
                                         </span>
-                                    </div>
-                                    <p className="text-gray-400">
+                                    </div> */}
+                                    <p className="text-white">
                                         {`Description: ${list.description}` ||
                                             "No description available."}
                                     </p>

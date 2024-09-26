@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Plus, Star } from "lucide-react"
@@ -11,10 +9,9 @@ import { useAuth } from "@/hooks/useAuth"
 import MovieSearch from "./MovieSearch"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "react-toastify"
-import { motion } from "framer-motion"
 import MovieCard from "@/components/custom/MovieCard/MovieCard"
 
-interface List {
+export interface List {
     list_id: string
     name: string
     movies: SimpleMovie[]
@@ -82,14 +79,14 @@ export default function MovieList() {
                             <Button
                                 size="icon"
                                 variant="outline"
-                                className="rounded-full w-10 h-10"
+                                className="rounded-full w-10 h-10 hover:bg-slate-500"
                             >
                                 <Plus className="h-6 w-6" />
                                 <span className="sr-only">Add movie</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
-                            <h2 className="text-lg font-semibold mb-4">
+                            <h2 className="text-lg font-semibold mb-4 text-center md:text-start">
                                 Add a Movie to Your List
                             </h2>
                             <MovieSearch onSelectMovie={handleAddMovie} />
@@ -97,67 +94,21 @@ export default function MovieList() {
                     </Dialog>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {movies.map((movie, index) => (
-                        // <div
-                        //     key={movie.id}
-                        //     className="relative w-full h-full"
-                        //     onMouseEnter={() => setHoveredMovie(movie)}
-                        //     onMouseLeave={() => setHoveredMovie(null)}
-                        // >
-                        //     <img
-                        //         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                        //         alt={`${movie.title} poster`}
-                        //         className="w-full h-full rounded-lg shadow-lg"
-                        //     />
-                        //     {hoveredMovie === movie && (
-                        //         // <div className="absolute inset-0 bg-black flex items-center justify-center rounded-lg bg-opacity-75 transition-opacity duration-300">
-                        //         //     <div className="text-center p-2">
-                        //         //         <h3 className="text-lg font-bold">{movie.title}</h3>
-                        //         //         <p className="text-sm text-gray-300">{movie.release_date?.split("-")[0]}</p>
-                        //         //         <div className="flex items-center justify-center mt-2">
-                        //         //             {[...Array(5)].map((_, i) => (
-                        //         //                 <Star
-                        //         //                     key={i}
-                        //         //                     className={`w-5 h-5 ${
-                        //         //                         i < Math.floor(10 / 2)
-                        //         //                             ? "text-yellow-400 fill-current"
-                        //         //                             : "text-gray-400"
-                        //         //                     }`}
-                        //         //                 />
-                        //         //             ))}
-                        //         //         </div>
-                        //         //     </div>
-                        //         // </div>
-                        //         <motion.div
-                        //             className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
-                        //             initial={{ opacity: 0 }}
-                        //             whileHover={{ opacity: 1 }}
-                        //         >
-                        //             <div className="bottom-0">
-                        //                 <h3 className="text-lg font-bold">
-                        //                     {movie.title}
-                        //                 </h3>
-                        //                 <p className="text-sm text-gray-300">
-                        //                     {movie.release_date?.split("-")[0]}
-                        //                 </p>
-                        //             </div>
-                        //         </motion.div>
-                        //     )}
-                        // </div>
+                    {movies.map((movie, index) => (                    
                         <MovieCard
-                         movie_id={movie.movie_id}
+                            movie_id={movie.movie_id}
                             title={movie.title}
                             poster_path={movie.poster_path}
                         />
                     ))}
-                    <Card className="overflow-hidden border-dashed w-[200px]">
+                    <Card className="relative lg:w-48 lg:h-64 w-28 h-36 rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition duration-300 ease-in-out hover:scale-105">
                         <CardContent className="p-0 flex items-center justify-center h-[256px] ">
                             <div
                                 className="text-center p-4"
                                 onClick={() => setIsSearchOpen(true)}
                             >
                                 <Plus className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm text-muted-foreground ">
                                     Add Movie
                                 </p>
                             </div>
