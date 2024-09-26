@@ -22,9 +22,14 @@ const app = express()
 
 connectDatabase()
 console.log("console log ho bhi rha h ya nhi ?")
-
 app.use(cors())
 app.use(express.json())
+app.use(express.static(path.join(__dirname, "..", "client", "dist")))
+
+// Adjust the catch-all route
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"))
+})
 
 try {
     console.log("hello")
@@ -111,7 +116,7 @@ app.use("/api/list", listRoutes)
 app.use("/api/friends", friendRoutes)
 app.use("/api/journal", journalRoutes)
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api/hello", (req: Request, res: Response) => {
     res.send("Hello World!")
 })
 
