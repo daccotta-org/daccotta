@@ -50,19 +50,8 @@ app.get("*", (req, res) => {
 // }
 let serviceAccount
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "development") {
     // Path for the secret file in Render
-    const secretPath = "/etc/secrets/firebases.json"
-
-    try {
-        serviceAccount = JSON.parse(fs.readFileSync(secretPath, "utf8"))
-        console.log("Firebase configuration loaded from Render secret file")
-    } catch (error) {
-        console.error("Error reading Render secret file:", error)
-        process.exit(1) // Exit the process if we can't read the configuration
-    }
-} else {
-    // Local development: use the file from the project directory
     try {
         serviceAccount = JSON.parse(
             fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
@@ -71,6 +60,17 @@ if (process.env.NODE_ENV === "production") {
     } catch (error) {
         console.error("Error reading local firebases.json:", error)
         process.exit(1)
+    }
+} else {
+    // Local development: use the file from the project directory
+    const secretPath = "/etc/secrets/firebases.json"
+
+    try {
+        serviceAccount = JSON.parse(fs.readFileSync(secretPath, "utf8"))
+        console.log("Firebase configuration loaded from Render secret file")
+    } catch (error) {
+        console.error("Error reading Render secret file:", error)
+        process.exit(1) // Exit the process if we can't read the configuration
     }
 }
 
