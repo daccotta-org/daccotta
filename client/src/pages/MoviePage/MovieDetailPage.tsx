@@ -5,9 +5,9 @@ import { useAuth } from "@/hooks/useAuth"
 import { useMovieProviders } from "@/services/movieService"
 import { addMovieToList, createList, getUserData } from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
-import { Heart, Star,Bookmark } from "lucide-react"
+import { Heart, Star, Bookmark } from "lucide-react"
 import React, { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import { List } from "../List/MovieList"
 
@@ -50,7 +50,7 @@ interface MovieDetails {
 
 const MovieDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>()
-    const navigate = useNavigate()
+
     const [movie, setMovie] = useState<MovieDetails | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isFavourite, setIsFavourite] = useState(false)
@@ -141,8 +141,8 @@ const MovieDetailPage: React.FC = () => {
     if (isLoading || isProvidersLoading) {
         return (
             <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-            <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-        </div>
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
         )
     }
 
@@ -157,7 +157,7 @@ const MovieDetailPage: React.FC = () => {
     const director =
         movie.credits?.crew.find((person) => person.job === "Director")?.name ||
         "Unknown"
-     const firstRentProvider = providers?.rent?.[0]
+    const firstRentProvider = providers?.rent?.[0]
     const firstBuyProvider = providers?.buy?.[0]
 
     return (
@@ -174,11 +174,11 @@ const MovieDetailPage: React.FC = () => {
                     <div className="md:w-2/3 justify-center flex flex-col">
                         <h2 className="text-4xl font-bold mb-2">
                             {movie.title} (
-                            {new Date(movie.release_date).getFullYear()})                            
+                            {new Date(movie.release_date).getFullYear()})
                         </h2>
-                        
+
                         <p className="text-gray-400 mb-4">{movie.tagline}</p>
-                        
+
                         <div className="flex space-x-2 mb-4">
                             {movie.genres.map((genre) => (
                                 <span
@@ -200,7 +200,7 @@ const MovieDetailPage: React.FC = () => {
                                 <Play className="w-4 h-4 mr-2" />
                                 Watch Trailer
                             </button> */}
-                            <div className="flex lg:flex-row flex-row gap-4 items-center "  >
+                            <div className="flex lg:flex-row flex-row gap-4 items-center ">
                                 <button
                                     className={`flex items-center shadow-2xl  text-black px-2 py-2 rounded-xl tooltip tooltip-bottom ${
                                         isFavourite
@@ -218,13 +218,15 @@ const MovieDetailPage: React.FC = () => {
                                         : "Add to Favourites"} */}
                                 </button>
                                 <button
-                                    className={`flex items-center shadow-2xl  bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom` }
+                                    className={`flex items-center shadow-2xl  bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom`}
                                     data-tip="Favourites"
-                                    onClick={()=>console.log("Bookmark Clicked")}
+                                    onClick={() =>
+                                        console.log("Bookmark Clicked")
+                                    }
                                 >
                                     <Bookmark
                                         className={`w-6 h-6 fill-current`}
-                                    />                                    
+                                    />
                                 </button>
                                 {firstRentProvider && (
                                     <button

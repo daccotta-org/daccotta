@@ -1,9 +1,6 @@
-
-
-import React from "react"
 import { FC } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Home, Search, Users, Settings, NotebookPen } from "lucide-react"
+import { Home, Search, Users, NotebookPen } from "lucide-react"
 import logo from "../../../assets/logo_light.svg"
 
 const Navbar: FC = () => {

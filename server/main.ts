@@ -15,30 +15,76 @@ import * as fs from "fs"
 import * as path from "path"
 import { friendRoutes } from "./routes/friendRoutes"
 import { journalRoutes } from "./routes/journalRoutes"
-
+import { fileURLToPath } from "url"
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 dotenv.config()
 
 const app = express()
 
 connectDatabase()
 console.log("console log ho bhi rha h ya nhi ?")
-
 app.use(cors())
 app.use(express.json())
+app.use(express.static(path.join(__dirname, "../client/dist")))
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"))
+})
+
+// try {
+//     console.log("hello")
+
+//     const serviceAccount = JSON.parse(
+//         fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
+//     )
+
+//     admin.initializeApp({
+//         credential: admin.credential.cert(serviceAccount),
+//     })
+//     console.log("Firebase Admin SDK initialized successfully")
+// } catch (error) {
+//     console.error("Error initializing Firebase Admin SDK:", error)
+// }
+let serviceAccount
+
+if (process.env.NODE_ENV === "development") {
+    // Path for the secret file in Render
+    try {
+        serviceAccount = JSON.parse(
+            fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
+        )
+        console.log("Firebase configuration loaded from local file")
+    } catch (error) {
+        console.error("Error reading local firebases.json:", error)
+        process.exit(1)
+    }
+} else {
+    // Local development: use the file from the project directory
+    const secretPath = "/etc/secrets/firebases.json"
+
+    try {
+        serviceAccount = JSON.parse(fs.readFileSync(secretPath, "utf8"))
+        console.log("Firebase configuration loaded from Render secret file")
+    } catch (error) {
+        console.error("Error reading Render secret file:", error)
+        process.exit(1) // Exit the process if we can't read the configuration
+    }
+}
 
 try {
-    console.log("hello")
-
-    const serviceAccount = JSON.parse(
-        fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
-    )
-
+    console.log("Initializing Firebase Admin SDK")
     admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+        credential: admin.credential.cert(
+            serviceAccount as admin.ServiceAccount
+        ),
     })
     console.log("Firebase Admin SDK initialized successfully")
 } catch (error) {
     console.error("Error initializing Firebase Admin SDK:", error)
+    process.exit(1)
 }
 
 interface CreateUserRequest {
@@ -63,12 +109,12 @@ app.post("/api/users", async (req: Request, res: Response) => {
             return res.status(401).json({ error: "No token provided" })
         }
 
-        console.log("token ko decode kr rha h ")
+        console.log("token decode")
         const decodedToken = await admin.auth().verifyIdToken(idToken)
 
         console.log("decoded token ", decodedToken)
 
-        console.log("user tho h hi glt")
+        console.log("user ")
         if (decodedToken.uid !== uid) {
             console.log("Unauthorized")
             return res.status(403).json({ error: "Unauthorized" })
@@ -111,7 +157,7 @@ app.use("/api/list", listRoutes)
 app.use("/api/friends", friendRoutes)
 app.use("/api/journal", journalRoutes)
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api/hello", (req: Request, res: Response) => {
     res.send("Hello World!")
 })
 

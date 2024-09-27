@@ -22,7 +22,7 @@ export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 })
-
+console.log("Hello", import.meta.env.VITE_PROJECT_ID)
 export type SignInFormData = z.infer<typeof signInSchema>
 
 const SignInPage: React.FC = () => {
@@ -163,7 +163,10 @@ const SignInPage: React.FC = () => {
 
                             <p className="lg:mt-4 mt-12 text-center">
                                 New User?{" "}
-                                <Link to="/signup" className="link link-primary">
+                                <Link
+                                    to="/signup"
+                                    className="link link-primary"
+                                >
                                     Sign Up
                                 </Link>
                             </p>

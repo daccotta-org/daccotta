@@ -98,48 +98,6 @@ const MovieList: React.FC<MovieListProps> = ({
                 }
             }
         }
-        const fetchFavoriteGenre1 = async () => {
-            if (journalEntries && journalEntries.length > 0) {
-                const topGenres = calculateTopGenres(journalEntries)
-                const getGenreIdByName = (genreName: string): number | null => {
-                    const genreEntry = Object.entries(genreMap).find(
-                        ([, name]) =>
-                            name.toLowerCase() === genreName.toLowerCase()
-                    )
-                    return genreEntry ? parseInt(genreEntry[0]) : null
-                }
-
-                const topGenre: number | null = getGenreIdByName(
-                    topGenres[0]?.genre || ""
-                )
-                setFavGenre(topGenre)
-                console.log("topGenres", topGenres)
-            } else if (user?.uid) {
-                try {
-                    const userData: UserData = await getUserData(user.uid)
-                    const topMovies =
-                        userData.lists.find((l) => l.name === "Top 5 Movies")
-                            ?.movies || []
-                    if (topMovies.length > 0) {
-                        const genres = topMovies
-                            .flatMap((movie) => movie.genre_ids)
-                            .filter(Boolean)
-                        console.log("genres", genres)
-                        const mostCommonGenre = genres
-                            .sort(
-                                (a, b) =>
-                                    genres.filter((v) => v === a).length -
-                                    genres.filter((v) => v === b).length
-                            )
-                            .pop()
-                        setFavGenre(mostCommonGenre ? mostCommonGenre : null)
-                        console.log("mostCommonGenre", mostCommonGenre)
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data:", error)
-                }
-            }
-        }
 
         fetchFavoriteGenre()
     }, [journalEntries, user])
