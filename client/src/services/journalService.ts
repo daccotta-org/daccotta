@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { getIdToken } from "firebase/auth"
 import { SimpleMovie } from "@/Types/Movie"
 
-const API_URL = "http://localhost:8080/api"
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api`
 
 interface Journal {
     _id: string
