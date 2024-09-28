@@ -34,7 +34,7 @@ const FriendsSearch: React.FC = () => {
     } = useFriends()
 
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
-    const { data: pendingRequests } = useGetPendingRequests()
+    const { data: pendingRequests, isLoading: isLoadingRequests } = useGetPendingRequests()
     const {
         data: searchResults,
         isLoading: isLoadingSearch,
@@ -207,7 +207,7 @@ const FriendsSearch: React.FC = () => {
                         </motion.section>
                     )}
 
-                    {activeTab === "pending" && (
+{activeTab === "pending" && (
                         <motion.section
                             key="pending-requests"
                             initial={{ opacity: 0, y: 20 }}
@@ -216,9 +216,10 @@ const FriendsSearch: React.FC = () => {
                             transition={{ duration: 0.2 }}
                         >
                             <h2 className="text-lg font-semibold mb-4">
-                                PENDING REQUESTS — {pendingRequests?.length || 0}
+                                PENDING REQUESTS —{" "}
+                                {pendingRequests?.length || 0}
                             </h2>
-                            {!pendingRequests ? (
+                            {isLoadingRequests ? (
                                 <p>Loading requests...</p>
                             ) : (
                                 <ul className="space-y-4">
