@@ -11,7 +11,13 @@ import { useFriends } from "@/services/friendsService"
 import { useNavigate } from "react-router-dom"
 import { AxiosError } from "axios"
 import { Users, Trash, AlertTriangle } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog"
 
 const searchSchema = z
     .string()
@@ -34,7 +40,8 @@ const FriendsSearch: React.FC = () => {
     } = useFriends()
 
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
-    const { data: pendingRequests, isLoading: isLoadingRequests } = useGetPendingRequests()
+    const { data: pendingRequests, isLoading: isLoadingRequests } =
+        useGetPendingRequests()
     const {
         data: searchResults,
         isLoading: isLoadingSearch,
@@ -120,7 +127,7 @@ const FriendsSearch: React.FC = () => {
                     <nav className="flex flex-wrap items-center gap-2">
                         <Button
                             variant="ghost"
-                            className={`text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === "all" ? "bg-gray-800" : ""}`}
+                            className={`text-gray-300 rounded-md hover:text-white hover:bg-gray-800 ${activeTab === "all" ? "bg-gray-800" : ""}`}
                             onClick={() => setActiveTab("all")}
                         >
                             All
@@ -193,8 +200,12 @@ const FriendsSearch: React.FC = () => {
                                                 <Button
                                                     size="icon"
                                                     onClick={() => {
-                                                        setFriendToRemove(friend)
-                                                        setIsRemoveDialogOpen(true)
+                                                        setFriendToRemove(
+                                                            friend
+                                                        )
+                                                        setIsRemoveDialogOpen(
+                                                            true
+                                                        )
                                                     }}
                                                 >
                                                     <Trash className="h-5 w-5" />
@@ -207,7 +218,7 @@ const FriendsSearch: React.FC = () => {
                         </motion.section>
                     )}
 
-{activeTab === "pending" && (
+                    {activeTab === "pending" && (
                         <motion.section
                             key="pending-requests"
                             initial={{ opacity: 0, y: 20 }}
@@ -365,7 +376,10 @@ const FriendsSearch: React.FC = () => {
                 </AnimatePresence>
             </div>
 
-            <Dialog open={isRemoveDialogOpen} onOpenChange={setIsRemoveDialogOpen}>
+            <Dialog
+                open={isRemoveDialogOpen}
+                onOpenChange={setIsRemoveDialogOpen}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
@@ -374,13 +388,19 @@ const FriendsSearch: React.FC = () => {
                         </DialogTitle>
                     </DialogHeader>
                     <div className="py-4">
-                        <p>Are you sure you want to remove this friend? This action cannot be undone.</p>
+                        <p>
+                            Are you sure you want to remove this friend? This
+                            action cannot be undone.
+                        </p>
                     </div>
                     <DialogFooter>
-                        <Button className="bg-white text-black" onClick={() => setIsRemoveDialogOpen(false)}>
+                        <Button
+                            className="bg-white text-black"
+                            onClick={() => setIsRemoveDialogOpen(false)}
+                        >
                             Cancel
                         </Button>
-                        <Button  onClick={handleRemoveFriend}>
+                        <Button onClick={handleRemoveFriend}>
                             Remove Friend
                         </Button>
                     </DialogFooter>
