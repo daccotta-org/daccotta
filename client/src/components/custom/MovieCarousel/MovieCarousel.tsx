@@ -83,24 +83,24 @@
 
 // export default MovieCarousel
 
-import { useState, useEffect } from "react";
-import CarouselCard from "./CarouselCard";
-import { useFriendTopMovies } from "@/services/friendsService";
-import { useMovieList } from "@/services/movieService";
-import { SimpleMovie } from "@/Types/Movie";
+import { useState, useEffect } from "react"
+import CarouselCard from "./CarouselCard"
+import { useFriendTopMovies } from "@/services/friendsService"
+import { useMovieList } from "@/services/movieService"
+import { SimpleMovie } from "@/Types/Movie"
 
 const MovieCarousel = () => {
     const {
         data: friendMoviesData,
         isLoading: isFriendMoviesLoading,
         error: friendMoviesError,
-    } = useFriendTopMovies();
+    } = useFriendTopMovies()
     const {
         data: topMovies,
         isLoading: isTopMoviesLoading,
         error: topMoviesError,
-    } = useMovieList("popular", 1);
-    const [carouselMovies, setCarouselMovies] = useState<SimpleMovie[]>([]);
+    } = useMovieList("popular", 1)
+    const [carouselMovies, setCarouselMovies] = useState<SimpleMovie[]>([])
 
     useEffect(() => {
         if (friendMoviesData && friendMoviesData.length > 0) {
@@ -109,36 +109,37 @@ const MovieCarousel = () => {
                     ...movie,
                     friend: friendData.friend,
                 }))
-            );
-            
+            )
+
             if (movies.length > 0) {
-                setCarouselMovies(movies);
+                setCarouselMovies(movies)
             } else if (topMovies) {
-                setCarouselMovies(topMovies.map((movie) => ({ ...movie, friend: "" })));
+                setCarouselMovies(
+                    topMovies.map((movie) => ({ ...movie, friend: "" }))
+                )
             }
         } else if (topMovies) {
-            setCarouselMovies(topMovies.map((movie) => ({ ...movie, friend: "" })));
+            setCarouselMovies(
+                topMovies.map((movie) => ({ ...movie, friend: "" }))
+            )
         }
-    }, [friendMoviesData, topMovies]);
+    }, [friendMoviesData, topMovies])
 
     if (isFriendMoviesLoading || isTopMoviesLoading) {
-        return <div>Loading...</div>;
+        return <div>Loading...</div>
     }
 
     if (friendMoviesError || topMoviesError) {
-        return <div>Error loading movies</div>;
+        return <div>Error loading movies</div>
     }
 
     return (
         <div className="carousel w-full">
             {carouselMovies.map((movie) => (
-                <CarouselCard
-                    key={movie.movie_id}
-                    {...movie}
-                />
+                <CarouselCard key={movie.movie_id} {...movie} />
             ))}
         </div>
-    );
-};
+    )
+}
 
-export default MovieCarousel;
+export default MovieCarousel
