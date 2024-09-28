@@ -16,6 +16,7 @@ import * as path from "path"
 import { friendRoutes } from "./routes/friendRoutes"
 import { journalRoutes } from "./routes/journalRoutes"
 import { fileURLToPath } from "url"
+import { keepAlive } from "./utils/keepAlive"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenv.config()
@@ -157,6 +158,10 @@ app.get("/api/hello", (req: Request, res: Response) => {
     res.send("Hello World!")
 })
 
+app.get("/ping", (req, res) => {
+    res.send("Server is alive")
+})
 app.listen(PORT, () => {
     console.log(`app listening on port ${PORT}! ⁠`)
+    keepAlive()
 })
