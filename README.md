@@ -7,6 +7,7 @@ Hey movie lovers! Welcome to **Daccotta**, a web app designed to simplify your m
 **Love it?** 👉 _Don't forget to star this repo!_ 🌟
 
 ---
+
 ![daccotta](https://github.com/user-attachments/assets/120ce0eb-7009-448c-a5da-f4b7432db6e0)
 
 ## 🎬 What is Daccotta?
@@ -79,83 +80,85 @@ npm install -g bun
 
 ### 🗂️ Setting Up Daccotta (Client & Server)
 
-1. Clone the repository to your local machine:
+refer to .env.example files for env variables
+
+1.  Clone the repository to your local machine:
     ```bash
     git clone https://github.com/daccotta-org/daccotta.git
     ```
-2. Navigate to the project directory:
+2.  Navigate to the project directory:
 
     ```bash
     cd daccotta
     ```
 
-3. Install dependencies for both the client and server:
+3.  Install dependencies for both the client and server:
 
-    - Go to the **client** folder:
+    -   Go to the **client** folder:
         ```bash
         cd client
         bun i
         ```
-    - Now go to the **server** folder:
+    -   Now go to the **server** folder:
         ```bash
         cd ../server
         bun i
         ```
 
-4. **Setting Up MongoDB Atlas**:
+4.  **Setting Up MongoDB Atlas**:
 
-    - Visit the [MongoDB Atlas website](https://www.mongodb.com/cloud/atlas) and sign up for an account.
-    - After logging in, create a new project, then click on **Build a Cluster** to set up a free-tier cluster.
-    - Once your cluster is ready, click **Connect**, then choose **Connect your application**.
-    - Copy the connection string provided. It will look something like this:
+    -   Visit the [MongoDB Atlas website](https://www.mongodb.com/cloud/atlas) and sign up for an account.
+    -   After logging in, create a new project, then click on **Build a Cluster** to set up a free-tier cluster.
+    -   Once your cluster is ready, click **Connect**, then choose **Connect your application**.
+    -   Copy the connection string provided. It will look something like this:
         ```bash
         mongodb+srv://<username>:<password>@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
         ```
-    - Replace `<username>`, `<password>`, and `myFirstDatabase` with your actual MongoDB Atlas username, password, and the database name you wish to use.
-    - Set the `MONGO_URI` in your project's `.env` file with the copied connection string:
+    -   Replace `<username>`, `<password>`, and `myFirstDatabase` with your actual MongoDB Atlas username, password, and the database name you wish to use.
+    -   Set the `MONGO_URL` in your project's `.env` file with the copied connection string:
         ```bash
         MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/daccotta?retryWrites=true&w=majority
         ```
 
-5. **Setting Up Firebase**:
+5.  **Setting Up Firebase**:
 
-    - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
-    - After setting up, download the `firebaseConfig` and add it to your project.
-    - Set the Firebase credentials in your `firebaseConfigEx.ts` file and rename it `firebaseConfig.ts`:
+        - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
+        - After setting up, download the `firebaseConfig` and add it to your project.
+        - Set the Firebase credentials in your `firebaseConfigEx.ts` file and rename it `firebaseConfig.ts`:
 
     ```javascript
-    const firebaseConfig = {
-        apiKey: "",
-        authDomain: "",
-        projectId: "",
-        storageBucket: "",
-        messagingSenderId: "",
-        appId: "",
+    export const firebaseConfig = {
+        apiKey: import.meta.env.VITE_API_KEY,
+        authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+        projectId: import.meta.env.VITE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_APP_ID,
     }
     ```
 
-6. **Running the Project**:
+6.  **Running the Project**:
 
-    - Return to the root directory:
+    -   Return to the root directory:
         ```bash
         cd ..
         ```
-    - Install all dependencies at the root level:
+    -   Install all dependencies at the root level:
         ```bash
         bun i
         ```
-    - Start both frontend and backend with:
+    -   Start both frontend and backend with:
         ```bash
         bun start
         ```
 
-7. Your app should now be running! 🎉 Open your browser and go to `http://localhost:3000`.
+7.  Your app should now be running! 🎉 Open your browser and go to `http://localhost:5173`.
 
 ---
 
 ## 🤝 Contributing
 
-We'd love your help to make **Daccotta** even better! If you're interested in contributing, please submit a pull request or open an issue.
+We'd love your help to make **Daccotta** even better! If you're interested in contributing, please read [CONTRIBUTION GUIDE](./Contributing.md).
 
 ---
 
