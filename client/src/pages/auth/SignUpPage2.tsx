@@ -167,7 +167,7 @@ const SignUp: React.FC = () => {
 
     return (
         <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
-            <div className="lg:col-span-2 h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black text-white">
+            <div className="lg:col-span-2 h-screen flex flex-col items-center font-heading justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black text-white">
                 <div className="max-w-md w-full space-y-8">
                     <div>
                         <h2 className="mt-6 text-center text-3xl font-extrabold">
