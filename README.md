@@ -137,6 +137,15 @@ refer to .env.example files for env variables
     }
     ```
 
+    if you want to contribute to only fronted use this mock firebase-auth keys:
+
+        apiKey: "AIzaSyDp5LFFF9TU9W1LzB0Cus--lxBawNyBc5Q",
+        authDomain: "mock-daccotta.firebaseapp.com",
+        projectId: "mock-daccotta",
+        storageBucket: "mock-daccotta.appspot.com",
+        messagingSenderId: "586345450139",
+        appId: "1:586345450139:web:84f82ab90882cd0fe4143e",
+
 6.  **Running the Project**:
 
     -   Return to the root directory:
