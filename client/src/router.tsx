@@ -17,6 +17,8 @@ import SearchMovie from "./pages/SearchMovie/SearchMovie"
 import StatsPage2 from "./pages/Stats/StatsPage2"
 import StatsPageFriends from "./pages/Stats/statsPageFriend"
 import UserDescriptivePage from "./pages/UserDescriptive/UserDescriptive"
+import SignUp2 from "./pages/auth/SignUpPage2"
+import SignInPage2 from "./pages/auth/SignInPage2"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate()
@@ -37,11 +39,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/signin",
-                element: <SignInPage />,
+                element: <SignInPage2 />,
             },
             {
                 path: "/signup",
-                element: <SignUpPage />,
+                element: <SignUp2 />,
             },
             {
                 element: <AuthenticatedLayout />,

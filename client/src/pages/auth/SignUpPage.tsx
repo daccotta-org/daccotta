@@ -170,12 +170,12 @@ const SignUp: React.FC = () => {
 
     return (
         <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5">
-            <div className="flex flex-col items-center justify-center py-12 lg:py-2 lg:col-span-2 bg-main">
+            <div className="flex flex-col items-center justify-center py-12 lg:py-2 lg:col-span-2 bg-background text-white">
                 <div className="mx-auto w-full max-w-md px-4">
                     <h2 className="text-3xl font-bold text-center self-start mb-8 lg:mb-2">
                         Sign Up
                     </h2>
-                    <p className="text-center text-gray-600 mb-2">
+                    <p className="text-center text-white mb-2">
                         Enter your details below to create a new account
                     </p>
                     <form
@@ -225,17 +225,6 @@ const SignUp: React.FC = () => {
                                         </span>
                                     </label>
                                 )}
-                            {/* <div className="text-xs text-gray-500 mt-1">
-                                <p>Username rules:</p>
-                                <ul className="list-disc list-inside">
-                                    <li>3-30 characters long</li>
-                                    <li>Start and end with a letter or number</li>
-                                    <li>Can contain letters, numbers, periods, and underscores</li>
-                                    <li>No consecutive periods or underscores</li>
-                                    <li>No spaces allowed</li>
-                                    <li>Case-insensitive</li>
-                                </ul>
-                            </div> */}
                         </div>
                         <div className="form-control relative">
                             <label className="label">
@@ -316,23 +305,7 @@ const SignUp: React.FC = () => {
                                 </span>
                             )}
                         </div>
-                        {/* Age input Field */}
-                        {/* <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Age</span>
-                            </label>
-                            <input
-                                type="number"
-                                placeholder="Age"
-                                className="input input-bordered bg-transparent w-full"
-                                {...register("age", { valueAsNumber: true })}
-                            />
-                            {errors.age && (
-                                <span className="text-error">
-                                    {errors.age.message}
-                                </span>
-                            )}
-                        </div> */}
+
                         <div className="form-control mt-6">
                             <button
                                 className="btn btn-primary text-white w-full"
