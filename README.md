@@ -162,7 +162,7 @@ We'd love your help to make **Daccotta** even better! If you're interested in co
 ## 📧 Contact
 
 Feel free to reach out to us for any queries or suggestions:  
-**Email**: contact@daccotta.com  
+**Email**: daccotta.pvt@gmail.com
 **Website**: [daccotta.com](https://daccotta.com)
 
 ---
