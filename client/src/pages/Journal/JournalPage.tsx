@@ -13,7 +13,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { format } from "date-fns"
-import { CalendarIcon, Plus,EllipsisVertical } from "lucide-react"
+import { CalendarIcon, Plus, EllipsisVertical } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useJournal } from "@/services/journalService"
 import { SimpleMovie } from "@/Types/Movie"
@@ -28,7 +28,8 @@ import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 
 const JournalPage: React.FC = () => {
-    const { useGetJournalEntries, useAddJournalEntry, useDeleteJournalEntry } = useJournal()
+    const { useGetJournalEntries, useAddJournalEntry, useDeleteJournalEntry } =
+        useJournal()
     const { data: journalEntries, isLoading } = useGetJournalEntries()
     const addJournalEntry = useAddJournalEntry()
     const deleteJournalEntry = useDeleteJournalEntry()
@@ -59,17 +60,17 @@ const JournalPage: React.FC = () => {
         }
     }
 
-    const handleOpenDeleteDialog = (entryId: string, event: React.MouseEvent) => {
+    const handleOpenDeleteDialog = (
+        entryId: string,
+        event: React.MouseEvent
+    ) => {
         event.stopPropagation() // Prevent the click from propagating to the parent div
         setEntryToDelete(entryId)
         setIsDeleteDialogOpen(true)
     }
 
-
     const handleAddEntry = async () => {
         if (!selectedMovie || !dateWatched) return
-
-        console.log("Adding entry:", { selectedMovie, rewatches, dateWatched })
 
         try {
             await addJournalEntry.mutateAsync({
@@ -139,9 +140,11 @@ const JournalPage: React.FC = () => {
     }, [journalEntries])
 
     if (isLoading) {
-        return <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-    </div>
+        return (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+        )
     }
 
     return (
@@ -310,51 +313,67 @@ const JournalPage: React.FC = () => {
                     </Dialog>
                 </div>
                 {Object.entries(sortedEntries).map(([monthYear, entries]) => (
-                <div key={monthYear} className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">{monthYear}</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {entries.map((entry) => (
-                            <div
-                                key={entry._id}
-                                className="relative w-full h-full"
-                                onMouseEnter={() => setHoveredEntry(entry._id)}
-                                onMouseLeave={() => setHoveredEntry(null)}
-                            >
-                                <img
-                                    src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
-                                    alt={`${entry.movie.title} poster`}
-                                    className="w-full h-full rounded-lg shadow-lg cursor-pointer"
-                                    onClick={() => handleClick(entry.movie.movie_id)}
-                                />
-                                
-                                {hoveredEntry === entry._id && (
-                                    <motion.div
-                                        className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                    >
-                                        <h3 className="text-lg font-bold">{entry.movie.title}</h3>
-                                        <p className="text-sm text-gray-300">
-                                            Watched: {format(new Date(entry.dateWatched), "PPP")}
-                                        </p>
-                                        <p className="text-sm text-gray-300">
-                                            Times Watched: {entry.rewatches}
-                                        </p>
-                                        <Button   
-                                            
-                                            size="icon"
-                                            className="absolute top-2 right-2 bg-transparent"
-                                            onClick={(e) => handleOpenDeleteDialog(entry._id, e)}
+                    <div key={monthYear} className="mb-8">
+                        <h2 className="text-xl font-semibold mb-4">
+                            {monthYear}
+                        </h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {entries.map((entry) => (
+                                <div
+                                    key={entry._id}
+                                    className="relative w-full h-full"
+                                    onMouseEnter={() =>
+                                        setHoveredEntry(entry._id)
+                                    }
+                                    onMouseLeave={() => setHoveredEntry(null)}
+                                >
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
+                                        alt={`${entry.movie.title} poster`}
+                                        className="w-full h-full rounded-lg shadow-lg cursor-pointer"
+                                        onClick={() =>
+                                            handleClick(entry.movie.movie_id)
+                                        }
+                                    />
+
+                                    {hoveredEntry === entry._id && (
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
                                         >
-                                            <EllipsisVertical className="h-4 w-4" />
-                                        </Button>
-                                    </motion.div>
-                                )}
-                            </div>
-                        ))}
+                                            <h3 className="text-lg font-bold">
+                                                {entry.movie.title}
+                                            </h3>
+                                            <p className="text-sm text-gray-300">
+                                                Watched:{" "}
+                                                {format(
+                                                    new Date(entry.dateWatched),
+                                                    "PPP"
+                                                )}
+                                            </p>
+                                            <p className="text-sm text-gray-300">
+                                                Times Watched: {entry.rewatches}
+                                            </p>
+                                            <Button
+                                                size="icon"
+                                                className="absolute top-2 right-2 bg-transparent"
+                                                onClick={(e) =>
+                                                    handleOpenDeleteDialog(
+                                                        entry._id,
+                                                        e
+                                                    )
+                                                }
+                                            >
+                                                <EllipsisVertical className="h-4 w-4" />
+                                            </Button>
+                                        </motion.div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
                 <Card className="overflow-hidden border-dashed w-[200px]">
                     <CardContent className="p-0 flex items-center justify-center h-[300px]">
                         <div
@@ -369,17 +388,30 @@ const JournalPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </div>
-            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <Dialog
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete Journal Entry</DialogTitle>
                     </DialogHeader>
-                    <p>Are you sure you want to delete this journal entry? This action cannot be undone.</p>
+                    <p>
+                        Are you sure you want to delete this journal entry? This
+                        action cannot be undone.
+                    </p>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsDeleteDialogOpen(false)}
+                        >
                             Cancel
                         </Button>
-                        <Button variant="outline" className="bg-white text-black" onClick={handleDeleteEntry}>
+                        <Button
+                            variant="outline"
+                            className="bg-white text-black"
+                            onClick={handleDeleteEntry}
+                        >
                             Delete
                         </Button>
                     </DialogFooter>

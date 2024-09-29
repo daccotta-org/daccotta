@@ -13,10 +13,6 @@ router.post("/create", verifyToken, async (req: Request, res: Response) => {
             req.body
         const userId = req.user?.uid
 
-        console.log("userId is : ", userId)
-        console.log("req.user is : ", req.user)
-        console.log("req.body is : ", req.body)
-
         if (!userId) {
             return res.status(401).json({ error: "Unauthorized" })
         }

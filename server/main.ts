@@ -28,23 +28,6 @@ console.log("console log ho bhi rha h ya nhi ?")
 app.use(cors())
 app.use(express.json())
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-
-// try {
-//     console.log("hello")
-
-//     const serviceAccount = JSON.parse(
-//         fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
-//     )
-
-//     admin.initializeApp({
-//         credential: admin.credential.cert(serviceAccount),
-//     })
-//     console.log("Firebase Admin SDK initialized successfully")
-// } catch (error) {
-//     console.error("Error initializing Firebase Admin SDK:", error)
-// }
 let serviceAccount
 
 if (process.env.NODE_ENV === "development") {

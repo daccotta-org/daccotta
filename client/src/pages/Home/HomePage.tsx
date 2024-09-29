@@ -1,7 +1,6 @@
 import MovieList from "@/components/custom/MovieCard/Carousel"
 import MovieCarousel from "@/components/custom/MovieCarousel/MovieCarousel"
 import ProfileIcon from "@/components/custom/ProfileIcon/ProfileIcon"
-console.log("test", import.meta.env.VITE_PROJECT_ID)
 const HomePage = () => {
     return (
         <>

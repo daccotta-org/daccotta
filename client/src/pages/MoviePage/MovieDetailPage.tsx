@@ -219,9 +219,9 @@ const MovieDetailPage: React.FC = () => {
                                 </button>
                                 <button
                                     className={`flex items-center shadow-2xl  bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom`}
-                                    data-tip="Favourites"
+                                    data-tip="watchlist"
                                     onClick={() =>
-                                        console.log("Bookmark Clicked")
+                                        console.log("watchlist coming soon")
                                     }
                                 >
                                     <Bookmark
