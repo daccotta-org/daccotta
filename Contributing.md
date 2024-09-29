@@ -134,6 +134,6 @@ If you have any questions or need further assistance, feel free to:
 
 ---
 
-Thank you for contributing to **Daccotta**! We appreciate your time and effort to make this platform even better for movie lovers around the world. 🎥🍿
+Thank you for contributing to **Daccotta**! We appreciate your time and efforts to make this platform even better for movie lovers around the world. 🎥🍿
 
 ---
