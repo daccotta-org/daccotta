@@ -122,9 +122,9 @@ refer to .env.example files for env variables
 
 5.  **Setting Up Firebase**:
 
-        - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
-        - After setting up, download the `firebaseConfig` and add it to your project.
-        - Set the Firebase credentials in your `firebaseConfigEx.ts` file and rename it `firebaseConfig.ts`:
+    -   Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
+    -   After setting up, download the `firebaseConfig` and add it to your project.
+    -   Set the Firebase credentials in your `firebaseConfigEx.ts` file and rename it `firebaseConfig.ts`:
 
     ```javascript
     export const firebaseConfig = {
@@ -158,7 +158,7 @@ refer to .env.example files for env variables
 
 ## 🤝 Contributing
 
-We'd love your help to make **Daccotta** even better! If you're interested in contributing, please read [CONTRIBUTION GUIDE](./Contributing.md).
+We'd love your help to make **Daccotta** even better! If you're interested in contributing, please read [CONTRIBUTION GUIDE](./CONTRIBUTING.md).
 
 ---
 
