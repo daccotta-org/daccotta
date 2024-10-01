@@ -17,6 +17,7 @@ import { friendRoutes } from "./routes/friendRoutes"
 import { journalRoutes } from "./routes/journalRoutes"
 import { fileURLToPath } from "url"
 import { keepAlive } from "./utils/keepAlive"
+import mongoose from "mongoose"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenv.config()
@@ -73,63 +74,187 @@ interface CreateUserRequest {
     userName: string
     age: number
 }
-
-// Route to create a new user
 app.post("/api/users", async (req: Request, res: Response) => {
     try {
         const { uid, email, age, username } = req.body
         console.log(uid, email, age, username)
-
         // Verify the Firebase ID token
         const authHeader = req.headers.authorization
         const idToken = authHeader && authHeader.split("Bearer ")[1]
-
         if (!idToken) {
             console.log("No token provided")
             return res.status(401).json({ error: "No token provided" })
         }
-
         console.log("token decode")
         const decodedToken = await admin.auth().verifyIdToken(idToken)
-
         console.log("decoded token ", decodedToken)
-
         console.log("user ")
         if (decodedToken.uid !== uid) {
             console.log("Unauthorized")
             return res.status(403).json({ error: "Unauthorized" })
         }
-
         // Check if username is already taken
-
         const existingUser = await User.findOne({ email })
         if (existingUser) {
             console.log("email is already in use.")
             return res.status(400).json({ error: "email is already in use." })
         }
 
-        // Create new user
+        // Create fake top 5 movies list
+        const fakeTop5MoviesList = {
+            list_id: new mongoose.Types.ObjectId().toString(),
+            name: "Top 5 Movies",
+            list_type: "user" as const,
+            movies: [
+                {
+                    movie_id: "tt0111161",
+                    title: "The Shawshank Redemption",
+                    poster_path: "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+                    release_date: "1994-09-23",
+                    genre_ids: [18, 80],
+                },
+                {
+                    movie_id: "tt0068646",
+                    title: "The Godfather",
+                    poster_path: "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+                    release_date: "1972-03-14",
+                    genre_ids: [18, 80],
+                },
+                {
+                    movie_id: "tt0071562",
+                    title: "The Godfather Part II",
+                    poster_path: "/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg",
+                    release_date: "1974-12-20",
+                    genre_ids: [18, 80],
+                },
+                {
+                    movie_id: "tt0468569",
+                    title: "The Dark Knight",
+                    poster_path: "/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg",
+                    release_date: "2008-07-16",
+                    genre_ids: [18, 28, 80, 53],
+                },
+                {
+                    movie_id: "tt0050083",
+                    title: "12 Angry Men",
+                    poster_path: "/ppd84D2i9W8jXmsyInGyihiSyqz.jpg",
+                    release_date: "1957-04-10",
+                    genre_ids: [18],
+                },
+            ],
+            members: [{ user_id: uid, is_author: true }],
+            date_created: new Date(),
+            description: "My Top 5 Movies",
+            isPublic: true,
+        }
+
+        // Create fake directors list
+        const fakeDirectorsList = {
+            directors_id: new mongoose.Types.ObjectId().toString(),
+            names: [
+                {
+                    id: "525",
+                    name: "Christopher Nolan",
+                    profile_path: "/xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg",
+                    known_for_department: "Directing",
+                },
+                {
+                    id: "1032",
+                    name: "Martin Scorsese",
+                    profile_path: "/9U9Y5GQuWX3EZy39B8nkk4NY01S.jpg",
+                    known_for_department: "Directing",
+                },
+                {
+                    id: "578",
+                    name: "Steven Spielberg",
+                    profile_path: "/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg",
+                    known_for_department: "Directing",
+                },
+            ],
+        }
+
+        // Create new user with fake data
         const newUser = new User({
             _id: uid,
             userName: username,
             email,
             age,
             groups: [],
-            badges: [],
-            lists: [],
+            badges: ["New User"],
+            lists: [fakeTop5MoviesList],
             actor: [],
             journal: [],
-            directorsold: [],
-            profile_image: "",
+            directorsold: [fakeDirectorsList],
+            profile_image: "https://example.com/default-profile-image.jpg",
+            onboarded: false,
+            friends: [],
+            friendRequests: [],
         })
         await newUser.save()
-
-        res.status(201).json({ message: "User created successfully" })
+        res.status(201).json({
+            message: "User created successfully with initial data",
+        })
     } catch (error) {
         console.error("Failed to create user:", error)
         res.status(500).json({ error: "Failed to create user" })
     }
 })
+// Route to create a new user
+// app.post("/api/users", async (req: Request, res: Response) => {
+//     try {
+//         const { uid, email, age, username } = req.body
+//         console.log(uid, email, age, username)
+
+//         // Verify the Firebase ID token
+//         const authHeader = req.headers.authorization
+//         const idToken = authHeader && authHeader.split("Bearer ")[1]
+
+//         if (!idToken) {
+//             console.log("No token provided")
+//             return res.status(401).json({ error: "No token provided" })
+//         }
+
+//         console.log("token decode")
+//         const decodedToken = await admin.auth().verifyIdToken(idToken)
+
+//         console.log("decoded token ", decodedToken)
+
+//         console.log("user ")
+//         if (decodedToken.uid !== uid) {
+//             console.log("Unauthorized")
+//             return res.status(403).json({ error: "Unauthorized" })
+//         }
+
+//         // Check if username is already taken
+
+//         const existingUser = await User.findOne({ email })
+//         if (existingUser) {
+//             console.log("email is already in use.")
+//             return res.status(400).json({ error: "email is already in use." })
+//         }
+
+//         // Create new user
+//         const newUser = new User({
+//             _id: uid,
+//             userName: username,
+//             email,
+//             age,
+//             groups: [],
+//             badges: [],
+//             lists: [],
+//             actor: [],
+//             journal: [],
+//             directorsold: [],
+//             profile_image: "",
+//         })
+//         await newUser.save()
+
+//         res.status(201).json({ message: "User created successfully" })
+//     } catch (error) {
+//         console.error("Failed to create user:", error)
+//         res.status(500).json({ error: "Failed to create user" })
+//     }
+// })
 
 app.use("/api/user", userRoutes)
 app.use("/api/group", groupRoutes)

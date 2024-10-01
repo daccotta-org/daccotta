@@ -7,6 +7,7 @@ import {
     searchUsers,
 } from "../controllers/userController"
 import ListModel from "../models/List"
+import mongoose from "mongoose"
 
 const router = Router()
 
@@ -112,6 +113,89 @@ router.get(
 
 // Route to complete onboarding
 
+// router.post(
+//     "/:uid/complete-onboarding",
+//     verifyToken,
+//     async (req: Request, res: Response) => {
+//         try {
+//             const { uid } = req.params
+//             const { username, profile_image, topMovies, directors, friends } =
+//                 req.body
+
+//             if (req.user?.uid !== uid) {
+//                 return res.status(403).json({ error: "Unauthorized" })
+//             }
+//             console.log(topMovies)
+
+//             // Create the top 5 movies list object
+//             const top5MoviesList = {
+//                 name: "Top 5 Movies",
+//                 list_type: "user" as const,
+//                 movies: topMovies.map((movie: any) => ({
+//                     movie_id: movie.id,
+//                     title: movie.title,
+//                     poster_path: movie.poster_path,
+//                     release_date: movie.release_date,
+//                     genre_ids: movie.genre_ids,
+//                 })),
+//                 members: [{ user_id: uid, is_author: true }],
+//                 date_created: new Date(),
+//                 description: "Top 5 Movies",
+//                 isPublic: true,
+//                 isShared: false,
+//             }
+
+//             const top5DirectorsList = {
+//                 names: directors.map((director: any) => ({
+//                     id: director.id,
+//                     name: director.name,
+//                     profile_path: director.profile_path,
+//                     known_for_department: director.known_for_department,
+//                 })),
+//             }
+
+//             const updatedUser = await User.findByIdAndUpdate(
+//                 uid,
+//                 {
+//                     $set: {
+//                         userName: username,
+//                         profile_image,
+//                         // directors,
+//                         friends,
+//                         onboarded: true,
+//                     },
+//                     $push: {
+//                         lists: top5MoviesList,
+//                         directorsold: top5DirectorsList,
+//                     }, // Directly push the list object
+//                 },
+//                 { new: true, runValidators: true }
+//             )
+
+//             if (!updatedUser) {
+//                 return res.status(404).json({ error: "User not found" })
+//             }
+
+//             res.json({
+//                 message: "Onboarding completed successfully",
+//                 user: updatedUser,
+//             })
+//         } catch (error: unknown) {
+//             console.error("Error completing onboarding:", error)
+//             if (error instanceof Error) {
+//                 res.status(500).json({
+//                     error: "Internal server error",
+//                     details: error.message,
+//                 })
+//             } else {
+//                 res.status(500).json({
+//                     error: "Internal server error",
+//                     details: "An unknown error occurred",
+//                 })
+//             }
+//         }
+//     }
+// )
 router.post(
     "/:uid/complete-onboarding",
     verifyToken,
@@ -120,64 +204,45 @@ router.post(
             const { uid } = req.params
             const { username, profile_image, topMovies, directors, friends } =
                 req.body
-
             if (req.user?.uid !== uid) {
                 return res.status(403).json({ error: "Unauthorized" })
             }
-            console.log(topMovies)
 
-            // Create the top 5 movies list object
-            const top5MoviesList = {
-                name: "Top 5 Movies",
-                list_type: "user" as const,
-                movies: topMovies.map((movie: any) => ({
+            const user = await User.findById(uid)
+            if (!user) {
+                return res.status(404).json({ error: "User not found" })
+            }
+
+            // Update the existing top 5 movies list
+            const top5MoviesList = user.lists.find(
+                (list) => list.name === "Top 5 Movies"
+            )
+            if (top5MoviesList) {
+                top5MoviesList.movies = topMovies.map((movie: any) => ({
                     movie_id: movie.id,
                     title: movie.title,
                     poster_path: movie.poster_path,
                     release_date: movie.release_date,
                     genre_ids: movie.genre_ids,
-                })),
-                members: [{ user_id: uid, is_author: true }],
-                date_created: new Date(),
-                description: "Top 5 Movies",
-                isPublic: true,
-                isShared: false,
+                }))
             }
 
-            const top5DirectorsList = {
-                names: directors.map((director: any) => ({
-                    id: director.id,
-                    name: director.name,
-                    profile_path: director.profile_path,
-                    known_for_department: director.known_for_department,
-                })),
+            // Replace fake directors list with user's chosen directors
+
+            user.profile_image = profile_image
+
+            user.onboarded = true
+
+            // Add "Onboarded" badge
+            if (!user.badges.includes("Onboarded")) {
+                user.badges.push("Onboarded")
             }
 
-            const updatedUser = await User.findByIdAndUpdate(
-                uid,
-                {
-                    $set: {
-                        userName: username,
-                        profile_image,
-                        // directors,
-                        friends,
-                        onboarded: true,
-                    },
-                    $push: {
-                        lists: top5MoviesList,
-                        directorsold: top5DirectorsList,
-                    }, // Directly push the list object
-                },
-                { new: true, runValidators: true }
-            )
-
-            if (!updatedUser) {
-                return res.status(404).json({ error: "User not found" })
-            }
+            await user.save()
 
             res.json({
                 message: "Onboarding completed successfully",
-                user: updatedUser,
+                user: user,
             })
         } catch (error: unknown) {
             console.error("Error completing onboarding:", error)
