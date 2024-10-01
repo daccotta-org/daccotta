@@ -25,7 +25,13 @@ const StatsPageFriends: React.FC = () => {
         isLoading,
         error,
     } = useGetFriendJournalEntries(userName!)
-    const [stats, setStats] = useState<MovieStats | null>(null)
+    const [stats, setStats] = useState<MovieStats>({
+        totalWatched: 0,
+        monthlyWatched: [],
+        topGenres: [],
+        genreDistribution: [],
+        topDecade: { decade: "unknown", count: 0 },
+    })
 
     useEffect(() => {
         if (journalEntries) {
@@ -208,10 +214,10 @@ const StatsPageFriends: React.FC = () => {
                 >
                     <div className="text-center">
                         <div className="text-4xl font-bold mb-2">
-                            {stats.topDecade.decade}
+                            {stats?.topDecade?.decade}
                         </div>
                         <p className="text-sm text-gray-400">
-                            {stats.topDecade.count} movies watched
+                            {stats?.topDecade?.count} movies watched
                         </p>
                     </div>
                 </BentoGridItem>
