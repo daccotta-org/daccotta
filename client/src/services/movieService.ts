@@ -7,6 +7,31 @@ const TMDB_TOKEN = import.meta.env.VITE_ACCESS_KEY
 const BASE_URL = "https://api.themoviedb.org/3"
 // movieService.ts
 
+export const fetchMovieDetails = async (movieId: string) => {
+    const url = `${BASE_URL}/movie/${movieId}?append_to_response=credits`
+    try {
+        const { data } = await axios.get(url, {
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${TMDB_TOKEN}`,
+            },
+        })
+        return data
+    } catch (error) {
+        console.error(`Error fetching movie details:`, error)
+        throw error
+    }
+}
+// New hook to use the fetchMovieDetails function
+export const useMovieDetails = (movieId: string) => {
+    return useQuery({
+        queryKey: ["movieDetails", movieId],
+        queryFn: () => fetchMovieDetails(movieId),
+        enabled: !!movieId,
+    })
+}
+   
+
 export const fetchMovieProviders = async (movieId: string) => {
     const url = `${BASE_URL}/movie/${movieId}/watch/providers`
 
@@ -217,3 +242,7 @@ export const fetchMoviesByIds = async (
         throw error
     }
 }
+
+
+
+ 

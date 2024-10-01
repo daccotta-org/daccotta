@@ -1,27 +1,26 @@
 import React, { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
-
 import { useSearchMovies } from "../../../services/movieService"
 import { RxCrossCircled } from "react-icons/rx"
-import { toast } from "react-toastify" // Only import toast, not ToastContainer
+import { toast } from "react-toastify"
 import { Movie } from "../../../Types/Movie"
 import { movieSchema } from "../../../Types/Movie"
-import "../../../index.css"
+import CircularIndeterminate from "@/components/ui/loading"
 
-// Define topMoviesSchema using movieSchema
 export const topMoviesSchema = z.object({
     topMovies: z.array(movieSchema).max(5),
 })
 type TopMoviesData = z.infer<typeof topMoviesSchema>
 
 interface Props {
-    onNext: () => void
     onPrevious: () => void
+    onSubmit: () => void
+    isSubmitting: boolean
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
+const TopMovies: React.FC<Props> = ({ onPrevious, onSubmit, isSubmitting, handleKeyDown }) => {
     const {
         setValue,
         watch,
@@ -29,6 +28,7 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
     } = useFormContext<TopMoviesData>()
     const [searchTerm, setSearchTerm] = useState("")
     const [searchResults, setSearchResults] = useState<Movie[]>([])
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true)
 
     const { data: movies, isLoading, refetch } = useSearchMovies(searchTerm)
 
@@ -48,6 +48,10 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
 
     const topMovies = watch("topMovies") || []
 
+    useEffect(() => {
+        setIsSubmitDisabled(topMovies.length < 2 || isSubmitting)
+    }, [topMovies, isSubmitting])
+
     const handleAddMovie = (movie: Movie) => {
         const isDuplicate = topMovies.some((m) => m.id === movie.id)
         if (isDuplicate) {
@@ -60,7 +64,6 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
         }
         setSearchTerm("")
         setSearchResults([])
-        console.log(topMovies)
     }
 
     const handleRemoveMovie = (movieId: string) => {
@@ -71,116 +74,125 @@ const TopMovies: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
         toast.info("Movie removed from your top list.")
     }
 
+    const handleSubmit = () => {
+        if (!isSubmitDisabled) {
+            onSubmit()
+        } else {
+            if (topMovies.length < 2) {
+                toast.error("Please select at least 2 movies to continue.")
+            } else if (isSubmitting) {
+                toast.info("Please wait, your selection is being submitted.")
+            }
+        }
+    }
+
     return (
-        <div className="w-full h-full lg:grid lg:grid-cols-5 lg:min-h-screen ">
-            <div className="w-full h-full flex flex-col items-center py-24 col-span-2 justify-start lg:justify-center shadow-2xl bg-main">
-                <h2 className="text-3xl font-bold mb-12 px-4 text-center">
-                    Select Your Top 5 Movies
-                </h2>
-                <div className="relative mb-6">
-                    <input
-                        type="text"
-                        placeholder="Search movies"
-                        value={searchTerm}
-                        onKeyDown={handleKeyDown}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white"
-                    />
-                    {isLoading && <p>Loading...</p>}
-                    {searchResults.length > 0 && (
-                        <ul className="absolute z-10 w-full overflow-y-auto h-[300px] lg:h-28 mt-1 bg-white text-gray-800 rounded-lg shadow-lg ">
-                            {searchResults.map((movie) => (
-                                <li
-                                    key={movie.id}
-                                    className="flex items-center space-x-4 p-3 hover:bg-gray-100 cursor-pointer border-b-2"
-                                    onClick={() => handleAddMovie(movie)}
-                                >
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
-                                        alt={movie.title}
-                                        className="w-12 h-12 object-cover rounded"
-                                    />
-                                    <div className="flex flex-col">
-                                        <span className="flex-grow text-sm">
-                                            {movie.title}
-                                        </span>
-                                        <span className="text-xs">
-                                            {movie.release_date?.slice(0, 4)}
-                                        </span>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-                {topMovies.length > 0 && (
-                    <div className="mb-6 w-[320px] sm:w-[400px]">
-                        <h3 className="text-xl font-semibold mb-3">
-                            Selected Movies :
-                        </h3>
-                        <ul className="space-y-4 h-[180px] overflow-y-auto">
-                            {topMovies.map((movie) => (
-                                <li
-                                    key={movie.id}
-                                    className="flex items-center space-x-4 bg-white bg-opacity-10 p-1 w-[320px] sm:w-[400px] border border-primary border-1 rounded-lg hover:bg-primary hover:text-white transition-colors"
-                                >
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
-                                        alt={movie.title}
-                                        className="w-18 h-20 object-cover rounded"
-                                    />
-
-                                    <span className="flex-grow text-sm">
-                                        {movie.title}
-                                    </span>
-
-                                    <button
-                                        type="button"
-                                        className=""
-                                        onClick={() =>
-                                            handleRemoveMovie(movie.id!)
-                                        }
-                                    >
-                                        <RxCrossCircled size="24px" />
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
+        <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
+            <div className="lg:col-span-2 h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black text-white">
+                <div className="max-w-md w-full space-y-8">
+                    <h2 className="mt-6 text-center text-3xl font-extrabold">Select Your Top 5 Movies</h2>
+                    <div className="mt-8 space-y-6">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Search movies"
+                                value={searchTerm}
+                                onKeyDown={handleKeyDown}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 bg-black text-white"
+                            />
+                            {isLoading && <p className="mt-2">Loading...</p>}
+                            {searchResults.length > 0 && (
+                                <ul className="absolute z-10 w-full mt-1 bg-gray-800 text-white rounded-md shadow-lg max-h-60 overflow-auto">
+                                    {searchResults.map((movie) => (
+                                        <li
+                                            key={movie.id}
+                                            className="flex items-center space-x-4 p-3 hover:bg-gray-700 cursor-pointer border-b border-gray-700"
+                                            onClick={() => handleAddMovie(movie)}
+                                        >
+                                            <img
+                                                src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                                                alt={movie.title}
+                                                className="w-12 h-12 object-cover rounded"
+                                            />
+                                            <div className="flex flex-col">
+                                                <span className="text-sm">{movie.title}</span>
+                                                <span className="text-xs text-gray-400">{movie.release_date?.slice(0, 4)}</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                        {topMovies.length > 0 && (
+                            <div>
+                                <h3 className="text-xl font-semibold mb-3">Selected Movies:</h3>
+                                <ul className="space-y-4 max-h-60 overflow-auto">
+                                    {topMovies.map((movie) => (
+                                        <li
+                                            key={movie.id}
+                                            className="flex items-center space-x-4 bg-gray-800 p-2 rounded-lg"
+                                        >
+                                            <img
+                                                src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                                                alt={movie.title}
+                                                className="w-16 h-20 object-cover rounded"
+                                            />
+                                            <span className="flex-grow text-sm">{movie.title}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveMovie(movie.id!)}
+                                                className="text-gray-400 hover:text-white"
+                                            >
+                                                <RxCrossCircled size="24px" />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {errors.topMovies && (
+                            <span className="text-red-500 block">{errors.topMovies.message}</span>
+                        )}
+                        <div className="flex justify-between pt-10">
+                            <button
+                                type="button"
+                                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                onClick={onPrevious}
+                            >
+                                Previous
+                            </button>
+                            <button
+                                type="button"
+                                className={`px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                                    isSubmitDisabled
+                                        ? 'bg-gray-800 hover:bg-gray-700 cursor-not-allowed'
+                                        : 'bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+                                }`}
+                                onClick={handleSubmit}
+                            >
+                                {isSubmitting ? "Submitting..." : "Submit"}
+                            </button>
+                        </div>
                     </div>
-                )}
-                {errors.topMovies && (
-                    <span className="text-red-300 block mb-4">
-                        {errors.topMovies.message}
-                    </span>
-                )}
-                <div className="mt-10 self-end lg:self-auto flex w-full justify-evenly">
-                    <button
-                        type="button"
-                        className="btn btn-secondary text-white"
-                        onClick={onPrevious}
-                    >
-                        Previous
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline hover:bg-primary hover:text-white"
-                        onClick={onNext}
-                    >
-                        Next
-                    </button>
                 </div>
             </div>
-            <div className="hidden lg:flex lg:items-center lg:justify-center  lg:col-span-3 bg-[#FEFEFA]">
-                <div className="w-full h-full flex items-center justify-center">
-                    <img
-                        src="/profile_page.svg"
-                        alt="Sign Up Illustration"
-                        className="w-[400px] h-auto"
-                    />
-                </div>
+            <div className="hidden lg:flex lg:col-span-3 bg-[#FF204E] items-center justify-center">
+                <img
+                    src="/profile_page.svg"
+                    alt="Sign Up Illustration"
+                    className="w-[400px] h-auto"
+                />
             </div>
+            {isSubmitting && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="text-center">
+                        <CircularIndeterminate />
+                        <p className="mt-4 text-white">Submitting...</p>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
-
 export default TopMovies
