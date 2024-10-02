@@ -76,7 +76,8 @@ or paste this
 ```bash
 npm install -g bun
 ```
-Restart all your terminals after installing bun.
+ Restart all your terminals after installing bun.
+
 ---
 
 ### 🗂️ Setting Up Daccotta (Client & Server)
