@@ -60,8 +60,9 @@ To set up and run **Daccotta** locally, follow the steps below:
 2. Run the following command to install Bun:
     ```bash
     curl -fsSL https://bun.sh/install | bash -s "bun-v1.1.27"
-    ```
 
+    ```
+3. Restart all your terminals after installing bun.
 #### For Windows:
 
 To install, paste this into a powershell(run powershell as adminstrator):
@@ -75,7 +76,7 @@ or paste this
 ```bash
 npm install -g bun
 ```
-
+Restart all your terminals after installing bun.
 ---
 
 ### 🗂️ Setting Up Daccotta (Client & Server)
@@ -158,7 +159,7 @@ refer to .env.example files for env variables
         ```
     -   Start both frontend and backend with:
         ```bash
-        bun start
+        bun start:all
         ```
 
 7.  Your app should now be running! 🎉 Open your browser and go to `http://localhost:5173`.
