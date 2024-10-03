@@ -166,22 +166,26 @@ refer to .env.example files for env variables
 
 3. **Setting Up Firebase**:
 
-    - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
-    - After setting up, download the `firebaseConfig` and add it to your project.
-    - Set the Firebase credentials in your `firebaseConfigEx.ts` file and rename it `firebaseConfig.ts`:
+    - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project. for sign in providers select - email/password.
+    - After registering your Node.js app, Firebase will provide your app's configuration object code. This code includes your API keys and other project-specific details.
+        ![image](https://github.com/user-attachments/assets/59ae730b-01da-440a-8e31-6d9aecb4b2b9)
 
-    ```javascript
-    export const firebaseConfig = {
-        apiKey: import.meta.env.VITE_API_KEY,
-        authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_PROJECT_ID,
-        storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_APP_ID,
-    }
-    ```
+     - Set the Firebase credentials in your `client/.env` file as above , refer to .env.example.:
 
-4. **Running the Full Stack Project**:
+       ```
+       VITE_ACCESS_KEY= "your tmdb key"
+        VITE_API_KEY=
+        VITE_AUTH_DOMAIN=
+        VITE_PROJECT_ID=
+        VITE_STORAGE_BUCKET=
+        VITE_MESSAGING_SENDER_ID=
+        VITE_APP_ID=
+        VITE_API_BASE_URL=https://localhost:8080
+        ```
+ - After setting up, To access the service account, head over to your Firebase console, click on the Settings icon in the top-left corner of the developer console, and         select Project Settings. Then, select the Service Account tab, and click on Generate new private key, place it in your server folder.
+      ![image](https://github.com/user-attachments/assets/085081d6-3eb1-4018-99ad-cfcf8c7d1a83)
+
+5. **Running the Full Stack Project**:
 
     - Return to the root directory:
         ```bash
@@ -196,7 +200,7 @@ refer to .env.example files for env variables
         bun start:all
         ```
 
-5. Your full stack app should now be running! 🎉 Open your browser and go to `http://localhost:5173`.
+6. Your full stack app should now be running! 🎉 Open your browser and go to `http://localhost:5173`.
 
 ---
 
