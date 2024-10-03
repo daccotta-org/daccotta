@@ -109,6 +109,7 @@ If you only want to contribute to the frontend, follow these steps:
 3. Create a `.env` file in the `client` directory and paste the following content:
 
     ```
+    VITE_ACCESS_KEY= "your tmdb key"
     VITE_API_KEY=AIzaSyDp5LFFF9TU9W1LzB0Cus--lxBawNyBc5Q
     VITE_AUTH_DOMAIN=mock-daccotta.firebaseapp.com
     VITE_PROJECT_ID=mock-daccotta
