@@ -35,6 +35,10 @@ const SignInPage2: React.FC = () => {
 
     const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null)
     const [isCheckingEmail, setIsCheckingEmail] = useState(false)
+    const hide = "https://img.icons8.com/?size=100&id=33916&format=png&color=ffffff"
+    const show = "https://img.icons8.com/?size=100&id=986&format=png&color=ffffff"
+
+    const [hidden, setHidden] = useState(true);
 
     const email = watch("email")
 
@@ -139,13 +143,18 @@ const SignInPage2: React.FC = () => {
                                     >
                                         Password
                                     </Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Password"
-                                        className="bg-gray-800 text-white"
-                                        {...register("password")}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={hidden ? "password" : "text"}
+                                            placeholder="Password"
+                                            className="bg-gray-800 text-white"
+                                            {...register("password")}
+                                        />
+                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10" onClick={()=>setHidden(!hidden)}>
+                                            <img src={hidden ? hide : show} alt="" />
+                                        </div>
+                                    </div>
                                     {errors.password && (
                                         <p className="mt-2 text-sm text-red-500">
                                             {errors.password.message}
