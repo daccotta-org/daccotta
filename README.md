@@ -9,6 +9,7 @@ Hey movie lovers! Welcome to **Daccotta**, a web app designed to simplify your m
 ---
 
 ![daccotta](https://github.com/user-attachments/assets/120ce0eb-7009-448c-a5da-f4b7432db6e0)
+also be a part of the community and join our [discord](https://discord.gg/R859peEW) .
 
 ## 🎬 What is Daccotta?
 
