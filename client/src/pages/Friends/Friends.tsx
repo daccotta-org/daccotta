@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useFriends } from "@/services/friendsService"
 import { useNavigate } from "react-router-dom"
 import { AxiosError } from "axios"
-import { Users, Trash, AlertTriangle } from "lucide-react"
+import { Users, Trash, AlertTriangle,UserPlus} from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -358,15 +358,13 @@ const FriendsSearch: React.FC = () => {
                                                 </div>
                                             </div>
                                             <Button
-                                                onClick={() =>
-                                                    handleSendRequest(
-                                                        user.userName
-                                                    )
-                                                }
-                                                size="sm"
+                                            onClick={() => handleSendRequest(user.userName)}
+                                            size="sm"
+                                            className="p-2 sm:p-3 md:p-4 lg:p-5 rounded-md"
+                                            aria-label="Send Friend Request"
                                             >
-                                                Send Request
-                                            </Button>
+                                            <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
+                                        </Button>
                                         </motion.li>
                                     ))}
                                 </ul>
