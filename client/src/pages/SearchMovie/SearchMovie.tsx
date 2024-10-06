@@ -142,7 +142,23 @@ const SearchMovie: React.FC = () => {
                     </div>
                 </div>
                 {isLoading && searchTerm.length > 2 ? (
-                    <p className="text-center text-gray-500">Loading...</p>                    
+                    <div className="mt-2">
+                        <p className="text-sm font-bold text-lime-500">
+                            Loading Please Wait
+                            <span className="inline-block animate-bounce">
+                                .
+                            </span>
+                            <span className="inline-block animate-bounce delay-150">
+                                .
+                            </span>
+                            <span className="inline-block animate-bounce delay-300">
+                                .
+                            </span>
+                            <span className="inline-block animate-bounce delay-300">
+                                .
+                            </span>
+                        </p>
+                    </div>
                 ) : (
                     <ul className="max-h-[300px] overflow-y-auto bg-white bg-opacity-10 rounded-lg shadow-lg mb-6">
                         {movies && movies.length > 0

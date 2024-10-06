@@ -30,7 +30,14 @@ export default function MovieSearch({ onSelectMovie }: MovieSearchProps) {
             </div>
             <div className="mt-4 max-h-[60vh] overflow-y-auto">
                 {isLoading && searchTerm.length > 2 ? (
-                    <p className="text-center text-gray-500">Loading...</p>
+                    <div className="flex items-center justify-center h-screen bg-green-100">
+                    <p className="text-2xl font-bold text-green-600">
+                     Loading Please Wait
+                      <span className="dot-1 animate-blink">.</span>
+                      <span className="dot-2 animate-blink delay-300">.</span>
+                      <span className="dot-3 animate-blink delay-600">.</span>
+                    </p>
+                  </div>    
                 ) : (
                     <>
                         {searchResults && searchResults.length > 0 ? (
