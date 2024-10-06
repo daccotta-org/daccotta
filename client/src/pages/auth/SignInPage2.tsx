@@ -6,7 +6,7 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 import { useMutation } from "@tanstack/react-query"
 import { z } from "zod"
 import { Link } from "react-router-dom"
-import { CheckCircle, XCircle } from "lucide-react"
+import { CheckCircle, Eye, EyeOff, XCircle } from "lucide-react"
 import { checkEmailExists } from "@/services/userService"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -35,8 +35,6 @@ const SignInPage2: React.FC = () => {
 
     const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null)
     const [isCheckingEmail, setIsCheckingEmail] = useState(false)
-    const hide = "https://img.icons8.com/?size=100&id=33916&format=png&color=ffffff"
-    const show = "https://img.icons8.com/?size=100&id=986&format=png&color=ffffff"
 
     const [hidden, setHidden] = useState(true);
 
@@ -151,8 +149,8 @@ const SignInPage2: React.FC = () => {
                                             className="bg-gray-800 text-white"
                                             {...register("password")}
                                         />
-                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10" onClick={()=>setHidden(!hidden)}>
-                                            <img src={hidden ? hide : show} alt="" />
+                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-20 hover:cursor-pointer" onClick={()=>setHidden(!hidden)}>
+                                            {hidden ? <EyeOff /> : <Eye />}
                                         </div>
                                     </div>
                                     {errors.password && (

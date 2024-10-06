@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CheckCircle, XCircle } from "lucide-react"
+import { CheckCircle, Eye, EyeOff, XCircle } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
@@ -58,8 +58,6 @@ const LoadingSpinner: React.FC = () => {
 }
 
 const SignUp: React.FC = () => {
-    const hide = "https://img.icons8.com/?size=100&id=33916&format=png&color=ffffff"
-    const show = "https://img.icons8.com/?size=100&id=986&format=png&color=ffffff"
 
     const [hidden, setHidden] = useState(true);
     const [confirmHidden, setConfirmHidden] = useState(true);
@@ -286,8 +284,8 @@ const SignUp: React.FC = () => {
                                         {...register("password")}
                                         onPaste={preventPaste}
                                     />
-                                    <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10" onClick={()=>setHidden(!hidden)}>
-                                        <img src={hidden ? hide : show} alt="" />
+                                    <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer" onClick={()=>setHidden(!hidden)}>
+                                        {hidden ? <EyeOff /> : <Eye />}
                                     </div>
                                 </div>
                                 
@@ -314,8 +312,8 @@ const SignUp: React.FC = () => {
                                     {...register("confirmPassword")}
                                     onPaste={preventPaste}
                                 />
-                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10" onClick={()=>setConfirmHidden(!confirmHidden)}>
-                                            <img src={confirmHidden ? hide : show} alt="" />
+                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer" onClick={()=>setConfirmHidden(!confirmHidden)}>
+                                        {confirmHidden ? <EyeOff /> : <Eye />}
                                         </div>
                                     </div>
                                 
