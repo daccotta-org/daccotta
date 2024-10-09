@@ -30,6 +30,8 @@ const FriendsSearch: React.FC = () => {
     const [friendToRemove, setFriendToRemove] = useState("")
     const { user } = useAuth()
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
+    const [sent, setSent] = useState(false)
 
     const {
         useGetFriends,
@@ -64,8 +66,11 @@ const FriendsSearch: React.FC = () => {
     }
 
     const handleSendRequest = (friendUserName: string) => {
+        if (sent) return; // Prevent sending duplicate requests
+        setLoading(true); // Show loading spinner while sending
         sendFriendRequestMutation.mutate(friendUserName, {
             onSuccess: () => {
+                setSent(true); // Mark as "Sent"
                 toast.success("Friend request sent successfully.")
             },
             onError: (error) => {
@@ -78,6 +83,9 @@ const FriendsSearch: React.FC = () => {
 
                 toast.error("Failed to send friend request. Please try again.")
             },
+            onSettled: () => {
+                setLoading(false); // Hide loader after request
+            }
         })
     }
 
@@ -359,11 +367,13 @@ const FriendsSearch: React.FC = () => {
                                             </div>
                                             <Button
                                             onClick={() => handleSendRequest(user.userName)}
+                                            disabled={loading || sent}
                                             size="sm"
                                             className="p-2 sm:p-3 md:p-4 lg:p-5 rounded-md"
                                             aria-label="Send Friend Request"
                                             >
-                                            <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
+                                            {/* <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> */}
+                                            {loading ? "Sending..." : (sent ? "Sent" : "Send Request")}
                                         </Button>
                                         </motion.li>
                                     ))}
