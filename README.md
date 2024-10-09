@@ -171,6 +171,8 @@ refer to .env.example files for env variables
     - After registering your Node.js app, Firebase will provide your app's configuration object code. This code includes your API keys and other project-specific details.
         ![image](https://github.com/user-attachments/assets/59ae730b-01da-440a-8e31-6d9aecb4b2b9)
 
+     - In the Authentication section of your Firebase project in the console, ensure that you have enabled the Email/Password sign-in method under `Sign-in Method`.
+
      - Set the Firebase credentials in your `client/.env` file as above , refer to .env.example.:
 
        ```
@@ -181,9 +183,9 @@ refer to .env.example files for env variables
         VITE_STORAGE_BUCKET=
         VITE_MESSAGING_SENDER_ID=
         VITE_APP_ID=
-        VITE_API_BASE_URL=https://localhost:8080
+        VITE_API_BASE_URL=http://localhost:8080
         ```
- - After setting up, To access the service account, head over to your Firebase console, click on the Settings icon in the top-left corner of the developer console, and         select Project Settings. Then, select the Service Account tab, and click on Generate new private key, place it in your server folder.
+ - After setting up, To access the service account, head over to your Firebase console, click on the Settings icon in the top-left corner of the developer console, and         select Project Settings. Then, select the Service Account tab, and click on Generate new private key, rename that file to `firebases.json` and place it in your server folder.
       ![image](https://github.com/user-attachments/assets/085081d6-3eb1-4018-99ad-cfcf8c7d1a83)
 
 5. **Running the Full Stack Project**:
@@ -218,7 +220,7 @@ We'd love your help to make **Daccotta** even better! If you're interested in co
 
 ## 📧 Contact
 
-Feel free to reach out to us for any queries or suggestions:  
+Feel free to reach out to us for any queries or suggestions:
 **Email**: daccotta.pvt@gmail.com
 **Website**: [daccotta.com](https://daccotta.com)
 
