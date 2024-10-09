@@ -11,6 +11,9 @@ export const fetchMovieDetails = async (movieId: string) => {
     const url = `${BASE_URL}/movie/${movieId}?append_to_response=credits`
     try {
         const { data } = await axios.get(url, {
+            params: {
+                api_key: TMDB_TOKEN,
+            },
             headers: {
                 accept: "application/json",
                 Authorization: `Bearer ${TMDB_TOKEN}`,
@@ -30,13 +33,16 @@ export const useMovieDetails = (movieId: string) => {
         enabled: !!movieId,
     })
 }
-   
+
 
 export const fetchMovieProviders = async (movieId: string) => {
     const url = `${BASE_URL}/movie/${movieId}/watch/providers`
 
     try {
         const { data } = await axios.get(url, {
+            params: {
+                api_key: TMDB_TOKEN,
+            },
             headers: {
                 accept: "application/json",
                 Authorization: `Bearer ${TMDB_TOKEN}`,
@@ -110,6 +116,10 @@ export const searchMovies = async (
 
     try {
         const { data } = await axios.get(url, {
+            params: {
+                api_key: TMDB_TOKEN,
+                query: query,
+            },
             headers: {
                 accept: "application/json",
                 Authorization: `Bearer ${TMDB_TOKEN}`,
@@ -172,6 +182,9 @@ const fetchMovieList = async ({
 
     try {
         const { data } = await axios.get(url, {
+            params: {
+                api_key: TMDB_TOKEN,
+            },
             headers: {
                 accept: "application/json",
                 Authorization: `Bearer ${TMDB_TOKEN}`,
@@ -216,6 +229,9 @@ export const fetchMoviesByIds = async (
     try {
         const moviePromises = movieIds.map((id) =>
             axios.get(`${BASE_URL}/movie/${id}`, {
+                params: {
+                    api_key: TMDB_TOKEN,
+                },
                 headers: {
                     accept: "application/json",
                     Authorization: `Bearer ${TMDB_TOKEN}`,
@@ -242,7 +258,3 @@ export const fetchMoviesByIds = async (
         throw error
     }
 }
-
-
-
- 
