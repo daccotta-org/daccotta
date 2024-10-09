@@ -34,6 +34,7 @@ const JournalPage: React.FC = () => {
     const addJournalEntry = useAddJournalEntry()
     const deleteJournalEntry = useDeleteJournalEntry()
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
     const [searchQuery, setSearchQuery] = useState("")
     const [searchResults, setSearchResults] = useState<SimpleMovie[]>([])
@@ -71,7 +72,7 @@ const JournalPage: React.FC = () => {
 
     const handleAddEntry = async () => {
         if (!selectedMovie || !dateWatched) return
-
+        setLoading(true); // Show loading spinner while sending
         try {
             await addJournalEntry.mutateAsync({
                 movie: {
@@ -96,6 +97,9 @@ const JournalPage: React.FC = () => {
         } catch (error) {
             console.error("Error adding journal entry:", error)
             toast.error("Failed to add journal entry. Please try again.")
+        }
+        finally{
+            setLoading(false); // Hide loader after request
         }
     }
 
@@ -303,10 +307,11 @@ const JournalPage: React.FC = () => {
                                     </Popover>
                                 </div>
                                 <Button
+                                    disabled={loading}
                                     onClick={handleAddEntry}
                                     className="w-full"
                                 >
-                                    Add Entry
+                                    {loading ? "Adding..." : "Add"}
                                 </Button>
                             </div>
                         </DialogContent>
