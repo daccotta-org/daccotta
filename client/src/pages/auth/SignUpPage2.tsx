@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CheckCircle, XCircle } from "lucide-react"
+import { CheckCircle, Eye, EyeOff, XCircle } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
@@ -58,6 +58,9 @@ const LoadingSpinner: React.FC = () => {
 }
 
 const SignUp: React.FC = () => {
+
+    const [hidden, setHidden] = useState(true);
+    const [confirmHidden, setConfirmHidden] = useState(true);
     const [isUsernameAvailable, setIsUsernameAvailable] = useState<
         boolean | null
     >(null)
@@ -272,14 +275,20 @@ const SignUp: React.FC = () => {
                                 <Label htmlFor="password" className="sr-only">
                                     Password
                                 </Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="Password"
-                                    className="bg-gray-800 text-white"
-                                    {...register("password")}
-                                    onPaste={preventPaste}
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={hidden ? "password" : "text"}
+                                        placeholder="Password"
+                                        className="bg-gray-800 text-white"
+                                        {...register("password")}
+                                        onPaste={preventPaste}
+                                    />
+                                    <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer" onClick={()=>setHidden(!hidden)}>
+                                        {hidden ? <EyeOff /> : <Eye />}
+                                    </div>
+                                </div>
+                                
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-red-500">
                                         {errors.password.message}
@@ -294,14 +303,20 @@ const SignUp: React.FC = () => {
                                 >
                                     Confirm Password
                                 </Label>
+                                <div className="relative">
                                 <Input
                                     id="confirmPassword"
-                                    type="password"
+                                    type={confirmHidden ? "password": "text"}
                                     placeholder="Confirm Password"
                                     className="bg-gray-800 text-white"
                                     {...register("confirmPassword")}
                                     onPaste={preventPaste}
                                 />
+                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer" onClick={()=>setConfirmHidden(!confirmHidden)}>
+                                        {confirmHidden ? <EyeOff /> : <Eye />}
+                                        </div>
+                                    </div>
+                                
                                 {errors.confirmPassword && (
                                     <p className="mt-2 text-sm text-red-500">
                                         {errors.confirmPassword.message}
