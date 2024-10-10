@@ -1,36 +1,77 @@
-name: Auto Label Issue
+name: Auto Label
 
 on:
   issues:
-    types: [opened, reopened, edited]
+    types: [opened, closed]
+  pull_request:
+    types: [opened, synchronize, closed]
 
 jobs:
-  label_issue:
+  autolabel:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
+
     steps:
-      - name: Label Issue
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const issue = context.payload.issue;
-            const issueBody = issue.body ? issue.body.toLowerCase() : '';
-            const issueTitle = issue.title.toLowerCase();
-            
-            // Add gssoc label to all issues
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              labels: ['gssoc-ext','hacktoberfest-accepted']
-            });
-            const addLabel = async (label) => {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                labels: [label]
-              });
-            };
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set labels for new issues and PRs
+        run: |
+          LABELS=""
+
+          # Check if event is issue or PR
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            TITLE="${{ github.event.issue.title }}"
+            BODY="${{ github.event.issue.body }}"
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            TITLE="${{ github.event.pull_request.title }}"
+            BODY="${{ github.event.pull_request.body }}"
+            ISSUE_NUMBER="${{ github.event.pull_request.number }}"
+          fi
+
+          # Check for bug-related keywords
+          if [[ "$TITLE" =~ [Bb]ug || "$BODY" =~ [Bb]ug ]]; then
+            LABELS="$LABELS bug"
+          fi
+
+          # Check for frontend-related keywords
+          if [[ "$TITLE" =~ [Ff]rontend || "$BODY" =~ [Ff]rontend ]]; then
+            LABELS="$LABELS frontend"
+          fi
+
+          # Check for enhancement-related keywords
+          if [[ "$TITLE" =~ [Ee]nhancement || "$BODY" =~ [Ee]nhancement ]]; then
+            LABELS="$LABELS enhancement"
+          fi
+
+          # Check for documentation-related keywords
+          if [[ "$TITLE" =~ [Dd]ocumentation || "$BODY" =~ [Dd]ocumentation ]]; then
+            LABELS="$LABELS documentation"
+          fi
+
+          # Check for hacktoberfest tag or keywords
+          if [[ "$TITLE" =~ [Hh]acktoberfest || "$BODY" =~ [Hh]acktoberfest ]]; then
+            LABELS="$LABELS hacktoberfest"
+          fi
+
+          # Check for security-related keywords
+          if [[ "$TITLE" =~ [Ss]ecurity || "$BODY" =~ [Ss]ecurity ]]; then
+            LABELS="$LABELS security"
+          fi
+
+          # Add labels if any were set
+          if [ ! -z "$LABELS" ]; then
+            echo "Adding labels: $LABELS"
+            if [[ "${{ github.event_name }}" == "issues" ]]; then
+              gh issue edit $ISSUE_NUMBER --add-label "$LABELS"
+            elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              gh pr edit $ISSUE_NUMBER --add-label "$LABELS"
+            fi
+          else
+            echo "No applicable labels found."
+          fi
+
+      - name: Close PR or Issue (optional)
+        if: github.event.action == 'closed'
+        run: |
+          echo "Issue or Pull Request #${{ github.event.issue.number }} / ${{ github.event.pull_request.number }} has been closed."
