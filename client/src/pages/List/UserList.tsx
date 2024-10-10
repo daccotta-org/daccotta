@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 import { getUserData } from "@/services/userService"
-import { Plus } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { toast } from "react-toastify"
 import CreateList from "../CreateList/CreateList"
 import { Drawer } from "@/components/ui/drawer"
@@ -35,6 +36,8 @@ const UserLists: React.FC = () => {
     const [isCreateListOpen, setIsCreateListOpen] = useState(false)
     const { user } = useAuth()
     const navigate = useNavigate()
+    const [searchQuery, setSearchQuery] = useState('')
+    const [isSearchVisible, setIsSearchVisible] = useState(false)
 
     useEffect(() => {
         const fetchLists = async () => {
@@ -64,6 +67,16 @@ const UserLists: React.FC = () => {
         setIsCreateListOpen(false)
     }
 
+    const handleSearchToggle = () => setIsSearchVisible(!isSearchVisible)
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    }
+    
+    const filteredLists = lists.filter(list =>
+        list.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
     return (
         <div className="w-full max-h-screen overflow-auto scrollbar-hide text-gray-100 min-h-screen p-4">
             <div className="max-w-6xl mx-auto">
@@ -78,12 +91,30 @@ const UserLists: React.FC = () => {
                             <Plus className="h-5 w-5 mr-2" />
                             <span className="text-white">New List</span>
                         </Button>
+                        <Button
+                            variant="ghost"
+                            className="rounded-full"
+                            onClick={handleSearchToggle}
+                        >
+                            <Search className="h-5 w-5" />
+                        </Button>
                         {/* <span>Sort by WHEN UPDATED</span>
                         <Eye className="w-5 h-5" /> */}
                     </div>
                 </header>
                 <div className="space-y-8">
-                    {lists.map((list) => (
+                    {isSearchVisible && (
+                        <div className="mt-4 w-full">
+                            <Input
+                                type="text"
+                                placeholder="Search lists..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                className="rounded-full border pl-5 pr-5 py-2 bg-white bg-opacity-10 text-white focus:ring focus:outline-none w-full"
+                            />
+                        </div>
+                    )}
+                    {filteredLists.map((list) => (
                         <div
                             key={list.list_id}
                             className="bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
