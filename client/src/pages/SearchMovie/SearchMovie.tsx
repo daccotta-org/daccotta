@@ -64,12 +64,12 @@ const SearchMovie: React.FC = () => {
           />
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className="absolute right-16 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-            >
-              <X size={20} />
-            </button>
+           <button
+           onClick={() => setSearchTerm("")}
+           className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+         >
+           <X size={20} />
+         </button>
           )}
         </div>
       </header>
