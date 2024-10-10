@@ -126,11 +126,14 @@ const MovieList: React.FC<MovieListProps> = ({
                 <div className="flex flex-nowrap gap-4 pb-4">
                     {movieList?.map((movie) => (
                         <div key={movie.movie_id} className="flex-shrink-0">
-                            <MovieCard
-                                poster_path={movie.poster_path}
-                                movie_id={movie.movie_id}
-                                title={movie.title}
-                            />
+                        <MovieCard
+                            poster_path={movie.poster_path}
+                            movie_id={movie.movie_id}
+                            title={movie.title}
+                            backdrop_path={movie.backdrop_path}  // Added
+                            release_date={movie.release_date}    // Added
+                            genre_ids={movie.genre_ids}          // Added
+                          />
                         </div>
                     ))}
                 </div>
