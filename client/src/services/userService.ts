@@ -578,3 +578,18 @@ export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
     )
     return response.data
 }
+
+export const removeMovieFromList = async (listId: string, movieId: string) => {
+    const idToken = await auth.currentUser?.getIdToken()
+    const response = await api.delete(
+        `/api/list/${listId}/remove-movie`,
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+            data: { movie_id: movieId }, // Send movie_id in the request body
+        }
+    )
+    return response.data
+}
