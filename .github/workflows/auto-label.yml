@@ -1,10 +1,10 @@
-name: Auto Label Issue and PR
+name: Auto Label Issues and PRs
 
 on:
   issues:
     types: [opened, reopened, edited, closed]
   pull_request:
-    types: [opened, reopened, edited, closed]
+    types: [opened, reopened, edited, closed, merged]
 
 jobs:
   label_issue:
@@ -14,26 +14,42 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Label Issue or PR
+      - name: Label Issues and PRs
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue = context.payload.issue || context.payload.pull_request;
-            const labelsToAdd = ['gssoc', 'hacktoberfest'];
+            const labelsOnOpen = ['gssoc', 'gssoc-ext', 'hacktoberfest'];
+            const labelsOnClose = ['closed'];
+            const labelsOnMerge = ['hacktoberfest-accepted'];
 
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              labels: labelsToAdd
-            });
-
-            const addLabel = async (label) => {
+            // Add initial labels on issue/PR opened
+            if (['opened', 'reopened', 'edited'].includes(context.payload.action)) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                labels: [label]
+                labels: labelsOnOpen
               });
-            };
+            }
+
+            // Add "closed" label on issue/PR close
+            if (context.payload.action === 'closed') {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsOnClose
+              });
+            }
+
+            // Add "hacktoberfest-accepted" label on PR merge
+            if (context.payload.pull_request && context.payload.action === 'closed' && context.payload.pull_request.merged) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsOnMerge
+              });
+            }
