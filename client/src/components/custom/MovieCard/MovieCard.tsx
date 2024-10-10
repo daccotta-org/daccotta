@@ -4,21 +4,30 @@ import { useNavigate } from "react-router-dom"
 const image_url = "https://image.tmdb.org/t/p"
 interface MovieCardProps {
     poster_path: string | undefined
-    movie_id: string 
+    movie_id: string
     title: string | undefined
+    onRemove?: (movie_id: string) => void; // Optional remove handler
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
     poster_path,
     movie_id,
     title,
+    onRemove,
 }) => {
     const navigate = useNavigate()
 
     const handleClick = () => {
         console.log("movie_id", movie_id)
         navigate(`/movie/${movie_id}`);
-      };
+    }
+
+    const handleRemove = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevents triggering the handleClick
+        if (onRemove) {
+            onRemove(movie_id);
+        }
+    };
 
     return (
         <motion.div
@@ -29,7 +38,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
         >
             <motion.img
                 src={`${image_url}/w300${poster_path}`}
-                alt={title}
+                alt={title || "Movie Poster"}
                 className="w-full h-full object-cover"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -41,10 +50,18 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 initial={{ opacity: 0 }}
                 whileHover={{ opacity: 1 }}
             >
-                <div className="absolute bottom-0 left-0 right-0 p-4">
+                <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-center">
                     <h3 className="text-white text-lg font-semibold truncate">
                         {title}
                     </h3>
+                    {onRemove && (
+                        <button
+                            className="text-red-500 hover:text-red-700"
+                            onClick={handleRemove}
+                        >
+                            Remove
+                        </button>
+                    )}
                 </div>
             </motion.div>
         </motion.div>

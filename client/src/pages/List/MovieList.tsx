@@ -4,7 +4,7 @@ import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SimpleMovie } from "@/Types/Movie"
-import { getUserData, addMovieToList } from "@/services/userService"
+import { getUserData, addMovieToList, removeMovieFromList } from "@/services/userService"
 import { useAuth } from "@/hooks/useAuth"
 import MovieSearch from "./MovieSearch"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
@@ -66,6 +66,19 @@ export default function MovieList() {
         }
     }
 
+    const handleRemoveMovie = async (movieId: string) => {
+        if (user?.uid && listId) {
+            try {
+                await removeMovieFromList(listId, movieId)
+                setMovies((prevMovies) => prevMovies.filter(movie => movie.movie_id !== movieId))
+                toast.success("Movie removed from your list.")
+            } catch (error) {
+                console.error("Error removing movie from list:", error)
+                toast.error("Failed to remove movie from the list. Please try again.")
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen text-white p-8 max-h-screen overflow-auto scrollbar-hide w-full">
             <div className="max-w-6xl mx-auto">
@@ -95,9 +108,11 @@ export default function MovieList() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {movies.map((movie) => (
                         <MovieCard
+                            key={movie.movie_id} // Ensure you add a unique key prop
                             movie_id={movie.movie_id}
                             title={movie.title}
                             poster_path={movie.poster_path}
+                            onRemove={() => handleRemoveMovie(movie.movie_id)} // Pass the remove handler
                         />
                     ))}
                     <Card className="relative lg:w-48 lg:h-64 w-28 h-36 rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition duration-300 ease-in-out hover:scale-105">
