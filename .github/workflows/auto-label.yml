@@ -1,70 +1,37 @@
-name: Auto Labeler
+name: Auto Label Issue
 
 on:
   issues:
-    types: [opened]
-  pull_request:
-    types: [opened]
-
+    types: [opened, reopened, edited]
+pull_request:
+    types: [opened, reopened, edited]
 jobs:
-  autolabel:
+  label_issue:
     runs-on: ubuntu-latest
-
+    permissions:
+      issues: write
     steps:
-    - name: Automatically label Issues and PRs
-      uses: actions-ecosystem/action-add-labels@v1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        labels: |
-          gssoc
-          hacktoberfest
-          
-    - name: Additional Labels Based on Title/Body
-      id: apply_labels
-      run: |
-        # Define patterns for different types of labels
-        BUG_LABELS=("bug" "fix")
-        ENHANCEMENT_LABELS=("enhancement" "feature")
-        FRONTEND_LABELS=("frontend" "UI")
-        SECURITY_LABELS=("security")
-        DOCUMENTATION_LABELS=("documentation" "docs")
-
-        # Fetch the event payload for issue or PR
-        TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
-        BODY="${{ github.event.issue.body || github.event.pull_request.body }}"
-
-        # Labels to be applied
-        LABELS=""
-
-        # Check for specific patterns in title and body and assign labels
-        if [[ "$TITLE" =~ bug|fix || "$BODY" =~ bug|fix ]]; then
-          LABELS+="bug,"
-        fi
-
-        if [[ "$TITLE" =~ frontend|UI || "$BODY" =~ frontend|UI ]]; then
-          LABELS+="frontend,"
-        fi
-
-        if [[ "$TITLE" =~ enhancement|feature || "$BODY" =~ enhancement|feature ]]; then
-          LABELS+="enhancement,"
-        fi
-
-        if [[ "$TITLE" =~ security || "$BODY" =~ security ]]; then
-          LABELS+="security,"
-        fi
-
-        if [[ "$TITLE" =~ documentation|docs || "$BODY" =~ documentation|docs ]]; then
-          LABELS+="documentation,"
-        fi
-
-        # Remove the trailing comma
-        LABELS="${LABELS%,}"
-
-        echo "labels=$LABELS" >> $GITHUB_ENV
-
-    - name: Apply Additional Labels
-      if: env.labels != ''
-      uses: actions-ecosystem/action-add-labels@v1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        labels: ${{ env.labels }}
+      - name: Label Issue
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const issue = context.payload.issue;
+            const issueBody = issue.body ? issue.body.toLowerCase() : '';
+            const issueTitle = issue.title.toLowerCase();
+            
+            // Add gssoc label to all issues
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: ['gssoc-ext','hacktoberfest-accepted']
+            });
+            const addLabel = async (label) => {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: [label]
+              });
+            };
