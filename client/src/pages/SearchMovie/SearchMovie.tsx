@@ -54,7 +54,7 @@ const SearchMovie: React.FC = () => {
     <div className="w-full max-h-screen overflow-auto scrollbar-hide text-white flex flex-col items-center justify-center">
       <header className="w-full max-w-xl py-8 flex flex-col items-center sm:flex sm:flex-col sm:justify-between">
         {!searchTerm && <h1 className="text-4xl font-bold mb-4 text-center sm:text-left">Find Your Favorite Movie Here</h1>}
-        <div className="relative w-full sm:w-full">
+        <div className="relative w-[90%] sm:w-full mx-auto">
           <input
             type="text"
             className="w-full pl-14 pr-20 py-2 rounded-full bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-[rgb(193,108,249)]"
