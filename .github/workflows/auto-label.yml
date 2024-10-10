@@ -1,32 +1,34 @@
-name: Auto Label Issue
+name: Auto Label Issue and PR
 
 on:
   issues:
-    types: [opened, reopened, edited]
-pull_request:
-    types: [opened, reopened, edited]
+    types: [opened, reopened, edited, closed]
+  pull_request:
+    types: [opened, reopened, edited, closed]
+
 jobs:
   label_issue:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      pull-requests: write
+
     steps:
-      - name: Label Issue
+      - name: Label Issue or PR
         uses: actions/github-script@v6
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issue = context.payload.issue;
-            const issueBody = issue.body ? issue.body.toLowerCase() : '';
-            const issueTitle = issue.title.toLowerCase();
-            
-            // Add gssoc label to all issues
+            const issue = context.payload.issue || context.payload.pull_request;
+            const labelsToAdd = ['gssoc', 'hacktoberfest'];
+
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              labels: ['gssoc-ext','hacktoberfest-accepted']
+              labels: labelsToAdd
             });
+
             const addLabel = async (label) => {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
