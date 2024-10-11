@@ -561,7 +561,7 @@ export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
     const idToken = await auth.currentUser?.getIdToken()
     console.log("movie is : ", movie)
     const response = await api.post(
-        `/api/list/${listId}/add-movie`,
+        `/api/list/${listId}/add-movie-in-list`,
         {
             movie_id: movie.id,
             title: movie.title,
