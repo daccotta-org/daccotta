@@ -1,0 +1,39 @@
+name: Merge Conflict Checker
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check_merge_conflicts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check for merge conflicts
+        run: |
+          git fetch origin
+          if git merge-base --is-ancestor HEAD origin/main; then
+            echo "No merge conflicts."
+          else
+            echo "Merge conflicts detected."
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Post comment if there are merge conflicts
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ This branch has conflicts that must be resolved. Please resolve the merge conflicts before proceeding.'
+            })
