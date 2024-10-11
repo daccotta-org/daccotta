@@ -111,6 +111,7 @@ export default function MovieList() {
                             key={movie.movie_id} // Ensure you add a unique key prop
                             movie_id={movie.movie_id}
                             title={movie.title}
+                            release_date={movie.release_date}
                             poster_path={movie.poster_path}
                             onRemove={() => handleRemoveMovie(movie.movie_id)} // Pass the remove handler
                         />
