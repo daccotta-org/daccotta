@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Heart } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/useAuth";
 import { addMovieToList, createList, getUserData } from "@/services/userService";
@@ -13,6 +12,7 @@ interface MovieCardProps {
   title: string | undefined;
   poster_path: string | undefined;
   release_date: string | undefined;
+  onRemove?: (movie_id: string) => void; // Optional remove handler
 }
 
 interface SimpleMovie {
@@ -28,6 +28,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
   title,
   poster_path,
   release_date,
+  onRemove,
 }) => {
   const navigate = useNavigate();
   const [isFavourite, setIsFavourite] = useState(false);
@@ -58,6 +59,13 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
   const handleClick = () => {
     navigate(`/movie/${movie_id}`);
+  };
+
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevents triggering the handleClick
+    if (onRemove) {
+        onRemove(movie_id);
+    }
   };
 
   const handleFavouriteClick = async (e: React.MouseEvent) => {
@@ -129,7 +137,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
         alt={title || "Movie Poster"}
         className="w-full h-full object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-110"
       />
-      
+
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         {/* <button
           className={`absolute top-2 right-2 p-1 rounded-full ${
@@ -144,8 +152,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
             <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isFavourite ? "fill-current" : ""}`} />
           )}
         </button> */}
-        
-        <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
+
+        <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 flex flex-col items-center">
           <div className="flex items-center space-x-2 text-xs sm:text-sm mb-1">
             <span className="text-gray-300">{release_date?.split('-')[0]}</span>
           </div>
@@ -153,6 +161,12 @@ const MovieCard: React.FC<MovieCardProps> = ({
             {title}
           </h3>
         </div>
+        {onRemove && (
+            <div className="w-full flex justify-center">
+                <button className="text-white-500 hover:text-red-700 font-bold"
+                onClick={handleRemove}>Remove</button>
+            </div>
+        )}
       </div>
     </motion.div>
   );
