@@ -1,24 +1,27 @@
-import { FC } from "react"
-import { Link, useLocation } from "react-router-dom"
-import { Home, Search, Users, NotebookPen } from "lucide-react"
-import logo from "../../../assets/logo_light.svg"
+import { FC } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Home, Search, Users, NotebookPen } from "lucide-react";
+import logo from "../../../assets/logo_light.svg";
 
 const Navbar: FC = () => {
-    const location = useLocation()
+    const location = useLocation();
 
     const navItems = [
         { path: "/", icon: Home, tip: "Home" },
         { path: "/search-movie", icon: Search, tip: "Search" },
         { path: "/friends", icon: Users, tip: "Friends" },
-    ]
+    ];
 
-    const isActive = (path: string) => location.pathname === path
+    // Journal item
+    const journalItem = { path: "/journal", icon: NotebookPen, tip: "Journal" };
+
+    const isActive = (path: string) => location.pathname === path;
 
     return (
         <nav className="flex flex-col h-screen w-16 bg-black text-white">
             <div className="p-4">
                 <Link to="/" className="block">
-                    <img src={logo} className="rounded-md" alt="" />
+                    <img src={logo} className="rounded-md" alt="Logo" />
                 </Link>
             </div>
             <ul className="flex-1 px-2">
@@ -38,23 +41,24 @@ const Navbar: FC = () => {
                     </li>
                 ))}
             </ul>
-            <div className="p-4">
+
+            {/* Journal link aligned at the bottom */}
+            <div className="p-4 mt-auto">
                 <Link
-                    to="/journal"
-                    className={`block p-2 rounded-md  ${
-                        isActive("/journal") ? "text-white" : "text-gray-400"
+                    to={journalItem.path}
+                    className={`block p-2 rounded-md tooltip tooltip-right ${
+                        isActive(journalItem.path) ? "text-white" : "text-gray-400"
                     }`}
+                    data-tip={journalItem.tip}
                 >
-                    {/* <Settings className="w-6 h-6" /> */}
-                    <NotebookPen
+                    <journalItem.icon
                         color="#c16cf9"
-                        data-tip="Log"
-                        className="tooltip tooltip-right"
+                        className="w-6 h-6"
                     />
                 </Link>
             </div>
         </nav>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;
