@@ -39,7 +39,7 @@ const FriendsSearch: React.FC = () => {
         useRemoveFriend,
         useGetPendingRequests,
     } = useFriends()
-
+    const [friendRequestStatus, setFriendRequestStatus] = useState<{ [key: string]: { loading: boolean; sent: boolean } }>({});
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
     const { data: pendingRequests, isLoading: isLoadingRequests } =
         useGetPendingRequests()
@@ -67,31 +67,38 @@ const FriendsSearch: React.FC = () => {
     const [sentRequests, setSentRequests] = useState<Record<string, boolean>>({});
 
     const handleSendRequest = (friendUserName: string) => {
-        if (sentRequests[friendUserName]) return; // Prevent sending duplicate requests
-        setLoading(true); // Show loading spinner while sending
+        if (friendRequestStatus[friendUserName]?.sent) return; // Prevent duplicate requests
+    
+        setFriendRequestStatus((prev) => ({
+            ...prev,
+            [friendUserName]: { loading: true, sent: false }
+        }));
+    
         sendFriendRequestMutation.mutate(friendUserName, {
             onSuccess: () => {
-                setSentRequests((prev) => ({
+                setFriendRequestStatus((prev) => ({
                     ...prev,
-                    [friendUserName]: true, // Mark this user as "Sent"
+                    [friendUserName]: { loading: false, sent: true }
                 }));
-                toast.success("Friend request sent successfully.")
+                toast.success("Friend request sent successfully.");
             },
             onError: (error) => {
-                const axiosError = error as AxiosError
-                const message: any = axiosError.response?.data
+                const axiosError = error as AxiosError;
+                const message: any = axiosError.response?.data;
                 if (message.message === "Friend request already sent") {
-                    toast.warn("Friend request already sent.")
-                    return
+                    toast.warn("Friend request already sent.");
+                } else {
+                    toast.error("Failed to send friend request. Please try again.");
                 }
-
-                toast.error("Failed to send friend request. Please try again.")
-            },
-            onSettled: () => {
-                setLoading(false); // Hide loader after request
+    
+                setFriendRequestStatus((prev) => ({
+                    ...prev,
+                    [friendUserName]: { loading: false, sent: false }
+                }));
             }
-        })
-    }
+        });
+    };
+    
 
     const handleRespondToRequest = (
         requestId: string,
@@ -376,6 +383,7 @@ const FriendsSearch: React.FC = () => {
                                                 </div>
                                             </div>
                                             <Button
+<<<<<<< HEAD
                                             onClick={() => handleSendRequest(user.userName)}
                                             disabled={loading || sentRequests[user.userName]}
                                             size="sm"
@@ -384,6 +392,15 @@ const FriendsSearch: React.FC = () => {
                                             >
                                             {/* <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> */}
                                             {loading ? "Sending..." : (sentRequests[user.userName] ? "Sent" : "Send Request")}
+=======
+                                                onClick={() => handleSendRequest(user.userName)}
+                                                disabled={friendRequestStatus[user.userName]?.loading || friendRequestStatus[user.userName]?.sent}
+                                                size="sm"
+                                                className="p-2 sm:p-3 md:p-4 lg:p-5 rounded-md"
+                                                aria-label="Send Friend Request"
+                                            >
+                                                {friendRequestStatus[user.userName]?.loading ? "Sending..." : friendRequestStatus[user.userName]?.sent ? "Sent" : "Send Request"}
+>>>>>>> c46b435 (fix send request to all)
                                         </Button>
                                         </motion.li>
                                     ))}
