@@ -136,7 +136,7 @@ const FriendsSearch: React.FC = () => {
                         <Users className="h-6 w-6" />
                         <h1 className="text-2xl font-bold">Friends</h1>
                     </div>
-                    <nav className="flex flex-wrap items-center gap-2">
+                    <nav className="flex items-center gap-2">
                         <Button
                             variant="ghost"
                             className={`text-gray-300 rounded-md hover:text-white hover:bg-gray-800 ${activeTab === "all" ? "bg-gray-800" : ""}`}
