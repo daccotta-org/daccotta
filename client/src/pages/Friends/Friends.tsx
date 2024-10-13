@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useFriends } from "@/services/friendsService"
 import { useNavigate } from "react-router-dom"
 import { AxiosError } from "axios"
-import { Users, Trash, AlertTriangle,UserPlus} from "lucide-react"
+import { Users, Trash, AlertTriangle} from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -31,7 +31,6 @@ const FriendsSearch: React.FC = () => {
     const { user } = useAuth()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
-    const [sent, setSent] = useState(false)
 
     const {
         useGetFriends,
@@ -65,12 +64,17 @@ const FriendsSearch: React.FC = () => {
         }
     }
 
+    const [sentRequests, setSentRequests] = useState<Record<string, boolean>>({});
+
     const handleSendRequest = (friendUserName: string) => {
-        if (sent) return; // Prevent sending duplicate requests
+        if (sentRequests[friendUserName]) return; // Prevent sending duplicate requests
         setLoading(true); // Show loading spinner while sending
         sendFriendRequestMutation.mutate(friendUserName, {
             onSuccess: () => {
-                setSent(true); // Mark as "Sent"
+                setSentRequests((prev) => ({
+                    ...prev,
+                    [friendUserName]: true, // Mark this user as "Sent"
+                }));
                 toast.success("Friend request sent successfully.")
             },
             onError: (error) => {
@@ -367,13 +371,13 @@ const FriendsSearch: React.FC = () => {
                                             </div>
                                             <Button
                                             onClick={() => handleSendRequest(user.userName)}
-                                            disabled={loading || sent}
+                                            disabled={loading || sentRequests[user.userName]}
                                             size="sm"
                                             className="p-2 sm:p-3 md:p-4 lg:p-5 rounded-md"
                                             aria-label="Send Friend Request"
                                             >
                                             {/* <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> */}
-                                            {loading ? "Sending..." : (sent ? "Sent" : "Send Request")}
+                                            {loading ? "Sending..." : (sentRequests[user.userName] ? "Sent" : "Send Request")}
                                         </Button>
                                         </motion.li>
                                     ))}
