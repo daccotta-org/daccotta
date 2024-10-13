@@ -6,7 +6,7 @@ import { Heart, Star, Bookmark } from "lucide-react"
 import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
 import { useAuth } from "@/hooks/useAuth"
 import { useMovieProviders, useMovieDetails } from "@/services/movieService"
-import { addMovieToList, createList, getUserData } from "@/services/userService"
+import { addMovieToList, createList, getUserData, removeMovieFromList } from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
 import { List } from "../List/MovieList"
 import Loader from "../../components/ui/Loader"
@@ -80,49 +80,58 @@ const MovieDetailPage: React.FC = () => {
 
     const handleFavouriteClick = async () => {
         if (!user) {
-            toast.error("Please log in to add movies to your Favourites.")
-            return
+            toast.error("Please log in to manage your Favourites.");
+            return;
         }
-
-        if (!movie) return
+    
+        if (!movie) return;
         setFavouriteLoading(true);
         try {
-            const userData = await getUserData(user.uid)
+            const userData = await getUserData(user.uid);
             let favouritesList = userData.lists.find(
                 (list: List) => list.name === "Favourites"
-            )
-
+            );
+    
             if (!favouritesList) {
                 const createListData = {
                     name: "Favourites",
                     description: "My favourite movies",
                     isPublic: true,
-                }
+                };
                 favouritesList = await createList(user.uid, {
                     ...createListData,
                     list_type: "user",
-                })
+                });
             }
-
-            const movieToAdd = {
-                id: id!,
-                movie_id: id!,
-                title: movie.title,
-                poster_path: movie.poster_path,
-                release_date: movie.release_date,
-                genre_ids: movie.genres.map((genre:any) => genre.id),
+    
+            if (isFavourite) {
+                // Remove movie from favourites if already added
+                await removeMovieFromList(favouritesList.list_id, movie.id);
+                console.log("")
+                setIsFavourite(false);
+                toast.success(`${movie.title} has been removed from your Favourites.`);
+            } else {
+                // Add movie to favourites if not already added
+                const movieToAdd = {
+                    id: id!,
+                    movie_id: movie.id,
+                    title: movie.title,
+                    poster_path: movie.poster_path,
+                    release_date: movie.release_date,
+                    genre_ids: movie.genres.map((genre: any) => genre.id),
+                };
+                await addMovieToList(favouritesList.list_id, movieToAdd);
+                setIsFavourite(true);
+                toast.success(`${movie.title} has been added to your Favourites.`);
             }
-
-            await addMovieToList(favouritesList.list_id, movieToAdd)
-            setIsFavourite(true)
-            toast.success(`${movie.title} has been added to your Favourites.`)
         } catch (error) {
-            console.error("Error adding movie to Favourites:", error)
-            toast.error("Failed to add movie. Please try again.")
+            console.error("Error managing movie in Favourites:", error);
+            toast.error("Failed to manage movie. Please try again.");
         } finally {
             setFavouriteLoading(false); // Stop loading
         }
-    }
+    };
+    
 
     if (isMovieLoading || isProvidersLoading) {
         return (
