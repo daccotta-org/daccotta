@@ -52,6 +52,7 @@ const FriendsSearch: React.FC = () => {
     const sendFriendRequestMutation = useSendFriendRequest()
     const respondToFriendRequestMutation = useRespondToFriendRequest()
     const removeFriendMutation = useRemoveFriend()
+    const [removeLoading, setRemoveLoading] = useState(false);
 
     const handleSearch = () => {
         try {
@@ -120,6 +121,7 @@ const FriendsSearch: React.FC = () => {
     }
 
     const handleRemoveFriend = () => {
+        setRemoveLoading(true);
         removeFriendMutation.mutate(friendToRemove, {
             onSuccess: () => {
                 toast.success("Friend removed successfully.")
@@ -127,6 +129,9 @@ const FriendsSearch: React.FC = () => {
             },
             onError: () => {
                 toast.error("Failed to remove friend. Please try again.")
+            },
+            onSettled: () => {
+                setRemoveLoading(false); // Stop loading after the process completes
             },
         })
     }
@@ -419,7 +424,7 @@ const FriendsSearch: React.FC = () => {
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <AlertTriangle className="h-5 w-5 text-white" />
-                            Remove Friend
+                            Remove Friends
                         </DialogTitle>
                     </DialogHeader>
                     <div className="py-4">
@@ -432,13 +437,14 @@ const FriendsSearch: React.FC = () => {
                         <Button
                             className="bg-white text-black"
                             onClick={() => setIsRemoveDialogOpen(false)}
+                            disabled={removeLoading} // Disable Cancel button during loading
                         >
-                            Cancel
+                            {removeLoading ? "Please wait..." : "Cancel"}
                         </Button>
-                        <Button onClick={handleRemoveFriend}>
-                            Remove Friend
+                        <Button onClick={handleRemoveFriend} disabled={removeLoading}>
+                            {removeLoading ? "Removing..." : "Remove Friend"}
                         </Button>
-                    </DialogFooter>
+                </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>
