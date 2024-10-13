@@ -146,11 +146,17 @@ const FriendsSearch: React.FC = () => {
                         </Button>
                         <Button
                             variant="ghost"
-                            className={`text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === "pending" ? "bg-gray-800" : ""}`}
+                            className={`relative text-gray-300 hover:text-white hover:bg-gray-800 ${activeTab === "pending" ? "bg-gray-800" : ""}`}
                             onClick={() => setActiveTab("pending")}
                         >
                             Pending
+                            {pendingRequests?.length > 0 && (
+                                <span className="absolute top-1 -m-1 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full">
+                                    {pendingRequests.length}
+                                </span>
+                            )}
                         </Button>
+
                         <Button
                             className={`bg-green-600 hover:bg-green-700 ${activeTab === "add" ? "bg-green-700" : ""}`}
                             onClick={() => setActiveTab("add")}
