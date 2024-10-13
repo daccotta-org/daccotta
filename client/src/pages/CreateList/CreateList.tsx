@@ -23,12 +23,12 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
     const [listName, setListName] = useState("")
     const [description, setDescription] = useState("")
     const [isPublic, setIsPublic] = useState(false)
-
+    const [loading, setLoading] = useState(false) 
     const { user } = useAuth()
 
     const handleSubmit = async () => {
         if (!user) return
-
+        setLoading(true) // Start loading
         console.log("Creating list...", listName, description, isPublic)
 
         try {
@@ -42,6 +42,8 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
         } catch (error) {
             console.error("Error creating list:", error)
             // Handle error (e.g., show error message to user)
+        }finally {
+            setLoading(false) // Stop loading
         }
         window.location.reload()
     }
@@ -86,9 +88,11 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button onClick={handleSubmit}>Create List</Button>
+                    <Button onClick={handleSubmit} disabled={loading}>
+                        {loading ? "Creating..." : "Create List"}
+                    </Button>
                     <DrawerClose asChild>
-                        <Button variant="outline" onClick={onClose}>
+                        <Button variant="outline" onClick={onClose} disabled={loading}>
                             Cancel
                         </Button>
                     </DrawerClose>
