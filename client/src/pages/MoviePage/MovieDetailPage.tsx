@@ -9,6 +9,7 @@ import { useMovieProviders, useMovieDetails } from "@/services/movieService"
 import { addMovieToList, createList, getUserData } from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
 import { List } from "../List/MovieList"
+import "react-toastify/dist/ReactToastify.css"
 
 const image_url = "https://image.tmdb.org/t/p"
 
@@ -181,7 +182,7 @@ const MovieDetailPage: React.FC = () => {
                                 <button
                                     className="flex items-center shadow-2xl bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom"
                                     data-tip="watchlist"
-                                    onClick={() => alert("watchlist coming soon")}
+                                    onClick={() => toast.warning("Coming Soon!")}
                                 >
                                     <Bookmark className="w-6 h-6 fill-current" />
                                 </button>
