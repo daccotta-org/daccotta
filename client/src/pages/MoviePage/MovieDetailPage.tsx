@@ -9,7 +9,7 @@ import { useMovieProviders, useMovieDetails } from "@/services/movieService"
 import { addMovieToList, createList, getUserData } from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
 import { List } from "../List/MovieList"
-import "react-toastify/dist/ReactToastify.css"
+import Loader from "../../components/ui/Loader"
 
 const image_url = "https://image.tmdb.org/t/p"
 
@@ -56,6 +56,7 @@ const MovieDetailPage: React.FC = () => {
 
     const { data: movie, isLoading: isMovieLoading } = useMovieDetails(id!)
     const { data: providers, isLoading: isProvidersLoading } = useMovieProviders(id!)
+    const [favouriteLoading, setFavouriteLoading] = useState(false); // Loading state for favorite button
 
     useEffect(() => {
         const checkFavouriteStatus = async () => {
@@ -84,7 +85,7 @@ const MovieDetailPage: React.FC = () => {
         }
 
         if (!movie) return
-
+        setFavouriteLoading(true);
         try {
             const userData = await getUserData(user.uid)
             let favouritesList = userData.lists.find(
@@ -118,6 +119,8 @@ const MovieDetailPage: React.FC = () => {
         } catch (error) {
             console.error("Error adding movie to Favourites:", error)
             toast.error("Failed to add movie. Please try again.")
+        } finally {
+            setFavouriteLoading(false); // Stop loading
         }
     }
 
@@ -136,7 +139,6 @@ const MovieDetailPage: React.FC = () => {
             </div>
         )
     }
-
     const director = movie.credits?.crew.find((person:any) => person.job === "Director")?.name || "Unknown"
     const firstRentProvider = providers?.rent?.[0]
     const firstBuyProvider = providers?.buy?.[0]
@@ -170,15 +172,20 @@ const MovieDetailPage: React.FC = () => {
                                 <span className="text-2xl font-bold">{movie.vote_average.toFixed(1)}</span>
                             </div>
                             <div className="flex lg:flex-row flex-row gap-4 items-center">
-                                <button
-                                    className={`flex items-center shadow-2xl text-black px-2 py-2 rounded-xl tooltip tooltip-bottom ${
-                                        isFavourite ? "bg-red-600 text-white" : "bg-white"
-                                    }`}
-                                    data-tip="Favourites"
-                                    onClick={handleFavouriteClick}
-                                >
+                            <button
+                                className={`flex items-center shadow-2xl text-black px-2 py-2 rounded-xl tooltip tooltip-bottom ${
+                                    isFavourite ? "bg-red-600 text-white" : "bg-white"
+                                }`}
+                                data-tip="Favourites"
+                                onClick={handleFavouriteClick}
+                                disabled={favouriteLoading} // Disable button while loading
+                            >
+                                {favouriteLoading ? (
+                                    <Loader /> // Show loading icon
+                                ) : (
                                     <Heart className={`w-6 h-6 ${isFavourite ? "fill-current" : ""}`} />
-                                </button>
+                                )}
+                            </button>
                                 <button
                                     className="flex items-center shadow-2xl bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom"
                                     data-tip="watchlist"
