@@ -41,15 +41,15 @@ const Navbar: FC = () => {
             <div className="p-4">
                 <Link
                     to="/journal"
-                    className={`block p-2 rounded-md  ${
+                    className={`block p-2 rounded-md tooltip tooltip-right  ${
                         isActive("/journal") ? "text-white" : "text-gray-400"
                     }`}
+                    data-tip="Journal"
                 >
                     {/* <Settings className="w-6 h-6" /> */}
                     <NotebookPen
                         color="#c16cf9"
-                        data-tip="Log"
-                        className="tooltip tooltip-right"
+                        
                     />
                 </Link>
             </div>

@@ -15,7 +15,7 @@ const Navbar: FC = () => {
         
 
       </div>
-      <div className="navbar-center">
+      <div className="navbar ">
         <a className="btn btn-ghost text-xl" href='/'>
           <span className='text-2xl font-bold'>dacc</span>
           <motion.button

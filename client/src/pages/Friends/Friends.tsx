@@ -127,7 +127,7 @@ const FriendsSearch: React.FC = () => {
     return (
         <div className="min-h-screen pt-[5rem] md:pt[5rem] lg:pt-[5rem] max-h-screen overflow-auto scrollbar-hide text-gray-100 lg:p-4 px-[4rem] w-full">
             <div className="max-w-4xl mx-auto">
-                <header className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-6">
+                <header className="flex flex-wrap items-center  sm:justify-between gap-4 mb-6">
                     <div className="flex items-center gap-2">
                         <Users className="h-6 w-6" />
                         <h1 className="text-2xl font-bold">Friends</h1>
@@ -329,7 +329,7 @@ const FriendsSearch: React.FC = () => {
                             {isLoadingSearch ? (
                                 <p>Searching...</p>
                             ) : (
-                                <ul className="space-y-4">
+                                <ul className="space-y-40">
                                     {searchResults?.map((user: any) => (
                                         <motion.li
                                             key={user.uid}
@@ -369,7 +369,7 @@ const FriendsSearch: React.FC = () => {
                                             onClick={() => handleSendRequest(user.userName)}
                                             disabled={loading || sent}
                                             size="sm"
-                                            className="p-2 sm:p-3 md:p-4 lg:p-5 rounded-md"
+                                            className="p-2 sm:p-2 md:p-4 lg:p-5 rounded-md"
                                             aria-label="Send Friend Request"
                                             >
                                             {/* <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> */}
