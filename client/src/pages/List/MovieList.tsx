@@ -97,7 +97,7 @@ export default function MovieList() {
                                 <span className="sr-only">Add movie</span>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="text-white">
                             <h2 className="text-lg font-semibold mb-4 text-center md:text-start">
                                 Add a Movie to Your List
                             </h2>
