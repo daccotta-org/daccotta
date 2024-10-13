@@ -40,6 +40,7 @@ const FriendsSearch: React.FC = () => {
         useGetPendingRequests,
     } = useFriends()
     const [friendRequestStatus, setFriendRequestStatus] = useState<{ [key: string]: { loading: boolean; sent: boolean } }>({});
+    const [requestLoading, setRequestLoading] = useState<{ [key: string]: { accept: boolean; reject: boolean } }>({});
     const { data: friends, isLoading: isLoadingFriends } = useGetFriends()
     const { data: pendingRequests, isLoading: isLoadingRequests } =
         useGetPendingRequests()
@@ -101,25 +102,32 @@ const FriendsSearch: React.FC = () => {
     };
     
 
-    const handleRespondToRequest = (
-        requestId: string,
-        action: "accept" | "reject"
-    ) => {
+    const handleRespondToRequest = (requestId: string, action: "accept" | "reject") => {
+        setRequestLoading((prev) => ({
+            ...prev,
+            [requestId]: { ...prev[requestId], [action]: true }
+        })); // Set loading only for the specific action on this request
+    
         respondToFriendRequestMutation.mutate(
             { requestId, action },
             {
                 onSuccess: () => {
-                    toast.success(`Friend request ${action}ed successfully.`)
+                    toast.success(`Friend request ${action}ed successfully.`);
                 },
                 onError: () => {
-                    toast.error(
-                        `Failed to ${action} friend request. Please try again.`
-                    )
+                    toast.error(`Failed to ${action} friend request. Please try again.`);
+                },
+                onSettled: () => {
+                    setRequestLoading((prev) => ({
+                        ...prev,
+                        [requestId]: { ...prev[requestId], [action]: false }
+                    })); // Reset loading state after the action completes
                 },
             }
-        )
-    }
-
+        );
+    };
+    
+    
     const handleRemoveFriend = () => {
         setRemoveLoading(true);
         removeFriendMutation.mutate(friendToRemove, {
@@ -293,30 +301,22 @@ const FriendsSearch: React.FC = () => {
                                                 </div>
                                             </div>
                                             <div className="space-x-2">
-                                                <Button
-                                                    onClick={() =>
-                                                        handleRespondToRequest(
-                                                            request._id,
-                                                            "accept"
-                                                        )
-                                                    }
-                                                    variant="default"
-                                                    size="sm"
-                                                >
-                                                    Accept
-                                                </Button>
-                                                <Button
-                                                    onClick={() =>
-                                                        handleRespondToRequest(
-                                                            request._id,
-                                                            "reject"
-                                                        )
-                                                    }
-                                                    variant="outline"
-                                                    size="sm"
-                                                >
-                                                    Reject
-                                                </Button>
+                                            <Button
+                                            onClick={() => handleRespondToRequest(request._id, "accept")}
+                                            variant="default"
+                                            size="sm"
+                                            disabled={requestLoading[request._id]?.accept} // Disable during accept loading
+                                        >
+                                            {requestLoading[request._id]?.accept ? "Accepting..." : "Accept"}
+                                        </Button>
+                                        <Button
+                                            onClick={() => handleRespondToRequest(request._id, "reject")}
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={requestLoading[request._id]?.reject} // Disable during reject loading
+                                        >
+                                            {requestLoading[request._id]?.reject ? "Rejecting..." : "Reject"}
+                                        </Button>
                                             </div>
                                         </motion.li>
                                     ))}
