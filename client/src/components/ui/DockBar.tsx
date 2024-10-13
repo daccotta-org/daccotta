@@ -7,6 +7,8 @@ import { useNavigate, useLocation } from "react-router-dom"
 
 import { Dock, DockIcon } from "@/components/magicui/dock"
 import { NotebookPenIcon } from "lucide-react"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 export type IconProps = React.HTMLAttributes<SVGElement>
 
@@ -40,7 +42,7 @@ export function DockDemo() {
                 <DockIcon
                     className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/groups") ? "bg-primary" : ""}`}
                     onClick={() => {
-                        navigate("/"), alert("coming soon")
+                        navigate("/"), toast.warning("Coming Soon!")
                     }}
                 >
                     <FaUserFriends size="1rem" className="text-white" />
