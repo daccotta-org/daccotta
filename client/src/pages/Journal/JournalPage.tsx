@@ -27,6 +27,14 @@ import { toast } from "react-toastify"
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 
+interface AxiosError {
+    response?: {
+        data: {
+            error: string;
+        };
+    };
+    message: string;
+}
 const JournalPage: React.FC = () => {
     const { useGetJournalEntries, useAddJournalEntry, useDeleteJournalEntry } =
         useJournal()
@@ -94,11 +102,22 @@ const JournalPage: React.FC = () => {
             toast.success(
                 `"${selectedMovie.title}" has been added to your journal.`
             )
-        } catch (error) {
-            console.error("Error adding journal entry:", error)
-            toast.error("Failed to add journal entry. Please try again.")
-        }
-        finally{
+        } catch (error: unknown) {
+            // Use type assertion to treat error as AxiosError
+            const axiosError = error as AxiosError;
+    
+            if (axiosError.response) {
+                console.error("Error adding journal entry:", axiosError.response.data.error);
+                if (axiosError.response.data.error === "Duplicate entry for same day") {
+                    toast.error("Failed to add journal entry: " + axiosError.response.data.error);
+                }
+            } else if (axiosError instanceof Error) {
+                console.error("Error message:", axiosError.message);
+                toast.error("Failed to add journal entry: " + axiosError.message);
+            } else {
+                console.error("Unknown error:", error);
+            }
+        } finally {
             setLoading(false); // Hide loader after request
         }
     }

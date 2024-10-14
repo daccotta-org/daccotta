@@ -5,15 +5,15 @@ import type { MovieInList } from "../models/movie"
 
 export const addJournalEntry = async (req: Request, res: Response) => {
     try {
-        const { movie, dateWatched, rewatches } = req.body
-        const userId = req.user?.uid
+        const { movie, dateWatched, rewatches } = req.body;
+        const userId = req.user?.uid;
 
-        console.log("userId is : ", userId)
-        console.log("req.user is : ", req.user)
-        console.log("req.body is : ", req.body)
+        console.log("userId is: ", userId);
+        console.log("req.user is: ", req.user);
+        console.log("req.body is: ", req.body);
 
         if (!userId) {
-            return res.status(401).json({ error: "Unauthorized" })
+            return res.status(401).json({ error: "Unauthorized" });
         }
 
         const movieData: MovieInList = {
@@ -22,6 +22,23 @@ export const addJournalEntry = async (req: Request, res: Response) => {
             poster_path: movie.poster_path,
             release_date: movie.release_date,
             genre_ids: movie.genre_ids,
+        };
+
+        const existingEntry = await User.findOne({
+            _id: userId,
+            journal: {
+                $elemMatch: {
+                    "movie.movie_id": movie.movie_id,
+                    dateWatched: {
+                        $gte: new Date(dateWatched).setHours(0, 0, 0, 0),
+                        $lt: new Date(dateWatched).setHours(23, 59, 59, 999),
+                    },
+                },
+            },
+        });
+
+        if (existingEntry) {
+            return res.status(400).json({ error: "Duplicate entry for same day" });
         }
 
         const newJournalEntry = {
@@ -29,28 +46,28 @@ export const addJournalEntry = async (req: Request, res: Response) => {
             movie: movieData,
             dateWatched: new Date(dateWatched),
             rewatches: rewatches || 1,
-        }
+        };
 
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { $push: { journal: newJournalEntry } },
             { new: true, runValidators: true }
-        )
+        );
 
         if (!updatedUser) {
-            return res.status(404).json({ error: "User not found" })
+            return res.status(404).json({ error: "User not found" });
         }
 
         res.status(201).json({
             message: "Journal entry added successfully",
             journalEntry: newJournalEntry,
             user: updatedUser,
-        })
+        });
     } catch (error) {
-        console.error("Error adding journal entry:", error)
-        res.status(500).json({ error: "Internal server error" })
+        console.error("Error adding journal entry:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-}
+};
 
 export const updateJournalEntry = async (req: Request, res: Response) => {
     try {
