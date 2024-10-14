@@ -1,24 +1,34 @@
 {
-  "dependencies": { "@fontsource/ibm-plex-mono": "^5.0.14", "@fontsource/lato": "^5.0.22", "@fontsource/matemasie": "^5.0.1", "@fontsource/montserrat": "^5.0.19", "@fontsource/noto-sans": "^5.0.22", "@fontsource/roboto": "^5.0.14", "daccotta": ".", "eslint": "^9.9.1" },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.0.14",
+    "@fontsource/lato": "^5.0.22",
+    "@fontsource/matemasie": "^5.0.1",
+    "@fontsource/montserrat": "^5.0.19",
+    "@fontsource/noto-sans": "^5.0.22",
+    "@fontsource/roboto": "^5.0.14",
+    "daccotta": ".",
+    "eslint": "^9.9.1",
+    "react-loading-skeleton": "^3.5.0"
+  },
   "scripts": {
     "start:client": "cd client && bunx --bun vite",
     "start:server": " cd server && bun --watch main.ts",
-     "start:all": "concurrently \"bun start:client\" \"bun start:server\"",
+    "start:all": "concurrently \"bun start:client\" \"bun start:server\"",
     "lint": "eslint 'client/**/*.{ts,tsx,js,jsx}' 'server/**/*.{ts,js}'",
     "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'",
     "build": "cd client && bun install && bunx --bun vite build",
-  "start": "cd server && bun install && bun main.ts"
+    "start": "cd server && bun install && bun main.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/bun": "latest",
     "concurrently": "^8.2.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.35.2",
     "globals": "^15.9.0",
     "prettier": "^3.3.3",
-    "typescript-eslint": "^8.4.0",
-    "@types/bun": "latest"
+    "typescript-eslint": "^8.4.0"
   },
   "name": "daccotta",
   "module": "index.ts",
@@ -27,4 +37,3 @@
     "typescript": "^5.5.4"
   }
 }
-
