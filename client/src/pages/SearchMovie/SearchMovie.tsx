@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// Update the SearchMovie component
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -14,11 +15,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
+interface SearchHistoryItem {
+  term: string;
+  timestamp: string;
+}
+
 const SearchMovie: React.FC = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
+  const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
 
   const { data: movies, isLoading, error } = useSearchMovies(
     searchTerm,
@@ -26,16 +33,54 @@ const SearchMovie: React.FC = () => {
     selectedGenre ? parseInt(selectedGenre) : undefined
   );
 
+  useEffect(() => {
+    // Load search history from session storage on component mount
+    const history = sessionStorage.getItem("searchHistory");
+    if (history) {
+      setSearchHistory(JSON.parse(history));
+    }
+  }, []);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchTerm) {
+      const timestamp = new Date().toLocaleString();
+      const updatedHistory = [
+        { term: searchTerm, timestamp },
+        ...searchHistory.filter(item => item.term !== searchTerm),
+      ].slice(0, 5); // Limit to 5 recent searches
+      setSearchHistory(updatedHistory);
+      sessionStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+    }
   };
 
   if (error) {
     toast.error("An error occurred while searching for movies.");
   }
 
-  const handleClick = (id: string) => () => {
+  const handleClick = (id: string, title: any) => () => {
+    const timestamp = new Date().toLocaleString();
+    const updatedHistory = [
+      { term: title, timestamp },
+      ...searchHistory.filter(item => item.term !== title),
+    ].slice(0, 5); // Limit to 5 recent searches
+    setSearchHistory(updatedHistory);
+    sessionStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
     navigate(`/movie/${id}`);
+  };
+
+  const handleHistorySelect = (term: string) => {
+    setSearchTerm(term);
+    handleSearchSubmit();
+  };
+
+  const handleHistoryDelete = (index: number) => {
+    const updatedHistory = searchHistory.filter((_, i) => i !== index);
+    setSearchHistory(updatedHistory);
+    sessionStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
   };
 
   const currentYear = new Date().getFullYear();
@@ -61,15 +106,34 @@ const SearchMovie: React.FC = () => {
             placeholder="Search movies, TV shows, and more"
             value={searchTerm}
             onChange={handleSearch}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
           />
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           {searchTerm && (
-           <button
-           onClick={() => setSearchTerm("")}
-           className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-         >
-           <X size={20} />
-         </button>
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+          )}
+          {searchHistory.length > 0 && !searchTerm && (
+            <div className="absolute top-full mt-2 w-[90%] bg-gray-900 text-white rounded-md shadow-lg left-1/2 transform -translate-x-1/2">
+              {searchHistory.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center p-2 hover:bg-gray-800 cursor-pointer justify-between"
+                >
+                  <div onClick={() => handleHistorySelect(item.term)} className="flex flex-col">
+                    <span className="text-sm">{item.term}</span>
+                    <span className="text-xs text-gray-500">{item.timestamp}</span>
+                  </div>
+                  <button onClick={() => handleHistoryDelete(index)} className="text-gray-500 hover:text-white">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </header>
@@ -157,7 +221,7 @@ const SearchMovie: React.FC = () => {
                     <div
                       key={movie.id}
                       className="cursor-pointer transition-transform duration-300 hover:scale-105"
-                      onClick={handleClick(movie.id)}
+                      onClick={handleClick(movie.id, movie.title)}
                     >
                       {movie.poster_path ? (
                         <img
