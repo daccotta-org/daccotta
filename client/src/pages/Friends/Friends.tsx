@@ -30,7 +30,6 @@ const FriendsSearch: React.FC = () => {
     const [friendToRemove, setFriendToRemove] = useState("")
     const { user } = useAuth()
     const navigate = useNavigate()
-    const [loading, setLoading] = useState(false)
 
     const {
         useGetFriends,
@@ -66,16 +65,14 @@ const FriendsSearch: React.FC = () => {
         }
     }
 
-    const [sentRequests, setSentRequests] = useState<Record<string, boolean>>({});
-
     const handleSendRequest = (friendUserName: string) => {
         if (friendRequestStatus[friendUserName]?.sent) return; // Prevent duplicate requests
-    
+
         setFriendRequestStatus((prev) => ({
             ...prev,
             [friendUserName]: { loading: true, sent: false }
         }));
-    
+
         sendFriendRequestMutation.mutate(friendUserName, {
             onSuccess: () => {
                 setFriendRequestStatus((prev) => ({
@@ -92,7 +89,7 @@ const FriendsSearch: React.FC = () => {
                 } else {
                     toast.error("Failed to send friend request. Please try again.");
                 }
-    
+
                 setFriendRequestStatus((prev) => ({
                     ...prev,
                     [friendUserName]: { loading: false, sent: false }
@@ -100,14 +97,14 @@ const FriendsSearch: React.FC = () => {
             }
         });
     };
-    
+
 
     const handleRespondToRequest = (requestId: string, action: "accept" | "reject") => {
         setRequestLoading((prev) => ({
             ...prev,
             [requestId]: { ...prev[requestId], [action]: true }
         })); // Set loading only for the specific action on this request
-    
+
         respondToFriendRequestMutation.mutate(
             { requestId, action },
             {
@@ -126,8 +123,8 @@ const FriendsSearch: React.FC = () => {
             }
         );
     };
-    
-    
+
+
     const handleRemoveFriend = () => {
         setRemoveLoading(true);
         removeFriendMutation.mutate(friendToRemove, {
@@ -388,16 +385,6 @@ const FriendsSearch: React.FC = () => {
                                                 </div>
                                             </div>
                                             <Button
-<<<<<<< HEAD
-                                            onClick={() => handleSendRequest(user.userName)}
-                                            disabled={loading || sentRequests[user.userName]}
-                                            size="sm"
-                                            className="p-2 sm:p-3 md:p-4 lg:p-5 rounded-md"
-                                            aria-label="Send Friend Request"
-                                            >
-                                            {/* <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> */}
-                                            {loading ? "Sending..." : (sentRequests[user.userName] ? "Sent" : "Send Request")}
-=======
                                                 onClick={() => handleSendRequest(user.userName)}
                                                 disabled={friendRequestStatus[user.userName]?.loading || friendRequestStatus[user.userName]?.sent}
                                                 size="sm"
@@ -405,7 +392,6 @@ const FriendsSearch: React.FC = () => {
                                                 aria-label="Send Friend Request"
                                             >
                                                 {friendRequestStatus[user.userName]?.loading ? "Sending..." : friendRequestStatus[user.userName]?.sent ? "Sent" : "Send Request"}
->>>>>>> c46b435 (fix send request to all)
                                         </Button>
                                         </motion.li>
                                     ))}
