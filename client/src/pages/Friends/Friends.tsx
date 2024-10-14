@@ -269,55 +269,49 @@ const FriendsSearch: React.FC = () => {
                                 <p>Loading requests...</p>
                             ) : (
                                 <ul className="space-y-4">
-                                    {pendingRequests.map((request: any) => (
-                                        <motion.li
-                                            key={request._id}
-                                            className="flex items-center justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Avatar>
-                                                    <AvatarImage
-                                                        src={`/api/avatar/${request.from}`}
-                                                        alt={request.from}
-                                                    />
-                                                    <AvatarFallback>
-                                                        {request.from
-                                                            .substring(0, 2)
-                                                            .toUpperCase()}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <div>
-                                                    <h3 className="font-semibold">
-                                                        {request.from}
-                                                    </h3>
-                                                    <p className="text-sm text-gray-400">
-                                                        Incoming Request
-                                                    </p>
-                                                </div>
+                                {pendingRequests.map((request: any) => (
+                                    <motion.li
+                                        key={request._id}
+                                        className="flex flex-col items-start justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700 md:flex-row md:items-center"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                    >
+                                        <div className="flex items-center gap-3 w-full md:w-auto">
+                                            <Avatar>
+                                                <AvatarImage
+                                                    src={`/api/avatar/${request.from}`}
+                                                    alt={request.from}
+                                                />
+                                                <AvatarFallback>
+                                                    {request.from.substring(0, 2).toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <h3 className="font-semibold text-base md:text-lg">{request.from}</h3>
+                                                <p className="text-xs text-gray-400 md:text-sm">Incoming Request</p>
                                             </div>
-                                            <div className="space-x-2">
+                                        </div>
+                                        <div className="space-y-2 mt-3 md:mt-0 md:space-y-0 md:space-x-2 w-full md:w-auto flex flex-col md:flex-row">
                                             <Button
-                                            onClick={() => handleRespondToRequest(request._id, "accept")}
-                                            variant="default"
-                                            size="sm"
-                                            disabled={requestLoading[request._id]?.accept} // Disable during accept loading
-                                        >
-                                            {requestLoading[request._id]?.accept ? "Accepting..." : "Accept"}
-                                        </Button>
-                                        <Button
-                                            onClick={() => handleRespondToRequest(request._id, "reject")}
-                                            variant="outline"
-                                            size="sm"
-                                            disabled={requestLoading[request._id]?.reject} // Disable during reject loading
-                                        >
-                                            {requestLoading[request._id]?.reject ? "Rejecting..." : "Reject"}
-                                        </Button>
-                                            </div>
-                                        </motion.li>
-                                    ))}
-                                </ul>
+                                                onClick={() => handleRespondToRequest(request._id, "accept")}
+                                                variant="default"
+                                                size="sm"
+                                                disabled={requestLoading[request._id]?.accept} // Disable during accept loading
+                                            >
+                                                {requestLoading[request._id]?.accept ? "Accepting..." : "Accept"}
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleRespondToRequest(request._id, "reject")}
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={requestLoading[request._id]?.reject} // Disable during reject loading
+                                            >
+                                                {requestLoading[request._id]?.reject ? "Rejecting..." : "Reject"}
+                                            </Button>
+                                        </div>
+                                    </motion.li>
+                                ))}
+                            </ul>
                             )}
                         </motion.section>
                     )}

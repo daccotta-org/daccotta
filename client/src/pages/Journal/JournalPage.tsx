@@ -138,6 +138,7 @@ const JournalPage: React.FC = () => {
     }
 
     const handleClick = (_id: string) => {
+        console.log("handle click fired", _id)
         navigate(`/movie/${_id}`)
     }
 
@@ -362,7 +363,7 @@ const JournalPage: React.FC = () => {
 
                                     {hoveredEntry === entry._id && (
                                         <motion.div
-                                            className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4"
+                                            className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none"
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                         >
@@ -381,7 +382,7 @@ const JournalPage: React.FC = () => {
                                             </p>
                                             <Button
                                                 size="icon"
-                                                className="absolute top-2 right-2 bg-transparent"
+                                                className="absolute top-2 right-2 bg-transparent pointer-events-auto"
                                                 onClick={(e) =>
                                                     handleOpenDeleteDialog(
                                                         entry._id,
