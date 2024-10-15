@@ -6,18 +6,30 @@ import ListItemButton from "@mui/material/ListItemButton"
 import ListItemText from "@mui/material/ListItemText"
 import Popover from "@mui/material/Popover"
 import PersonIcon from "@mui/icons-material/Person"
+import SettingsIcon from "@mui/icons-material/Settings"
+import LogoutIcon from "@mui/icons-material/Logout"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+import UsersIcon from "@mui/icons-material/Group"
+import BadgeIcon from "@mui/icons-material/EmojiEvents"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
 import { getUserData } from "@/services/userService"
 import { useState, useEffect } from "react"
 
-const options = ["Profile", "Settings", "Sign Out"]
+const options = [
+    { label: "Profile", icon: <AccountCircleIcon /> },
+    { label: "Settings", icon: <SettingsIcon /> },
+    { label: "Sign Out", icon: <LogoutIcon /> },
+]
 
 export interface SimpleDialogProps {
     open: boolean
     selectedValue: string
     onClose: (value: string) => void
     avatar: string
+    userName: string
+    friendsCount: number
+    badgesCount: number
 }
 
 function SimplePopover(props: SimpleDialogProps) {
@@ -32,7 +44,15 @@ function SimplePopover(props: SimpleDialogProps) {
         }
     }
 
-    const { onClose, selectedValue, open, avatar } = props
+    const {
+        onClose,
+        selectedValue,
+        open,
+        avatar,
+        userName,
+        friendsCount,
+        badgesCount,
+    } = props
 
     const handleListItemClick = (value: string) => {
         if (value === "Profile") {
@@ -48,18 +68,43 @@ function SimplePopover(props: SimpleDialogProps) {
     return (
         <List
             sx={{ pt: 0 }}
-            className="flex flex-col items-center bg-background text-white"
+            className="flex flex-col items-start bg-background text-white"
         >
+            <ListItem className="flex flex-col items-center pb-2 w-full">
+                <Avatar
+                    src={avatar}
+                    alt="User Avatar"
+                    sx={{ width: 60, height: 60 }}
+                    className="mb-2"
+                >
+                    {!avatar && <PersonIcon />}
+                </Avatar>
+                <span className="text-lg font-semibold">{userName}</span>
+                <div className="flex gap-2 mt-1">
+                    <div className="flex items-center gap-1">
+                        <UsersIcon className="w-4 text-blue-400" />
+                        <span>{friendsCount}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <BadgeIcon className="w-4 text-yellow-400" />
+                        <span>{badgesCount}</span>
+                    </div>
+                </div>
+            </ListItem>
             {options.map((option) => (
                 <ListItem
                     disableGutters
-                    key={option}
+                    key={option.label}
                     className="hover:bg-gradient-to-r hover:from-gray-800 hover:to-gray-700 hover:text-white transition duration-300 w-full"
                 >
-                    <ListItemButton onClick={() => handleListItemClick(option)}>
+                    <ListItemButton
+                        onClick={() => handleListItemClick(option.label)}
+                        className="flex items-center"
+                    >
+                        {option.icon}
                         <ListItemText
-                            primary={option}
-                            className="text-center font-heading"
+                            primary={option.label}
+                            className="font-heading ml-3"
                         />
                     </ListItemButton>
                 </ListItem>
@@ -70,8 +115,11 @@ function SimplePopover(props: SimpleDialogProps) {
 
 export default function SimplePopoverDemo() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-    const [selectedValue, setSelectedValue] = useState(options[1])
+    const [selectedValue, setSelectedValue] = useState(options[1].label)
     const [avatar, setAvatar] = useState("")
+    const [userName, setUserName] = useState("")
+    const [friendsCount, setFriendsCount] = useState(0)
+    const [badgesCount, setBadgesCount] = useState(0)
     const { user } = useAuth()
 
     useEffect(() => {
@@ -80,6 +128,9 @@ export default function SimplePopoverDemo() {
                 try {
                     const userData = await getUserData(user.uid)
                     setAvatar(userData.profile_image)
+                    setUserName(userData.userName)
+                    setFriendsCount(userData.friends.length)
+                    setBadgesCount(userData.badges.length)
                 } catch (error) {
                     console.error("Error fetching user data:", error)
                 }
@@ -138,6 +189,9 @@ export default function SimplePopoverDemo() {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                     avatar={avatar}
+                    userName={userName}
+                    friendsCount={friendsCount}
+                    badgesCount={badgesCount}
                 />
             </Popover>
         </div>
