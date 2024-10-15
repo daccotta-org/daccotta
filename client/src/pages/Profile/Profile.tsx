@@ -63,42 +63,39 @@ const Profile: React.FC = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            console.log(activeIndex)
-            if (user?.uid) {
-                try {
-                    const data = await getUserData(user.uid)
-                    setUserData(data)
-                    if (data.lists[activeIndex]?.movies) {
-                        const movieIds = data.lists[activeIndex].movies
-                            .slice(0, 5)
-                            .map((m: SimpleMovie) => m.movie_id)
-                        const movies = await fetchMoviesByIds(movieIds)
-                        setMovieData(movies)
-                        if (journalEntries) {
-                            const movieStats = calculateStats(journalEntries)
-                            setStats(movieStats)
-                        }
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data:", error)
+            if (!user?.uid) return;
+            try {
+                const data = await getUserData(user.uid);
+                setUserData(data);
+
+                const currentList = data.lists[activeIndex];
+                if (currentList?.movies) {
+                    const movieIds = currentList.movies.map((m: MovieInList) => m.movie_id);
+                    const movies = await fetchMoviesByIds(movieIds);
+                    setMovieData(movies);
                 }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                setUserData(null); // Handle error state
             }
         }
 
         fetchUserData()
     }, [user, activeIndex])
-    if (isLoading)
+
+    useEffect(() => {
+        if (!journalEntries) return;
+        const movieStats = calculateStats(journalEntries);
+        setStats(movieStats);
+    }, [journalEntries]);
+
+    if (isLoading || !userData || !stats) {
         return (
             <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
                 <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
             </div>
         )
-    if (!stats)
-        return (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-            </div>
-        )
+    }
 
     if (error) return <div>Error loading stats. Please try again later.</div>
 
@@ -127,15 +124,13 @@ const Profile: React.FC = () => {
                     <div className="flex gap-1 items-center justify-center">
                         <Users
                             className="w-4 mr-2 text-blue-400 hover:cursor-pointer hover:text-blue-600"
-                            onClick={() => {
-                                navigate("/friends")
-                            }}
+                            onClick={() => navigate("/friends")}
                         />
-                        <p className=""> {userData?.friends.length}</p>
+                        <p>{userData?.friends.length}</p>
                     </div>
                     <div className="flex gap-1 items-center justify-center">
                         <Award className="w-4 h-4 mr-2 text-yellow-400" />
-                        <p className="">{userData?.badges.length} </p>
+                        <p>{userData?.badges.length}</p>
                     </div>
                 </div>
             </div>
@@ -203,9 +198,9 @@ const Profile: React.FC = () => {
                         ))}
                     </div> */}
                     <div className="h-12 overflow-auto">
-                        {userData?.lists.map((item: any, index: number) => (
+                        {userData?.lists.map((item: List, index: number) => (
                             <button
-                                key={index}
+                                key={item.list_id}
                                 className={`p-2 w-full mb-2 rounded-md text-left transition-all duration-300 ${
                                     activeIndex === index
                                         ? "bg-gradient-to-tr from-gray-900 to-gray-800"
@@ -251,18 +246,11 @@ const Profile: React.FC = () => {
                         >
                             <div className="space-y-3 max-h-28 overflow-auto scrollbar-hide">
                                 {movieData.map((movie) => (
-                                    <MoviePreview
-                                        key={movie.id}
-                                        movie={movie}
-                                    />
+                                    <MoviePreview key={movie.id} movie={movie} />
                                 ))}
                             </div>
                             <button
-                                onClick={() =>
-                                    handleSelectList(
-                                        userData?.lists[activeIndex].list_id!
-                                    )
-                                }
+                                onClick={() => handleSelectList(userData?.lists[activeIndex].list_id!)}
                                 className="mt-4 text-purple-400 hover:text-purple-700 transition-colors"
                             >
                                 View Full List
