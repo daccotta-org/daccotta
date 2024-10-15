@@ -4,6 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/useAuth";
 import { addMovieToList, createList, getUserData } from "@/services/userService";
+import { EllipsisVertical } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 const IMAGE_URL = "https://image.tmdb.org/t/p";
 
@@ -34,6 +43,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
   const [isFavourite, setIsFavourite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     const checkFavouriteStatus = async () => {
@@ -61,11 +72,16 @@ const MovieCard: React.FC<MovieCardProps> = ({
     navigate(`/movie/${movie_id}`);
   };
 
-  const handleRemove = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevents triggering the handleClick
+  const handleOpenDeleteDialog = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteMovie = () => {
     if (onRemove) {
-        onRemove(movie_id);
+      onRemove(movie_id);
     }
+    setIsDeleteDialogOpen(false);
   };
 
   const handleFavouriteClick = async (e: React.MouseEvent) => {
@@ -126,49 +142,71 @@ const MovieCard: React.FC<MovieCardProps> = ({
   };
 
   return (
-    <motion.div
-      className="relative w-32 sm:w-40 md:w-48 lg:w-56 h-48 sm:h-60 md:h-72 lg:h-84 rounded-lg overflow-hidden shadow-lg cursor-pointer group"
-      onClick={handleClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <img
-        src={`${IMAGE_URL}/w500${poster_path}`}
-        alt={title || "Movie Poster"}
-        className="w-full h-full object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-110"
-      />
+    <>
+      <motion.div
+        className="relative w-32 sm:w-40 md:w-48 lg:w-56 h-48 sm:h-60 md:h-72 lg:h-84 rounded-lg overflow-hidden shadow-lg cursor-pointer group"
+        onClick={handleClick}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onMouseEnter={() => setHoveredCard(movie_id)}
+        onMouseLeave={() => setHoveredCard(null)}
+      >
+        <img
+          src={`${IMAGE_URL}/w500${poster_path}`}
+          alt={title || "Movie Poster"}
+          className="w-full h-full object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-110"
+        />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        {/* <button
-          className={`absolute top-2 right-2 p-1 rounded-full ${
-            isFavourite ? "bg-red-600 text-white" : "bg-white/50 text-black"
-          } transition-colors duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={handleFavouriteClick}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-white rounded-full animate-spin" />
-          ) : (
-            <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isFavourite ? "fill-current" : ""}`} />
-          )}
-        </button> */}
-
-        <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 flex flex-col items-center">
-          <div className="flex items-center space-x-2 text-xs sm:text-sm mb-1">
-            <span className="text-gray-300">{release_date?.split('-')[0]}</span>
-          </div>
-          <h3 className="text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl mb-1 sm:mb-2 line-clamp-2">
-            {title}
-          </h3>
-        </div>
-        {onRemove && (
-            <div className="w-full flex justify-center">
-                <button className="text-white-500 hover:text-red-700 font-bold"
-                onClick={handleRemove}>Remove</button>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 flex flex-col items-center">
+            <div className="flex items-center space-x-2 text-xs sm:text-sm mb-1">
+              <span className="text-gray-300">{release_date?.split('-')[0]}</span>
             </div>
-        )}
-      </div>
-    </motion.div>
+            <h3 className="text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl mb-1 sm:mb-2 line-clamp-2">
+              {title}
+            </h3>
+          </div>
+          {hoveredCard === movie_id && onRemove && (
+            <Button
+              size="icon"
+              className="absolute top-2 right-2 bg-transparent"
+              onClick={handleOpenDeleteDialog}
+            >
+              <EllipsisVertical className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </motion.div>
+
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Remove Movie</DialogTitle>
+          </DialogHeader>
+          <p>
+            Are you sure you want to remove this movie? This action cannot be undone.
+          </p>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outline"
+              className="bg-white text-black"
+              onClick={handleDeleteMovie}
+            >
+              Remove
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
