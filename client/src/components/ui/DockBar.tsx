@@ -19,7 +19,7 @@ export function DockDemo() {
     const isActive = (path: string) => location.pathname === path
 
     return (
-        <div className="relative w-[335px]">
+        <div className="relative w-[335px] top-[-30px]">
             <Dock magnification={60} distance={60} className="gap-8">
                 <DockIcon
                     className={`bg-black/10 dark:bg-white/10 p-3 ${isActive("/") ? "bg-primary" : ""}`}
