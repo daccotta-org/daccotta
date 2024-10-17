@@ -96,9 +96,77 @@ const SearchMovie: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-h-screen overflow-auto scrollbar-hide text-white flex flex-col items-center justify-center">
+    <div className="w-full max-h-screen h-full overflow-auto scrollbar-hide text-white flex flex-col items-center justify-center">
       <header className="w-full max-w-xl py-8 flex flex-col items-center sm:flex sm:flex-col sm:justify-between">
         {!searchTerm && <h1 className="text-4xl font-bold mb-4 text-center sm:text-left">Find Your Favorite Movie Here</h1>}
+        
+        {/* Filter Section */}
+        <div className="flex items-center p-4 w-full max-w-xl justify-between flex-wrap gap-y-4">
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-center">
+            {/* Year Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="w-full sm:w-40 bg-gray-800 text-white hover:bg-gray-700">
+                  {selectedYear || "Select Year"}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-gray-800 text-white">
+                {years.map((year) => (
+                  <DropdownMenuItem
+                    key={year}
+                    onClick={() => handleYearSelect(year.toString())}
+                  >
+                    {year}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {selectedYear && (
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedYear("")}
+                className="p-2 text-white"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-center">
+            {/* Genre Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="w-full sm:w-40 bg-gray-800 text-white hover:bg-gray-700">
+                  {selectedGenre
+                    ? genreMap[parseInt(selectedGenre)]
+                    : "Select Genre"}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-gray-800 text-white">
+                {genres.map(([id, name]) => (
+                  <DropdownMenuItem
+                    key={id}
+                    onClick={() => handleGenreSelect(id)}
+                  >
+                    {name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {selectedGenre && (
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedGenre("")}
+                className="p-2 text-white"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+
         <div className="relative w-[90%] sm:w-full mx-auto">
           <input
             type="text"
@@ -125,8 +193,7 @@ const SearchMovie: React.FC = () => {
                   className="flex items-center p-2 hover:bg-gray-800 cursor-pointer justify-between"
                 >
                   <div onClick={() => handleHistorySelect(item.term)} className="flex flex-col">
-                    <span className="text-sm">{item.term}</span>
-                    <span className="text-xs text-gray-500">{item.timestamp}</span>
+                    <span className="text-m">{item.term}</span>
                   </div>
                   <button onClick={() => handleHistoryDelete(index)} className="text-gray-500 hover:text-white">
                     <X className="h-4 w-4" />
@@ -137,73 +204,6 @@ const SearchMovie: React.FC = () => {
           )}
         </div>
       </header>
-
-      {/* Filter Section */}
-      <div className="flex items-center space-x-4 p-4 w-full max-w-xl justify-center flex-wrap">
-        <div className="flex items-center space-x-2">
-          {/* Year Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="w-full sm:w-40 bg-gray-800 text-white hover:bg-gray-700">
-                {selectedYear || "Select Year"}
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-gray-800 text-white">
-              {years.map((year) => (
-                <DropdownMenuItem
-                  key={year}
-                  onClick={() => handleYearSelect(year.toString())}
-                >
-                  {year}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {selectedYear && (
-            <Button
-              variant="ghost"
-              onClick={() => setSelectedYear("")}
-              className="p-2 text-white"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-
-        <div className="flex items-center space-x-2">
-          {/* Genre Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="w-full sm:w-40 bg-gray-800 text-white hover:bg-gray-700">
-                {selectedGenre
-                  ? genreMap[parseInt(selectedGenre)]
-                  : "Select Genre"}
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-gray-800 text-white">
-              {genres.map(([id, name]) => (
-                <DropdownMenuItem
-                  key={id}
-                  onClick={() => handleGenreSelect(id)}
-                >
-                  {name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {selectedGenre && (
-            <Button
-              variant="ghost"
-              onClick={() => setSelectedGenre("")}
-              className="p-2 text-white"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
 
       {/* Movie List */}
       <div className="flex-1 px-4 py-8 overflow-auto w-full">
