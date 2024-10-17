@@ -1,12 +1,12 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ChevronRight, Calendar, Film, User } from "lucide-react";
-import { genreMap } from "@/lib/stats";
-import { SimpleMovie } from "@/Types/Movie";
-import LazyImage from "../LazyLoadImage/LazyImage";
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
+import { ChevronRight, Calendar, Film, User } from "lucide-react"
+import { genreMap } from "@/lib/stats"
+import { SimpleMovie } from "@/Types/Movie"
+import LazyImage from "../LazyLoadImage/LazyImage"
 
-const IMAGE_URL = "https://image.tmdb.org/t/p";
+const IMAGE_URL = "https://image.tmdb.org/t/p"
 
 const CarouselCard: React.FC<SimpleMovie> = ({
     movie_id,
@@ -17,16 +17,16 @@ const CarouselCard: React.FC<SimpleMovie> = ({
     release_date,
     genre_ids,
 }) => {
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const genreNames = genre_ids
         ?.map((id) => genreMap[id])
         .filter(Boolean)
-        .slice(0, 3);
+        .slice(0, 3)
 
     const handleClick = () => {
-        console.log("movie_id:", movie_id);
-        navigate(`/movie/${movie_id}`);
-    };
+        console.log("movie_id:", movie_id)
+        navigate(`/movie/${movie_id}`)
+    }
 
     return (
         <motion.div
@@ -53,27 +53,36 @@ const CarouselCard: React.FC<SimpleMovie> = ({
                         className="w-[100px] sm:w-[150px] md:w-[200px] lg:w-[250px] h-auto rounded-lg shadow-2xl"
                     />
                     <div className="text-white flex-1">
-                        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-2 sm:mb-4 leading-tight">{title}</h2>
+                        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-2 sm:mb-4 leading-tight">
+                            {title}
+                        </h2>
                         <div className="flex flex-wrap gap-2 sm:gap-4 mb-2 sm:mb-4">
                             <div className="flex items-center">
                                 <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                <span className="text-xs sm:text-sm">{release_date}</span>
+                                <span className="text-xs sm:text-sm">
+                                    {release_date}
+                                </span>
                             </div>
                             <div className="flex items-center">
                                 <Film className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                <span className="text-xs sm:text-sm">{genreNames?.join(", ")}</span>
+                                <span className="text-xs sm:text-sm">
+                                    {genreNames?.join(", ")}
+                                </span>
                             </div>
                         </div>
                         {friend && (
                             <div className="flex items-center mt-1 sm:mt-2">
                                 <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                 <span className="text-xs sm:text-sm">
-                                    Watched by <span className="font-semibold text-red-400">{friend}</span>
+                                    Watched by{" "}
+                                    <span className="font-semibold text-red-400">
+                                        {friend}
+                                    </span>
                                 </span>
                             </div>
                         )}
                         <motion.button
-                            className="mt-4 sm:mt-6 px-4 sm:px-6 py-1 sm:py-2 bg-red-600 text-white text-sm sm:text-base rounded-full flex items-center hover:bg-red-700 transition-colors"
+                            className="mt-4 sm:mt-6 px-4 sm:px-6 py-1 sm:py-2 bg-red-600 text-white text-sm sm:text-base rounded-full flex items-center hover:bg-red-700 transition-colors hidden sm:flex"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -84,7 +93,7 @@ const CarouselCard: React.FC<SimpleMovie> = ({
                 </motion.div>
             </div>
         </motion.div>
-    );
-};
+    )
+}
 
-export default CarouselCard;
+export default CarouselCard
