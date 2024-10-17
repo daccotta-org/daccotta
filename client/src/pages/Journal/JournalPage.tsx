@@ -338,67 +338,48 @@ const JournalPage: React.FC = () => {
                     </Dialog>
                 </div>
                 {Object.entries(sortedEntries).map(([monthYear, entries]) => (
-                    <div key={monthYear} className="mb-8">
-                        <h2 className="text-xl font-semibold mb-4">
-                            {monthYear}
-                        </h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {entries.map((entry) => (
-                                <div
-                                    key={entry._id}
-                                    className="relative w-full h-full"
-                                    onMouseEnter={() =>
-                                        setHoveredEntry(entry._id)
-                                    }
-                                    onMouseLeave={() => setHoveredEntry(null)}
-                                >
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
-                                        alt={`${entry.movie.title} poster`}
-                                        className="w-full h-full rounded-lg shadow-lg cursor-pointer"
-                                        onClick={() =>
-                                            handleClick(entry.movie.movie_id)
-                                        }
-                                    />
+                <div key={monthYear} className="mb-8">
+                    <h2 className="text-xl font-semibold mb-4">
+                        {monthYear}
+                    </h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {entries.map((entry) => (
+                        <div
+                            key={entry._id}
+                            className="relative w-full h-full group"
+                            onMouseEnter={() => setHoveredEntry(entry._id)}
+                            onMouseLeave={() => setHoveredEntry(null)}
+                        >
+                            <img
+                                src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
+                                alt={`${entry.movie.title} poster`}
+                                className="w-full h-full rounded-lg shadow-lg cursor-pointer"
+                                onClick={() => handleClick(entry.movie.movie_id)}
+                            />
 
-                                    {hoveredEntry === entry._id && (
-                                        <motion.div
-                                            className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                        >
-                                            <h3 className="text-lg font-bold">
-                                                {entry.movie.title}
-                                            </h3>
-                                            <p className="text-sm text-gray-300">
-                                                Watched:{" "}
-                                                {format(
-                                                    new Date(entry.dateWatched),
-                                                    "PPP"
-                                                )}
-                                            </p>
-                                            <p className="text-sm text-gray-300">
-                                                Times Watched: {entry.rewatches}
-                                            </p>
-                                            <Button
-                                                size="icon"
-                                                className="absolute top-2 right-2 bg-transparent pointer-events-auto"
-                                                onClick={(e) =>
-                                                    handleOpenDeleteDialog(
-                                                        entry._id,
-                                                        e
-                                                    )
-                                                }
-                                            >
-                                                <EllipsisVertical className="h-4 w-4" />
-                                            </Button>
-                                        </motion.div>
-                                    )}
-                                </div>
-                            ))}
+                            <motion.div
+                                className={`absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-4 transition-opacity duration-300 
+                                ${hoveredEntry === entry._id ? "opacity-100" : "opacity-100 md:opacity-0 group-hover:opacity-100"}`}
+                            >
+                                <h3 className="text-lg font-bold">{entry.movie.title}</h3>
+                                <p className="text-sm text-gray-300">Watched: {format(new Date(entry.dateWatched), "PPP")}</p>
+                                <p className="text-sm text-gray-300">Times Watched: {entry.rewatches}</p>
+                                
+                                {/* Delete button visible on hover for desktop, always visible on mobile */}
+                                <Button
+                                    size="icon"
+                                    className="absolute top-2 right-2 bg-transparent pointer-events-auto 
+                                    opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    onClick={(e) => handleOpenDeleteDialog(entry._id, e)}
+                                >
+                                    <EllipsisVertical className="h-4 w-4" />
+                                </Button>
+                            </motion.div>
                         </div>
+                    ))}
                     </div>
-                ))}
+                </div>
+            ))}
                 <Card className="overflow-hidden border-dashed w-[200px]">
                     <CardContent className="p-0 flex items-center justify-center h-[300px]">
                         <div
