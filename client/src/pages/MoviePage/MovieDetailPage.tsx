@@ -1,53 +1,27 @@
-
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { toast } from "react-toastify"
-import { Heart, Star, Bookmark } from "lucide-react"
+import { Heart, Star, Bookmark, Youtube, Tv } from "lucide-react"
 import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
 import { useAuth } from "@/hooks/useAuth"
 import { useMovieProviders, useMovieDetails } from "@/services/movieService"
-import { addMovieToList, createList, getUserData, removeMovieFromList } from "@/services/userService"
+import {
+    addMovieToList,
+    createList,
+    getUserData,
+    removeMovieFromList,
+} from "@/services/userService"
 import { SimpleMovie } from "@/Types/Movie"
 import { List } from "../List/MovieList"
 import Loader from "../../components/ui/Loader"
 
 const image_url = "https://image.tmdb.org/t/p"
 
-// interface Genre {
-//     id: number
-//     name: string
-// }
-
-// interface CrewMember {
-//     id: number
-//     name: string
-//     job: string
-// }
-
-// interface CastMember {
-//     id: number
-//     name: string
-//     character: string
-//     profile_path: string
-// }
-
-// interface MovieDetails {
-//     id: string
-//     title: string
-//     overview: string
-//     backdrop_path: string
-//     poster_path: string
-//     release_date: string
-//     vote_average: number
-//     genres: Genre[]
-//     runtime: number
-//     status: string
-//     credits?: {
-//         crew: CrewMember[]
-//         cast: CastMember[]
-//     }
-//     tagline: string
-// }
+const Badge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <span className="inline-block bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">
+        {children}
+    </span>
+)
 
 const MovieDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>()
@@ -55,8 +29,9 @@ const MovieDetailPage: React.FC = () => {
     const { user } = useAuth()
 
     const { data: movie, isLoading: isMovieLoading } = useMovieDetails(id!)
-    const { data: providers, isLoading: isProvidersLoading } = useMovieProviders(id!)
-    const [favouriteLoading, setFavouriteLoading] = useState(false); // Loading state for favorite button
+    const { data: providers, isLoading: isProvidersLoading } =
+        useMovieProviders(id!)
+    const [favouriteLoading, setFavouriteLoading] = useState(false)
 
     useEffect(() => {
         const checkFavouriteStatus = async () => {
@@ -80,38 +55,37 @@ const MovieDetailPage: React.FC = () => {
 
     const handleFavouriteClick = async () => {
         if (!user) {
-            toast.error("Please log in to manage your Favourites.");
-            return;
+            toast.error("Please log in to manage your Favourites.")
+            return
         }
-    
-        if (!movie) return;
-        setFavouriteLoading(true);
+
+        if (!movie) return
+        setFavouriteLoading(true)
         try {
-            const userData = await getUserData(user.uid);
+            const userData = await getUserData(user.uid)
             let favouritesList = userData.lists.find(
                 (list: List) => list.name === "Favourites"
-            );
-    
+            )
+
             if (!favouritesList) {
                 const createListData = {
                     name: "Favourites",
                     description: "My favourite movies",
                     isPublic: true,
-                };
+                }
                 favouritesList = await createList(user.uid, {
                     ...createListData,
                     list_type: "user",
-                });
+                })
             }
-    
+
             if (isFavourite) {
-                // Remove movie from favourites if already added
-                await removeMovieFromList(favouritesList.list_id, movie.id);
-                console.log("")
-                setIsFavourite(false);
-                toast.success(`${movie.title} has been removed from your Favourites.`);
+                await removeMovieFromList(favouritesList.list_id, movie.id)
+                setIsFavourite(false)
+                toast.success(
+                    `${movie.title} has been removed from your Favourites.`
+                )
             } else {
-                // Add movie to favourites if not already added
                 const movieToAdd = {
                     id: id!,
                     movie_id: movie.id,
@@ -119,19 +93,20 @@ const MovieDetailPage: React.FC = () => {
                     poster_path: movie.poster_path,
                     release_date: movie.release_date,
                     genre_ids: movie.genres.map((genre: any) => genre.id),
-                };
-                await addMovieToList(favouritesList.list_id, movieToAdd);
-                setIsFavourite(true);
-                toast.success(`${movie.title} has been added to your Favourites.`);
+                }
+                await addMovieToList(favouritesList.list_id, movieToAdd)
+                setIsFavourite(true)
+                toast.success(
+                    `${movie.title} has been added to your Favourites.`
+                )
             }
         } catch (error) {
-            console.error("Error managing movie in Favourites:", error);
-            toast.error("Failed to manage movie. Please try again.");
+            console.error("Error managing movie in Favourites:", error)
+            toast.error("Failed to manage movie. Please try again.")
         } finally {
-            setFavouriteLoading(false); // Stop loading
+            setFavouriteLoading(false)
         }
-    };
-    
+    }
 
     if (isMovieLoading || isProvidersLoading) {
         return (
@@ -148,68 +123,129 @@ const MovieDetailPage: React.FC = () => {
             </div>
         )
     }
-    const director = movie.credits?.crew.find((person:any) => person.job === "Director")?.name || "Unknown"
+
+    const director =
+        movie.credits?.crew.find((person: any) => person.job === "Director")
+            ?.name || "Unknown"
     const firstRentProvider = providers?.rent?.[0]
     const firstBuyProvider = providers?.buy?.[0]
 
     return (
-        <div className="max-h-screen text-white overflow-auto">
-            <main className="mx-auto px-4">
-                <div className="md:flex md:space-x-6 mt-8">
-                    <div className="md:w-1/3 mb-6 md:mb-0 flex lg:justify-start justify-center">
-                        <LazyImage
-                            src={`${image_url}/w500${movie.poster_path}`}
-                            alt={`${movie.title} poster`}
-                            className="rounded-lg shadow-lg lg:w-full lg:h-auto w-[15rem]"
-                        />
-                    </div>
-                    <div className="md:w-2/3 justify-center flex flex-col">
-                        <h2 className="text-4xl font-bold mb-2">
-                            {movie.title} ({new Date(movie.release_date).getFullYear()})
-                        </h2>
-                        <p className="text-gray-400 mb-4">{movie.tagline}</p>
-                        <div className="flex space-x-2 mb-4">
-                            {movie.genres.map((genre:any) => (
-                                <span key={genre.id} className="bg-gray-800 text-xs px-2 py-1 rounded">
-                                    {genre.name}
-                                </span>
-                            ))}
+        <div
+            className="min-h-screen text-white bg-cover bg-center bg-fixed py-10"
+            style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${image_url}/original${movie.backdrop_path})`,
+                width: `100%`,
+            }}
+        >
+            <div className="container mx-auto px-4">
+                <div className="bg-gray-900 bg-opacity-90 rounded-lg shadow-lg overflow-hidden">
+                    <div className="md:flex">
+                        <div className="md:w-1/3 lg:w-1/4">
+                            <LazyImage
+                                src={`${image_url}/w500${movie.poster_path}`}
+                                alt={`${movie.title} poster`}
+                                className="w-full h-full object-cover"
+                            />
                         </div>
-                        <div className="flex items-center space-x-4 mb-6">
-                            <div className="flex items-center">
-                                <Star className="text-yellow-400 w-6 h-6 mr-1" />
-                                <span className="text-2xl font-bold">{movie.vote_average.toFixed(1)}</span>
+                        <div className="md:w-2/3 lg:w-3/4 p-6">
+                            <div className="flex justify-between items-start mb-4">
+                                <h1 className="text-3xl md:text-4xl font-bold">
+                                    {movie.title}
+                                </h1>
+                                <div className="flex space-x-2">
+                                    <button
+                                        className={`p-2 rounded-full ${isFavourite ? "bg-red-600" : "bg-gray-700"}`}
+                                        onClick={handleFavouriteClick}
+                                        disabled={favouriteLoading}
+                                    >
+                                        {favouriteLoading ? (
+                                            <Loader />
+                                        ) : (
+                                            <Heart
+                                                className={`w-6 h-6 ${isFavourite ? "fill-current" : ""}`}
+                                            />
+                                        )}
+                                    </button>
+                                    <button
+                                        className="p-2 bg-gray-700 rounded-full"
+                                        onClick={() =>
+                                            toast.warning("Coming Soon!")
+                                        }
+                                    >
+                                        <Bookmark className="w-6 h-6" />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex lg:flex-row flex-row gap-4 items-center">
-                            <button
-                                className={`flex items-center shadow-2xl text-black px-2 py-2 rounded-xl tooltip tooltip-bottom ${
-                                    isFavourite ? "bg-red-600 text-white" : "bg-white"
-                                }`}
-                                data-tip="Favourites"
-                                onClick={handleFavouriteClick}
-                                disabled={favouriteLoading} // Disable button while loading
-                            >
-                                {favouriteLoading ? (
-                                    <Loader /> // Show loading icon
-                                ) : (
-                                    <Heart className={`w-6 h-6 ${isFavourite ? "fill-current" : ""}`} />
-                                )}
-                            </button>
-                                <button
-                                    className="flex items-center shadow-2xl bg-white text-black px-2 py-2 rounded-xl tooltip tooltip-bottom"
-                                    data-tip="watchlist"
-                                    onClick={() => toast.warning("Coming Soon!")}
-                                >
-                                    <Bookmark className="w-6 h-6 fill-current" />
-                                </button>
+                            <p className="text-gray-400 mb-4">
+                                {movie.tagline}
+                            </p>
+
+                            <div className="flex flex-wrap items-center space-x-4 mb-4">
+                                <div className="flex items-center bg-yellow-400 text-black px-3 py-1 rounded-full">
+                                    <Star className="w-5 h-5 mr-1" />
+                                    <span className="font-bold">
+                                        {movie.vote_average.toFixed(1)}
+                                    </span>
+                                </div>
+                                <div>
+                                    {Math.floor(movie.runtime / 60)}h{" "}
+                                    {movie.runtime % 60}m
+                                </div>
+                                <div>
+                                    {new Date(movie.release_date).getFullYear()}
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                {movie.genres.map((genre: any) => (
+                                    <Badge key={genre.id}>{genre.name}</Badge>
+                                ))}
+                            </div>
+
+                            <p className="text-lg mb-6">{movie.overview}</p>
+
+                            <div className="grid grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <span className="inline-block bg-blue-600 text-white px-3 py-1 rounded-full">
+                                        Status
+                                    </span>
+                                    <p>{movie.status}</p>
+                                </div>
+                                <div>
+                                    <span className="inline-block bg-green-600 text-white px-3 py-1 rounded-full">
+                                        Release Date
+                                    </span>
+                                    <p>
+                                        {new Date(
+                                            movie.release_date
+                                        ).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <div>
+                                    <span className="inline-block bg-purple-600 text-white px-1 py-1 rounded-full">
+                                        Director
+                                    </span>
+                                    <p>{director}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-4">
                                 {firstRentProvider && (
                                     <button
-                                        className="flex items-center bg-white text-black px-4 py-2 rounded-xl"
-                                        onClick={() => window.open(providers?.link, "_blank")}
+                                        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg"
+                                        onClick={() =>
+                                            window.open(
+                                                providers?.link,
+                                                "_blank"
+                                            )
+                                        }
                                     >
                                         <img
                                             src={`${image_url}/w45${firstRentProvider.logo_path}`}
-                                            alt={firstRentProvider.provider_name}
+                                            alt={
+                                                firstRentProvider.provider_name
+                                            }
                                             className="w-6 mr-2"
                                         />
                                         Rent
@@ -217,58 +253,77 @@ const MovieDetailPage: React.FC = () => {
                                 )}
                                 {firstBuyProvider && (
                                     <button
-                                        className="flex items-center bg-white text-black rounded"
-                                        onClick={() => window.open(providers?.link, "_blank")}
+                                        className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg"
+                                        onClick={() =>
+                                            window.open(
+                                                providers?.link,
+                                                "_blank"
+                                            )
+                                        }
                                     >
                                         <img
                                             src={`${image_url}/w45${firstBuyProvider.logo_path}`}
                                             alt={firstBuyProvider.provider_name}
-                                            className="w-10 h-10"
+                                            className="w-6 mr-2"
                                         />
+                                        Buy
                                     </button>
                                 )}
+                                <button
+                                    className="flex items-center bg-red-600 text-white px-4 py-2 rounded-lg"
+                                    onClick={() =>
+                                        window.open(
+                                            `https://www.youtube.com/results?search_query=${encodeURIComponent(movie.title + " trailer")}`,
+                                            "_blank"
+                                        )
+                                    }
+                                >
+                                    <Youtube className="w-6 mr-2" />
+                                    YouTube
+                                </button>
+                                <button
+                                    className="flex items-center bg-gray-200 text-black px-4 py-2 rounded-lg"
+                                    onClick={() =>
+                                        window.open(
+                                            `https://tv.apple.com/search?term=${encodeURIComponent(movie.title)}`,
+                                            "_blank"
+                                        )
+                                    }
+                                >
+                                    <Tv className="w-6 mr-2" />
+                                    Apple TV
+                                </button>
                             </div>
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">Overview</h3>
-                        <p className="mb-4 w-[85%]">{movie.overview}</p>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="font-semibold">Status:</p>
-                                <p>{movie.status}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Release Date:</p>
-                                <p>{new Date(movie.release_date).toLocaleDateString()}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Runtime:</p>
-                                <p>{Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Director:</p>
-                                <p>{director}</p>
-                            </div>
+                    </div>
+
+                    <div className="p-6 bg-gray-800">
+                        <h3 className="text-2xl font-bold mb-4">Top Cast</h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            {movie.credits?.cast
+                                .slice(0, 6)
+                                .map((castMember: any) => (
+                                    <div
+                                        key={castMember.id}
+                                        className="text-center"
+                                    >
+                                        <LazyImage
+                                            src={`${image_url}/w200${castMember.profile_path}`}
+                                            alt={castMember.name}
+                                            className="rounded-full mx-auto mb-2 w-20 h-20 object-cover"
+                                        />
+                                        <p className="font-semibold text-sm">
+                                            {castMember.name}
+                                        </p>
+                                        <p className="text-xs text-gray-400">
+                                            {castMember.character}
+                                        </p>
+                                    </div>
+                                ))}
                         </div>
                     </div>
                 </div>
-
-                <section className="mt-12">
-                    <h3 className="text-2xl font-bold mb-4">Top Cast</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        {movie.credits?.cast.slice(0, 6).map((castMember:any) => (
-                            <div key={castMember.id} className="text-center">
-                                <LazyImage
-                                    src={`${image_url}/w200${castMember.profile_path}`}
-                                    alt={castMember.name}
-                                    className="rounded-full mx-auto mb-2 w-24 h-24 object-cover"
-                                />
-                                <p className="font-semibold">{castMember.name}</p>
-                                <p className="text-sm text-gray-400">{castMember.character}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            </main>
+            </div>
         </div>
     )
 }
