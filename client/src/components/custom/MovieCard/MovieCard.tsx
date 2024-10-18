@@ -46,6 +46,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  /*
   useEffect(() => {
     const checkFavouriteStatus = async () => {
       if (user?.uid) {
@@ -67,7 +68,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
     checkFavouriteStatus();
   }, [movie_id, user]);
-
+    */
   const handleClick = () => {
     navigate(`/movie/${movie_id}`);
   };
