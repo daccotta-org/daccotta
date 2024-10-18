@@ -30,10 +30,10 @@ import { useNavigate } from "react-router-dom"
 interface AxiosError {
     response?: {
         data: {
-            error: string;
-        };
-    };
-    message: string;
+            error: string
+        }
+    }
+    message: string
 }
 const JournalPage: React.FC = () => {
     const { useGetJournalEntries, useAddJournalEntry, useDeleteJournalEntry } =
@@ -80,7 +80,7 @@ const JournalPage: React.FC = () => {
 
     const handleAddEntry = async () => {
         if (!selectedMovie || !dateWatched) return
-        setLoading(true); // Show loading spinner while sending
+        setLoading(true) // Show loading spinner while sending
         try {
             await addJournalEntry.mutateAsync({
                 movie: {
@@ -104,21 +104,32 @@ const JournalPage: React.FC = () => {
             )
         } catch (error: unknown) {
             // Use type assertion to treat error as AxiosError
-            const axiosError = error as AxiosError;
-    
+            const axiosError = error as AxiosError
+
             if (axiosError.response) {
-                console.error("Error adding journal entry:", axiosError.response.data.error);
-                if (axiosError.response.data.error === "Duplicate entry for same day") {
-                    toast.error("Failed to add journal entry: " + axiosError.response.data.error);
+                console.error(
+                    "Error adding journal entry:",
+                    axiosError.response.data.error
+                )
+                if (
+                    axiosError.response.data.error ===
+                    "Duplicate entry for same day"
+                ) {
+                    toast.error(
+                        "Failed to add journal entry: " +
+                            axiosError.response.data.error
+                    )
                 }
             } else if (axiosError instanceof Error) {
-                console.error("Error message:", axiosError.message);
-                toast.error("Failed to add journal entry: " + axiosError.message);
+                console.error("Error message:", axiosError.message)
+                toast.error(
+                    "Failed to add journal entry: " + axiosError.message
+                )
             } else {
-                console.error("Unknown error:", error);
+                console.error("Unknown error:", error)
             }
         } finally {
-            setLoading(false); // Hide loader after request
+            setLoading(false) // Hide loader after request
         }
     }
 
@@ -172,7 +183,10 @@ const JournalPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen text-white p-8 max-h-screen overflow-auto scrollbar-hide w-full">
+        <div
+            className="min-h-screen text-white p-8 max-h-screen overflow-auto scrollbar-hide w-full"
+            style={{ backgroundColor: "black" }}
+        >
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between w-full items-center mb-6">
                     <h1 className="text-4xl font-bold">My Movie Journal</h1>
@@ -338,48 +352,67 @@ const JournalPage: React.FC = () => {
                     </Dialog>
                 </div>
                 {Object.entries(sortedEntries).map(([monthYear, entries]) => (
-                <div key={monthYear} className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">
-                        {monthYear}
-                    </h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {entries.map((entry) => (
-                        <div
-                            key={entry._id}
-                            className="relative w-full h-full group"
-                            onMouseEnter={() => setHoveredEntry(entry._id)}
-                            onMouseLeave={() => setHoveredEntry(null)}
-                        >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
-                                alt={`${entry.movie.title} poster`}
-                                className="w-full h-full rounded-lg shadow-lg cursor-pointer"
-                                onClick={() => handleClick(entry.movie.movie_id)}
-                            />
-
-                            <motion.div
-                                className={`absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-4 transition-opacity duration-300 
-                                ${hoveredEntry === entry._id ? "opacity-100" : "opacity-100 md:opacity-0 group-hover:opacity-100"}`}
-                            >
-                                <h3 className="text-lg font-bold">{entry.movie.title}</h3>
-                                <p className="text-sm text-gray-300">Watched: {format(new Date(entry.dateWatched), "PPP")}</p>
-                                <p className="text-sm text-gray-300">Times Watched: {entry.rewatches}</p>
-                                
-                                {/* Delete button visible on hover for desktop, always visible on mobile */}
-                                <Button
-                                    size="icon"
-                                    className="absolute top-2 right-2 bg-transparent pointer-events-auto 
-                                    opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                    onClick={(e) => handleOpenDeleteDialog(entry._id, e)}
+                    <div key={monthYear} className="mb-8">
+                        <h2 className="text-xl font-semibold mb-4">
+                            {monthYear}
+                        </h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {entries.map((entry) => (
+                                <div
+                                    key={entry._id}
+                                    className="relative w-full h-full group"
+                                    onMouseEnter={() =>
+                                        setHoveredEntry(entry._id)
+                                    }
+                                    onMouseLeave={() => setHoveredEntry(null)}
                                 >
-                                    <EllipsisVertical className="h-4 w-4" />
-                                </Button>
-                            </motion.div>
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
+                                        alt={`${entry.movie.title} poster`}
+                                        className="w-full h-full rounded-lg shadow-lg cursor-pointer"
+                                        onClick={() =>
+                                            handleClick(entry.movie.movie_id)
+                                        }
+                                    />
+
+                                    <motion.div
+                                        className={`absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-4 transition-opacity duration-300 
+                                ${hoveredEntry === entry._id ? "opacity-100" : "opacity-100 md:opacity-0 group-hover:opacity-100"}`}
+                                    >
+                                        <h3 className="text-lg font-bold">
+                                            {entry.movie.title}
+                                        </h3>
+                                        <p className="text-sm text-gray-300">
+                                            Watched:{" "}
+                                            {format(
+                                                new Date(entry.dateWatched),
+                                                "PPP"
+                                            )}
+                                        </p>
+                                        <p className="text-sm text-gray-300">
+                                            Times Watched: {entry.rewatches}
+                                        </p>
+
+                                        {/* Delete button visible on hover for desktop, always visible on mobile */}
+                                        <Button
+                                            size="icon"
+                                            className="absolute top-2 right-2 bg-transparent pointer-events-auto 
+                                    opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                            onClick={(e) =>
+                                                handleOpenDeleteDialog(
+                                                    entry._id,
+                                                    e
+                                                )
+                                            }
+                                        >
+                                            <EllipsisVertical className="h-4 w-4" />
+                                        </Button>
+                                    </motion.div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
                     </div>
-                </div>
-            ))}
+                ))}
                 <Card className="overflow-hidden border-dashed w-[200px]">
                     <CardContent className="p-0 flex items-center justify-center h-[300px]">
                         <div

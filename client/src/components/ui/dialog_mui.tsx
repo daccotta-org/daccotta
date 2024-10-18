@@ -63,14 +63,6 @@ function SimplePopover(props: SimpleDialogProps) {
             className="flex flex-col items-start bg-background text-white"
         >
             <ListItem className="flex flex-col items-center pb-2 w-full">
-                <Avatar
-                    src={avatar}
-                    alt="User Avatar"
-                    sx={{ width: 60, height: 60 }}
-                    className="mb-2"
-                >
-                    {!avatar && <PersonIcon />}
-                </Avatar>
                 <span className="text-lg font-semibold">{userName}</span>
                 <div className="flex gap-2 mt-1">
                     <div className="flex items-center gap-1">
