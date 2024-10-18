@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 
 import { Dock, DockIcon } from "@/components/magicui/dock"
 import { NotebookPenIcon } from "lucide-react"
-import { toast, ToastContainer } from "react-toastify"
+import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 export type IconProps = React.HTMLAttributes<SVGElement>
