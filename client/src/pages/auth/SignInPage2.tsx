@@ -165,7 +165,7 @@ const SignInPage2: React.FC = () => {
                                 <Button
                                     type="submit"
                                     className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600"
-                                    disabled={signInMutation.isPending}
+                                    disabled={signInMutation.isPending || !isEmailExists|| isCheckingEmail}
                                 >
                                     {signInMutation.isPending
                                         ? "Signing In..."
