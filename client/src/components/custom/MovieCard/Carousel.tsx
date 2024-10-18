@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState } from "react"
 import MovieCard from "./MovieCard"
 import { MovieListType, useMovieList } from "@/services/movieService"
 import { useJournal } from "@/services/journalService"
@@ -43,14 +43,14 @@ const MovieList: React.FC<MovieListProps> = ({
         useMovieList("discover", 1, favGenre || undefined)
 
     const handleScroll = (containerId: string) => {
-        const container = document.getElementById(containerId);
+        const container = document.getElementById(containerId)
         if (container) {
-            const cardWidth = 256; // This is the lg:w-64 value
-            const gap = 16; // This is the gap-4 value
-            const scrollAmount = (cardWidth + gap) * 4; // Scroll 4 cards at a time
-            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            const cardWidth = 256 // This is the lg:w-64 value
+            const gap = 16 // This is the gap-4 value
+            const scrollAmount = (cardWidth + gap) * 4 // Scroll 4 cards at a time
+            container.scrollBy({ left: scrollAmount, behavior: "smooth" })
         }
-    };
+    }
 
     useEffect(() => {
         const fetchFavoriteGenre = async () => {
@@ -123,33 +123,38 @@ const MovieList: React.FC<MovieListProps> = ({
         )
 
     const renderMovieList = (movieList: SimpleMovie[], title: string) => {
-        const containerId = `movie-list-${title.replace(/\s+/g, '-').toLowerCase()}`;
-        
+        const containerId = `movie-list-${title.replace(/\s+/g, "-").toLowerCase()}`
+
         return (
             <div className="w-full flex flex-col justify-start my-6 gap-1 items-start px-4">
                 <h2 className="text-xl font-semibold mb-2">{title}</h2>
-                <div className="w-full relative"
-                     onMouseEnter={() => setHoveredList(containerId)}
-                     onMouseLeave={() => setHoveredList(null)}>
-                    <div 
+                <div
+                    className="w-full relative"
+                    onMouseEnter={() => setHoveredList(containerId)}
+                    onMouseLeave={() => setHoveredList(null)}
+                >
+                    <div
                         id={containerId}
                         className="w-full overflow-x-auto scrollbar-hide scroll-smooth"
                     >
                         <div className="flex flex-nowrap gap-4 pb-4">
                             {movieList?.map((movie) => (
-                                <div key={movie.movie_id} className="flex-shrink-0">
-                                <MovieCard
-                                    poster_path={movie.poster_path}
-                                    movie_id={movie.movie_id}
-                                    title={movie.title}
-                                    release_date={movie.release_date}
-                                />
+                                <div
+                                    key={movie.movie_id}
+                                    className="flex-shrink-0"
+                                >
+                                    <MovieCard
+                                        poster_path={movie.poster_path}
+                                        movie_id={movie.movie_id}
+                                        title={movie.title}
+                                        release_date={movie.release_date}
+                                    />
                                 </div>
                             ))}
                         </div>
                     </div>
                     {hoveredList === containerId && (
-                        <button 
+                        <button
                             onClick={() => handleScroll(containerId)}
                             className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/60 p-2 rounded-l-lg hover:bg-black/80 transition-colors duration-200"
                         >

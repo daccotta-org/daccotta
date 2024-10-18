@@ -44,15 +44,7 @@ function SimplePopover(props: SimpleDialogProps) {
         }
     }
 
-    const {
-        onClose,
-        selectedValue,
-        open,
-        avatar,
-        userName,
-        friendsCount,
-        badgesCount,
-    } = props
+    const { onClose, avatar, userName, friendsCount, badgesCount } = props
 
     const handleListItemClick = (value: string) => {
         if (value === "Profile") {
