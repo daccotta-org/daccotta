@@ -6,7 +6,7 @@
     "@fontsource/montserrat": "^5.0.19",
     "@fontsource/noto-sans": "^5.0.22",
     "@fontsource/roboto": "^5.0.14",
-    "daccotta": ".",
+    "daccotta": "file:",
     "eslint": "^9.9.1",
     "react-loading-skeleton": "^3.5.0"
   },
