@@ -26,12 +26,14 @@ const Badge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 const MovieDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>()
     const [isFavourite, setIsFavourite] = useState(false)
+    const [isInWatchList, setIsInWatchList] = useState(false)
     const { user } = useAuth()
 
     const { data: movie, isLoading: isMovieLoading } = useMovieDetails(id!)
     const { data: providers, isLoading: isProvidersLoading } =
         useMovieProviders(id!)
     const [favouriteLoading, setFavouriteLoading] = useState(false)
+    const [watchListLoading, setWatchListLoading] = useState(false);
 
     useEffect(() => {
         const checkFavouriteStatus = async () => {
@@ -108,6 +110,80 @@ const MovieDetailPage: React.FC = () => {
         }
     }
 
+    useEffect(() => {
+        const checkWatchListStatus = async () => {
+            if (user?.uid && movie) {
+                const userData = await getUserData(user.uid)
+                const watchList = userData.lists.find(
+                    (list: List) => list.name === "WatchList"
+                )
+                if (watchList) {
+                    setIsInWatchList(
+                        watchList.movies.some(
+                            (m: SimpleMovie) => m.movie_id === id
+                        )
+                    )
+                }
+            }
+        }
+
+        checkWatchListStatus()
+    }, [id, user, movie])
+
+    const handleWatchListClick = async () => {
+        if (!user) {
+            toast.error("Please log in to manage your watchlists.");
+            return;
+        }
+    
+        if (!movie) return;
+        setWatchListLoading(true);
+        try {
+            const userData = await getUserData(user.uid);
+            let watchList = userData.lists.find(
+                (list: List) => list.name === "WatchList"
+            );
+    
+            if (!watchList) {
+                const createListData = {
+                    name: "WatchList",
+                    description: "My WatchList",
+                    isPublic: true,
+                };
+                watchList = await createList(user.uid, {
+                    ...createListData,
+                    list_type: "user",
+                });
+            }
+    
+            if (isInWatchList) {
+                // Remove movie from watchlist if already added
+                await removeMovieFromList(watchList.list_id, movie.id);
+                console.log("")
+                setIsInWatchList(false);
+                toast.success(`${movie.title} has been removed from your WatchList.`);
+            } else {
+                // Add movie to watchlist if not already added
+                const movieToAdd = {
+                    id: id!,
+                    movie_id: movie.id,
+                    title: movie.title,
+                    poster_path: movie.poster_path,
+                    release_date: movie.release_date,
+                    genre_ids: movie.genres.map((genre: any) => genre.id),
+                };
+                await addMovieToList(watchList.list_id, movieToAdd);
+                setIsInWatchList(true);
+                toast.success(`${movie.title} has been added to your WatchList.`);
+            }
+        } catch (error) {
+            console.error("Error managing movie in WatchList:", error);
+            toast.error("Failed to manage movie. Please try again.");
+        } finally {
+            setWatchListLoading(false);
+        }
+    };
+
     if (isMovieLoading || isProvidersLoading) {
         return (
             <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -168,12 +244,17 @@ const MovieDetailPage: React.FC = () => {
                                         )}
                                     </button>
                                     <button
-                                        className="p-2 bg-gray-700 rounded-full"
-                                        onClick={() =>
-                                            toast.warning("Coming Soon!")
-                                        }
+                                        className={`p-2 rounded-full ${isInWatchList ? "bg-yellow-600" : "bg-gray-700"}`}
+                                        onClick={handleWatchListClick}
+                                        disabled={watchListLoading}
                                     >
-                                        <Bookmark className="w-6 h-6" />
+                                        {watchListLoading ? (
+                                            <Loader />
+                                        ) : (
+                                            <Bookmark
+                                                className={`w-6 h-6 ${isInWatchList ? "fill-current" : ""}`}
+                                            />
+                                        )}
                                     </button>
                                 </div>
                             </div>
