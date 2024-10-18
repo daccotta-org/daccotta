@@ -31,32 +31,32 @@ jobs:
       # Install dependencies (Frontend)
       - name: Install Frontend Dependencies
         working-directory: ./client
-        run: npm install
+        run: bun install
 
       # Install dependencies (Backend)
       - name: Install Backend Dependencies
         working-directory: ./server
-        run: npm install
+        run: bun install
 
       # Lint the frontend code
       - name: Lint Frontend Code
         working-directory: ./client
-        run: npm run lint
+        run: bun run lint
 
       # Lint the backend code
       - name: Lint Backend Code
         working-directory: ./server
-        run: npm run lint
+        run: bun run lint
 
       # Run frontend tests
       - name: Run Frontend Tests
         working-directory: ./client
-        run: npm run test -- --coverage
+        run: bun run test -- --coverage
 
       # Run backend tests
       - name: Run Backend Tests
         working-directory: ./server
-        run: npm run test -- --coverage
+        run: bun run test -- --coverage
 
   # Job 2: Build the frontend app and deploy preview to Netlify
   build-and-preview:
@@ -74,15 +74,15 @@ jobs:
 
       - name: Install Frontend Dependencies
         working-directory: ./client
-        run: npm install
+        run: bun install
 
       - name: Build Frontend
         working-directory: ./client
-        run: npm run build
+        run: bun run build
 
       # Deploy to Netlify for preview
       - name: Install Netlify CLI
-        run: npm install -g netlify-cli
+        run: bun install -g netlify-cli
 
       - name: Deploy Preview to Netlify
         env:
@@ -115,17 +115,17 @@ jobs:
       # Install Backend Dependencies for Deployment
       - name: Install Backend Dependencies
         working-directory: ./server
-        run: npm install --production
+        run: bun install --production
 
       # Install Frontend Dependencies for Deployment
       - name: Install Frontend Dependencies
         working-directory: ./client
-        run: npm install --production
+        run: bun install --production
 
       # Deploy Backend (Node.js server)
       - name: Deploy Backend to Server
         run: |
-          ssh user@your-server-ip 'cd /path/to/server && git pull && npm install --production && pm2 restart server-app'
+          ssh user@your-server-ip 'cd /path/to/server && git pull && bun install --production && pm2 restart server-app'
 
       # Deploy Frontend (React build)
       - name: Deploy Frontend to Server
