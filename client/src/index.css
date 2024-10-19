@@ -96,3 +96,7 @@ opacity: 0.8;
     font-weight: 400;
     font-style: normal;
   }
+
+.white-font {
+    color: white;
+}
