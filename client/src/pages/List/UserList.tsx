@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"
 import { toast } from "react-toastify"
 import CreateList from "../CreateList/CreateList"
 import { Drawer } from "@/components/ui/drawer"
+import { Trash } from "lucide-react"
+import { deleteList } from "@/services/userService"
 
 interface Movie {
     movie_id: string
@@ -36,7 +38,7 @@ const UserLists: React.FC = () => {
     const [isCreateListOpen, setIsCreateListOpen] = useState(false)
     const { user } = useAuth()
     const navigate = useNavigate()
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState("")
     const [isSearchVisible, setIsSearchVisible] = useState(false)
 
     useEffect(() => {
@@ -70,12 +72,27 @@ const UserLists: React.FC = () => {
     const handleSearchToggle = () => setIsSearchVisible(!isSearchVisible)
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+        setSearchQuery(e.target.value)
     }
-    
-    const filteredLists = lists.filter(list =>
+
+    const filteredLists = lists.filter((list) =>
         list.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
+
+    const handleDeleteList = async (listId: string) => {
+        console.log("list id", listId)
+        try {
+            // Call your delete service or API here
+            await deleteList(listId) // Assuming deleteList is your API call
+            setLists((prevLists) =>
+                prevLists.filter((list) => list.list_id !== listId)
+            )
+            toast.success("List deleted successfully")
+        } catch (error) {
+            console.error("Error deleting list:", error)
+            toast.error("Failed to delete the list. Please try again.")
+        }
+    }
 
     return (
         <div className="w-full max-h-screen overflow-auto scrollbar-hide text-gray-100 min-h-screen p-4">
@@ -117,9 +134,20 @@ const UserLists: React.FC = () => {
                     {filteredLists.map((list) => (
                         <div
                             key={list.list_id}
-                            className="bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
+                            className="relative bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
                             onClick={() => handleListClick(list.list_id)}
                         >
+                            <div className="absolute top-2 right-2">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation() // Prevents triggering list click
+                                        handleDeleteList(list.list_id) // Call delete function
+                                    }}
+                                    className="text-gray-400 hover:text-red-500"
+                                >
+                                    <Trash className="w-5 h-5" />
+                                </button>
+                            </div>
                             <div className="flex flex-col md:flex-row">
                                 <div className="flex-shrink-0 md:w-1/3 w-full flex space-x-1 p-4 justify-center">
                                     {list.movies.slice(0, 4).map((movie) => (
@@ -149,23 +177,7 @@ const UserLists: React.FC = () => {
                                     </h2>
                                     <div className="flex items-center space-x-4 text-sm text-gray-400 mb-2">
                                         <span>{list.movies.length} films</span>
-                                        {/* <span className="flex items-center">
-                                            <Heart className="w-4 h-4 mr-1" />{" "}
-                                            {list.likes || 0}
-                                        </span> */}
-                                        {/* <span className="flex items-center">
-                                            <MessageSquare className="w-4 h-4 mr-1" />{" "}
-                                            {list.comments || 0}
-                                        </span> */}
                                     </div>
-                                    {/* <div className="mb-4">
-                                        <span className="font-bold">
-                                            Average Rating:{" "}
-                                            {list.averageRating
-                                                ? list.averageRating.toFixed(1)
-                                                : "N/A"}
-                                        </span>
-                                    </div> */}
                                     <p className="text-white">
                                         {`Description: ${list.description}` ||
                                             "No description available."}
