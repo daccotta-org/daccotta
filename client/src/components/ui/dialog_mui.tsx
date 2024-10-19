@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
 import { getUserData } from "@/services/userService"
 import { useState, useEffect } from "react"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const options = [
     { label: "Profile", icon: <AccountCircleIcon /> },
@@ -50,7 +52,7 @@ function SimplePopover(props: SimpleDialogProps) {
         if (value === "Profile") {
             navigate("/profile")
         } else if (value === "Settings") {
-            navigate("/settings")
+            navigate("/"), toast.warning("Coming Soon!")
         } else if (value === "Sign Out") {
             handleSignOut()
         }
