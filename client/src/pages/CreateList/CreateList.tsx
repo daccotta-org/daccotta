@@ -51,33 +51,35 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
     return (
         <DrawerContent>
             <div className="mx-auto w-full max-w-sm">
-                <DrawerHeader>
+                <DrawerHeader className="white-font">
                     <DrawerTitle>Create New List</DrawerTitle>
                     <DrawerDescription>
                         Create a new movie list to share with friends.
                     </DrawerDescription>
                 </DrawerHeader>
-                <div className="p-4 pb-0">
+                <div className="p-4 pb-0 white-font">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="list-name">List Name</Label>
+                            <Label htmlFor="list-name" className="white-font">List Name</Label>
                             <Input
                                 id="list-name"
                                 placeholder="Enter list name"
                                 value={listName}
                                 onChange={(e) => setListName(e.target.value)}
+                                className="white-font"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
+                            <Label htmlFor="description" className="white-font">Description</Label>
                             <Textarea
                                 id="description"
                                 placeholder="Enter list description"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                className="white-font"
                             />
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 white-font">
                             <Switch
                                 id="public"
                                 checked={isPublic}
@@ -88,7 +90,7 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button onClick={handleSubmit} disabled={loading}>
+                    <Button onClick={handleSubmit} disabled={loading} className="white-font">
                         {loading ? "Creating..." : "Create List"}
                     </Button>
                     <DrawerClose asChild>
