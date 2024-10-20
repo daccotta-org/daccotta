@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
+import { signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
 
 export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -90,6 +90,20 @@ const SignInPage2: React.FC = () => {
             toast.error("Failed to sign in with Google. Please try again.")
         }
     }
+
+    const resetPassword = async () => {
+        if (!email) {
+            toast.error("Please enter your email address.");
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            toast.success("Password reset email sent! Check your inbox.");
+        } catch (error) {
+            console.error("Failed to send password reset email:", error);
+            toast.error("Failed to send password reset email. Please try again.");
+        }
+    };
 
     return (
         <>
@@ -188,6 +202,16 @@ const SignInPage2: React.FC = () => {
                                     {signInMutation.isPending
                                         ? "Signing In..."
                                         : "Sign In"}
+                                </Button>
+                            </div>
+
+                            {/* Reset Password Button */}
+                            <div className="mt-4">
+                                <Button
+                                    onClick={resetPassword}
+                                    className="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-400 hover:to-red-600"
+                                >
+                                    Forgot Password?
                                 </Button>
                             </div>
                         </form>
