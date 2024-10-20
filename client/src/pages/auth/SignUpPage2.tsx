@@ -372,7 +372,7 @@ const SignUp: React.FC = () => {
                                     alt="Google Logo"
                                     className="h-5 w-5 mr-2" // Adjust size as needed
                                 />
-                                <span>Sign Up with Google</span>
+                                <span>Sign Up using Google</span>
                             </Button>
                         </div>
                     </form>
