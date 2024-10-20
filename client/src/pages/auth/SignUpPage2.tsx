@@ -14,6 +14,12 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // Import for Google auth
+import { auth } from "../../lib/firebase"; // Adjust the import path if needed
+import { toast } from "react-toastify";
+
+// Schema definitions...
+const googleProvider = new GoogleAuthProvider();
 
 // Schema definitions (unchanged)
 const usernameSchema = z
@@ -167,6 +173,19 @@ const SignUp: React.FC = () => {
     const preventPaste = (e: React.ClipboardEvent) => {
         e.preventDefault()
     }
+
+    const handleGoogleSignUp = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            console.log('User signed up with Google:', user);
+            toast.success("Successfully signed up with Google")
+            // Optionally save user to Firestore
+        } catch (error) {
+            console.error("Error signing up with Google:", error);
+            toast.error("Error signing up with Google");
+        }
+    };
 
     return (
         <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
@@ -339,6 +358,21 @@ const SignUp: React.FC = () => {
                                 }
                             >
                                 {isLoading ? "Loading..." : "Sign Up"}
+                            </Button>
+                        </div>
+
+                        <div>
+                            <Button
+                                type="button"
+                                className="w-full bg-blue-500 hover:bg-blue-400"
+                                onClick={handleGoogleSignUp}
+                            >
+                                <img
+                                    src="/google.svg" // Adjust the path as needed
+                                    alt="Google Logo"
+                                    className="h-5 w-5 mr-2" // Adjust size as needed
+                                />
+                                <span>Sign Up using Google</span>
                             </Button>
                         </div>
                     </form>

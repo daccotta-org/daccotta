@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -78,6 +79,17 @@ const SignInPage2: React.FC = () => {
     const onSubmit = (data: SignInFormData) => {
         signInMutation.mutate(data)
     }
+
+    const signInWithGoogle = async () => {
+        const provider = new GoogleAuthProvider();
+        try {
+            await signInWithPopup(auth, provider);
+            toast.success("Successfully signed in with Google!");
+        } catch (error) {
+            console.error("Failed to sign in with Google:", error);
+            toast.error("Failed to sign in with Google. Please try again.");
+        }
+    };
 
     return (
         <>
@@ -183,6 +195,22 @@ const SignInPage2: React.FC = () => {
                                 </span>
                             </div>
                         </div>
+
+                        {/* Sign in with Google Button */}
+                        <div className="mt-4">
+                            <Button
+                                onClick={signInWithGoogle}
+                                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600"
+                            >
+                                <img
+                                    src="/google.svg" // Adjust the path as needed
+                                    alt="Google Logo"
+                                    className="h-5 w-5 mr-2" // Adjust size as needed
+                                />
+                                <span>Continue with Google</span>
+                            </Button>
+                        </div>
+
                         <p className="mt-2 text-center text-sm text-gray-300">
                             New User?{" "}
                             <Link
