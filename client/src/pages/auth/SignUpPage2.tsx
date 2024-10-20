@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
 import { z } from "zod"
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
+import { auth } from "../../lib/firebase" // Ensure you have Firebase initialized
+import axios from "axios"
 
 import {
     checkEmailExists,
@@ -168,6 +171,23 @@ const SignUp: React.FC = () => {
         e.preventDefault()
     }
 
+    const signUpWithGoogle = async () => {
+        const provider = new GoogleAuthProvider()
+        try {
+            const result = await signInWithPopup(auth, provider)
+            const token = await result.user.getIdToken() // Get the ID token
+
+            // Send the token to your backend for sign-up
+            const response = await axios.post("http://your-backend-url/api/auth/google/signup", { token })
+            console.log("User signed up:", response.data)
+            toast.success("Successfully signed up with Google!")
+            reset()
+        } catch (error) {
+            console.error("Failed to sign up with Google:", error.message)
+            toast.error("Failed to sign up with Google. Please try again.")
+        }
+    }
+
     return (
         <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
             <div className="lg:col-span-2 h-screen flex flex-col items-center font-heading justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black text-white">
@@ -322,6 +342,16 @@ const SignUp: React.FC = () => {
                                         {errors.confirmPassword.message}
                                     </p>
                                 )}
+                            </div>
+
+                            <div>
+                                <Button
+                                    type="button"
+                                    className="w-full bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blue-400 hover:to-blue-300"
+                                    onClick={signUpWithGoogle}
+                                >
+                                    Sign Up with Google
+                                </Button>
                             </div>
                         </div>
 

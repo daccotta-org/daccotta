@@ -11,6 +11,10 @@ import {
     useSignUp,
 } from "../../services/userService"
 import { z } from "zod"
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
+import { auth } from "../../lib/firebase" // Ensure you have Firebase initialized
+import axios from "axios"
+import toast from "react-toastify"
 
 // Schema definitions
 const usernameSchema = z
@@ -166,6 +170,23 @@ const SignUp: React.FC = () => {
 
     const preventPaste = (e: React.ClipboardEvent) => {
         e.preventDefault()
+    }
+
+    const signUpWithGoogle = async () => {
+        const provider = new GoogleAuthProvider()
+        try {
+            const result = await signInWithPopup(auth, provider)
+            const token = await result.user.getIdToken() // Get the ID token
+
+            // Send the token to your backend for sign-up
+            const response = await axios.post("http://your-backend-url/api/auth/google/signup", { token })
+            console.log("User signed up:", response.data)
+            toast.success("Successfully signed up with Google!")
+            reset() // Ensure you reset the form after successful sign-up
+        } catch (error) {
+            console.error("Failed to sign up with Google:", error.message)
+            toast.error("Failed to sign up with Google. Please try again.")
+        }
     }
 
     return (
@@ -330,6 +351,15 @@ const SignUp: React.FC = () => {
                                     Sign In
                                 </Link>
                             </p>
+                        </div>
+                        <div className="mt-4">
+                            <button
+                                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2 rounded hover:bg-blue-600"
+                                type="button"
+                                onClick={signUpWithGoogle}
+                            >
+                                Sign Up with Google
+                            </button>
                         </div>
                     </form>
                 </div>
