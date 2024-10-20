@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { auth } from "../../lib/firebase"
-import { signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { useMutation } from "@tanstack/react-query"
 import { z } from "zod"
 import { Link } from "react-router-dom"
@@ -77,6 +77,19 @@ const SignInPage2: React.FC = () => {
 
     const onSubmit = (data: SignInFormData) => {
         signInMutation.mutate(data)
+    }
+
+    const provider = new GoogleAuthProvider()
+
+    const signInWithGoogle = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+            toast.success("Successfully signed in with Google!");
+            reset();
+        } catch (error) {
+            console.error("Failed to sign in with Google:", error.message); // Log the error message
+            toast.error("Failed to sign in with Google. Please try again.");
+        }
     }
 
     return (
@@ -192,6 +205,15 @@ const SignInPage2: React.FC = () => {
                                 Sign Up
                             </Link>
                         </p>
+                        <div className="mt-4">
+                            <button
+                                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2 rounded hover:bg-blue-600"
+                                type="button"
+                                onClick={signInWithGoogle}
+                            >
+                                Sign In with Google
+                            </button>
+                        </div>
                     </div>
                 </div>
 
