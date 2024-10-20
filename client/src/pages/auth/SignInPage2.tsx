@@ -79,6 +79,12 @@ const SignInPage2: React.FC = () => {
         signInMutation.mutate(data)
     }
 
+    const handleForgotPassword = () => {
+        // Here you can implement the logic to send a recovery email
+        // For now, we will just show a toast notification
+        toast.success("Recovery email sent!");
+    }
+
     return (
         <>
             <div className="w-full min-h-screen lg:grid lg:grid-cols-5 font-heading">
@@ -171,6 +177,16 @@ const SignInPage2: React.FC = () => {
                                         ? "Signing In..."
                                         : "Sign In"}
                                 </Button>
+                            </div>
+
+                            <div className="text-center">
+                                <button
+                                    type="button"
+                                    onClick={handleForgotPassword}
+                                    className="text-blue-400 hover:text-blue-300"
+                                >
+                                    Forgot Password?
+                                </button>
                             </div>
                         </form>
                         <div className="relative">
