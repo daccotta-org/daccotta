@@ -1,4 +1,4 @@
-import React from "react"
+ import React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { auth } from "../../lib/firebase"
@@ -7,6 +7,8 @@ import {
     // signInWithPopup,
     // GoogleAuthProvider,
     // OAuthProvider,
+    signInWithPopup,
+    GoogleAuthProvider,
 } from "firebase/auth"
 import { useMutation } from "@tanstack/react-query"
 import { z } from "zod"
@@ -17,6 +19,7 @@ import { checkEmailExists } from "@/services/userService"
 import { useState, useEffect } from "react"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import axios from "axios"
 
 export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -78,6 +81,24 @@ const SignInPage: React.FC = () => {
 
     const onSubmit = (data: SignInFormData) => {
         signInMutation.mutate(data)
+    }
+
+    const provider = new GoogleAuthProvider()
+
+    const signInWithGoogle = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider)
+            const token = await result.user.getIdToken() // Get the ID token
+
+            // Send the token to your backend
+            const response = await axios.post("http://your-backend-url/api/auth/google", { token })
+            console.log("User signed in:", response.data)
+            toast.success("Successfully signed in with Google!")
+            reset()
+        } catch (error) {
+            console.error("Failed to sign in with Google:", error.message)
+            toast.error("Failed to sign in with Google. Please try again.")
+        }
     }
 
     return (
@@ -159,6 +180,15 @@ const SignInPage: React.FC = () => {
                                         : "Sign In"}
                                 </button>
                             </div>
+                            <div className="form-control mb-4">
+                                <button
+                                    className="btn btn-secondary text-white w-full"
+                                    type="button"
+                                    onClick={signInWithGoogle}
+                                >
+                                    Sign In with Google
+                                </button>
+                            </div>
                             <div className="divider">OR</div>
 
                             <p className="lg:mt-4 mt-12 text-center">
@@ -191,3 +221,4 @@ const SignInPage: React.FC = () => {
 }
 
 export default SignInPage
+
