@@ -274,7 +274,10 @@ const MovieDetailPage: React.FC = () => {
                                     {movie.runtime % 60}m
                                 </div>
                                 <div>
-                                    {new Date(movie.release_date).getFullYear()}
+                                    {movie.release_date
+                                        ? new Date(movie.release_date).getFullYear()
+                                        : "- -"
+                                    }
                                 </div>
                             </div>
 
@@ -298,9 +301,10 @@ const MovieDetailPage: React.FC = () => {
                                         Release Date
                                     </span>
                                     <p>
-                                        {new Date(
-                                            movie.release_date
-                                        ).toLocaleDateString()}
+                                        {movie.release_date
+                                            ? new Date(movie.release_date).toLocaleDateString()
+                                            : "Not released yet"
+                                        }
                                     </p>
                                 </div>
                                 <div>
