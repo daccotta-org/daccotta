@@ -138,15 +138,17 @@ const UserLists: React.FC = () => {
                             onClick={() => handleListClick(list.list_id)}
                         >
                             <div className="absolute top-2 right-2">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation() // Prevents triggering list click
-                                        handleDeleteList(list.list_id) // Call delete function
-                                    }}
-                                    className="text-gray-400 hover:text-red-500"
-                                >
-                                    <Trash className="w-5 h-5" />
-                                </button>
+                                {list.name !== "Top 5 Movies" && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation() // Prevents triggering list click
+                                            handleDeleteList(list.list_id) // Call delete function
+                                        }}
+                                        className="text-gray-400 hover:text-red-500"
+                                    >
+                                        <Trash className="w-5 h-5" />
+                                    </button>
+                                )}
                             </div>
                             <div className="flex flex-col md:flex-row">
                                 <div className="flex-shrink-0 md:w-1/3 w-full flex space-x-1 p-4 justify-center">
