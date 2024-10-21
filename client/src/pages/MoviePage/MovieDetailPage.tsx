@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { toast } from "react-toastify"
-import { Heart, Star, Bookmark, Youtube, Tv } from "lucide-react"
+import {
+    Heart,
+    Star,
+    Bookmark,
+    Youtube,
+    Tv,
+    ChartNoAxesColumnDecreasingIcon,
+    CalendarHeartIcon,
+    VenetianMaskIcon,
+} from "lucide-react"
 import LazyImage from "@/components/custom/LazyLoadImage/LazyImage"
 import { useAuth } from "@/hooks/useAuth"
 import { useMovieProviders, useMovieDetails } from "@/services/movieService"
@@ -18,7 +27,7 @@ import Loader from "../../components/ui/Loader"
 const image_url = "https://image.tmdb.org/t/p"
 
 const Badge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <span className="inline-block bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">
+    <span className="inline-block bg-gray-800 bg-opacity-65 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">
         {children}
     </span>
 )
@@ -33,7 +42,7 @@ const MovieDetailPage: React.FC = () => {
     const { data: providers, isLoading: isProvidersLoading } =
         useMovieProviders(id!)
     const [favouriteLoading, setFavouriteLoading] = useState(false)
-    const [watchListLoading, setWatchListLoading] = useState(false);
+    const [watchListLoading, setWatchListLoading] = useState(false)
 
     useEffect(() => {
         const checkFavouriteStatus = async () => {
@@ -132,36 +141,38 @@ const MovieDetailPage: React.FC = () => {
 
     const handleWatchListClick = async () => {
         if (!user) {
-            toast.error("Please log in to manage your watchlists.");
-            return;
+            toast.error("Please log in to manage your watchlists.")
+            return
         }
-    
-        if (!movie) return;
-        setWatchListLoading(true);
+
+        if (!movie) return
+        setWatchListLoading(true)
         try {
-            const userData = await getUserData(user.uid);
+            const userData = await getUserData(user.uid)
             let watchList = userData.lists.find(
                 (list: List) => list.name === "WatchList"
-            );
-    
+            )
+
             if (!watchList) {
                 const createListData = {
                     name: "WatchList",
                     description: "My WatchList",
                     isPublic: true,
-                };
+                }
                 watchList = await createList(user.uid, {
                     ...createListData,
                     list_type: "user",
-                });
+                })
             }
-    
+
             if (isInWatchList) {
                 // Remove movie from watchlist if already added
-                await removeMovieFromList(watchList.list_id, movie.id);
+                await removeMovieFromList(watchList.list_id, movie.id)
                 console.log("")
-                setIsInWatchList(false);
-                toast.success(`${movie.title} has been removed from your WatchList.`);
+                setIsInWatchList(false)
+                toast.success(
+                    `${movie.title} has been removed from your WatchList.`
+                )
             } else {
                 // Add movie to watchlist if not already added
                 const movieToAdd = {
@@ -171,18 +182,20 @@ const MovieDetailPage: React.FC = () => {
                     poster_path: movie.poster_path,
                     release_date: movie.release_date,
                     genre_ids: movie.genres.map((genre: any) => genre.id),
-                };
-                await addMovieToList(watchList.list_id, movieToAdd);
-                setIsInWatchList(true);
-                toast.success(`${movie.title} has been added to your WatchList.`);
+                }
+                await addMovieToList(watchList.list_id, movieToAdd)
+                setIsInWatchList(true)
+                toast.success(
+                    `${movie.title} has been added to your WatchList.`
+                )
             }
         } catch (error) {
-            console.error("Error managing movie in WatchList:", error);
-            toast.error("Failed to manage movie. Please try again.");
+            console.error("Error managing movie in WatchList:", error)
+            toast.error("Failed to manage movie. Please try again.")
         } finally {
-            setWatchListLoading(false);
+            setWatchListLoading(false)
         }
-    };
+    }
 
     if (isMovieLoading || isProvidersLoading) {
         return (
@@ -208,14 +221,14 @@ const MovieDetailPage: React.FC = () => {
 
     return (
         <div
-            className="min-h-screen text-white bg-cover bg-center bg-fixed py-10"
+            className="max-h-screen overflow-auto text-white bg-cover bg-center bg-fixed py-10"
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${image_url}/original${movie.backdrop_path})`,
                 width: `100%`,
             }}
         >
             <div className="container mx-auto px-4">
-                <div className="bg-gray-900 bg-opacity-90 rounded-lg shadow-lg overflow-hidden">
+                <div className="bg-black bg-opacity-50 rounded-lg shadow-lg overflow-hidden">
                     <div className="md:flex">
                         <div className="md:w-1/3 lg:w-1/4">
                             <LazyImage
@@ -231,7 +244,7 @@ const MovieDetailPage: React.FC = () => {
                                 </h1>
                                 <div className="flex space-x-2">
                                     <button
-                                        className={`p-2 rounded-full ${isFavourite ? "bg-red-600" : "bg-gray-700"}`}
+                                        className={`p-2 rounded-full ${isFavourite ? "bg-red-600" : "bg-gray-700 bg-opacity-50"}`}
                                         onClick={handleFavouriteClick}
                                         disabled={favouriteLoading}
                                     >
@@ -244,7 +257,7 @@ const MovieDetailPage: React.FC = () => {
                                         )}
                                     </button>
                                     <button
-                                        className={`p-2 rounded-full ${isInWatchList ? "bg-yellow-600" : "bg-gray-700"}`}
+                                        className={`p-2 rounded-full ${isInWatchList ? "bg-yellow-600" : "bg-gray-700 bg-opacity-50"}`}
                                         onClick={handleWatchListClick}
                                         disabled={watchListLoading}
                                     >
@@ -275,9 +288,10 @@ const MovieDetailPage: React.FC = () => {
                                 </div>
                                 <div>
                                     {movie.release_date
-                                        ? new Date(movie.release_date).getFullYear()
-                                        : "- -"
-                                    }
+                                        ? new Date(
+                                              movie.release_date
+                                          ).getFullYear()
+                                        : "- -"}
                                 </div>
                             </div>
 
@@ -291,24 +305,28 @@ const MovieDetailPage: React.FC = () => {
 
                             <div className="grid grid-cols-2 gap-4 mb-6">
                                 <div>
-                                    <span className="inline-block bg-blue-600 text-white px-3 py-1 rounded-full">
+                                    <span className="flex items-center  gap-1  text-white">
+                                        <ChartNoAxesColumnDecreasingIcon className="text-blue-400" />
                                         Status
                                     </span>
                                     <p>{movie.status}</p>
                                 </div>
                                 <div>
-                                    <span className="inline-block bg-green-600 text-white px-3 py-1 rounded-full">
+                                    <span className="flex items-center   text-white gap-1">
+                                        <CalendarHeartIcon className="text-green-400" />
                                         Release Date
                                     </span>
                                     <p>
                                         {movie.release_date
-                                            ? new Date(movie.release_date).toLocaleDateString()
-                                            : "Not released yet"
-                                        }
+                                            ? new Date(
+                                                  movie.release_date
+                                              ).toLocaleDateString()
+                                            : "Not released yet"}
                                     </p>
                                 </div>
                                 <div>
-                                    <span className="inline-block bg-purple-600 text-white px-1 py-1 rounded-full">
+                                    <span className="flex items-center gap-1 text-white  py-1 ">
+                                        <VenetianMaskIcon className="text-purple-500" />
                                         Director
                                     </span>
                                     <p>{director}</p>
@@ -318,7 +336,7 @@ const MovieDetailPage: React.FC = () => {
                             <div className="flex flex-wrap gap-4">
                                 {firstRentProvider && (
                                     <button
-                                        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg"
+                                        className="flex items-center bg-gray-700 bg-opacity-45 text-white  px-4 py-2 rounded-lg"
                                         onClick={() =>
                                             window.open(
                                                 providers?.link,
@@ -338,7 +356,7 @@ const MovieDetailPage: React.FC = () => {
                                 )}
                                 {firstBuyProvider && (
                                     <button
-                                        className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg"
+                                        className="flex items-center bg-gray-700 bg-opacity-45 text-white  px-4 py-2 rounded-lg"
                                         onClick={() =>
                                             window.open(
                                                 providers?.link,
@@ -355,7 +373,7 @@ const MovieDetailPage: React.FC = () => {
                                     </button>
                                 )}
                                 <button
-                                    className="flex items-center bg-red-600 text-white px-4 py-2 rounded-lg"
+                                    className="flex items-center bg-gray-700 bg-opacity-45 text-white px-4 py-2 rounded-lg"
                                     onClick={() =>
                                         window.open(
                                             `https://www.youtube.com/results?search_query=${encodeURIComponent(movie.title + " trailer")}`,
@@ -363,11 +381,11 @@ const MovieDetailPage: React.FC = () => {
                                         )
                                     }
                                 >
-                                    <Youtube className="w-6 mr-2" />
+                                    <Youtube className="w-6 mr-2 text-red-400" />
                                     YouTube
                                 </button>
                                 <button
-                                    className="flex items-center bg-gray-200 text-black px-4 py-2 rounded-lg"
+                                    className="flex items-center  bg-gray-700 bg-opacity-45 text-white px-4 py-2 rounded-lg"
                                     onClick={() =>
                                         window.open(
                                             `https://tv.apple.com/search?term=${encodeURIComponent(movie.title)}`,
@@ -382,7 +400,7 @@ const MovieDetailPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="p-6 bg-gray-800">
+                    <div className="p-6 bg-black bg-opacity-40">
                         <h3 className="text-2xl font-bold mb-4">Top Cast</h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             {movie.credits?.cast

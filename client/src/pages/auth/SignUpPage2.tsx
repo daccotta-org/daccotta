@@ -14,12 +14,12 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // Import for Google auth
-import { auth } from "../../lib/firebase"; // Adjust the import path if needed
-import { toast } from "react-toastify";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth" // Import for Google auth
+import { auth } from "../../lib/firebase" // Adjust the import path if needed
+import { toast } from "react-toastify"
 
 // Schema definitions...
-const googleProvider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider()
 
 // Schema definitions (unchanged)
 const usernameSchema = z
@@ -64,9 +64,8 @@ const LoadingSpinner: React.FC = () => {
 }
 
 const SignUp: React.FC = () => {
-
-    const [hidden, setHidden] = useState(true);
-    const [confirmHidden, setConfirmHidden] = useState(true);
+    const [hidden, setHidden] = useState(true)
+    const [confirmHidden, setConfirmHidden] = useState(true)
     const [isUsernameAvailable, setIsUsernameAvailable] = useState<
         boolean | null
     >(null)
@@ -176,16 +175,16 @@ const SignUp: React.FC = () => {
 
     const handleGoogleSignUp = async () => {
         try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-            console.log('User signed up with Google:', user);
+            const result = await signInWithPopup(auth, googleProvider)
+            const user = result.user
+            console.log("User signed up with Google:", user)
             toast.success("Successfully signed up with Google")
             // Optionally save user to Firestore
         } catch (error) {
-            console.error("Error signing up with Google:", error);
-            toast.error("Error signing up with Google");
+            console.error("Error signing up with Google:", error)
+            toast.error("Error signing up with Google")
         }
-    };
+    }
 
     return (
         <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
@@ -303,11 +302,14 @@ const SignUp: React.FC = () => {
                                         {...register("password")}
                                         onPaste={preventPaste}
                                     />
-                                    <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer" onClick={()=>setHidden(!hidden)}>
+                                    <div
+                                        className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer"
+                                        onClick={() => setHidden(!hidden)}
+                                    >
                                         {hidden ? <EyeOff /> : <Eye />}
                                     </div>
                                 </div>
-                                
+
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-red-500">
                                         {errors.password.message}
@@ -323,19 +325,26 @@ const SignUp: React.FC = () => {
                                     Confirm Password
                                 </Label>
                                 <div className="relative">
-                                <Input
-                                    id="confirmPassword"
-                                    type={confirmHidden ? "password": "text"}
-                                    placeholder="Confirm Password"
-                                    className="bg-gray-800 text-white"
-                                    {...register("confirmPassword")}
-                                    onPaste={preventPaste}
-                                />
-                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer" onClick={()=>setConfirmHidden(!confirmHidden)}>
+                                    <Input
+                                        id="confirmPassword"
+                                        type={
+                                            confirmHidden ? "password" : "text"
+                                        }
+                                        placeholder="Confirm Password"
+                                        className="bg-gray-800 text-white"
+                                        {...register("confirmPassword")}
+                                        onPaste={preventPaste}
+                                    />
+                                    <div
+                                        className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-10 hover:cursor-pointer"
+                                        onClick={() =>
+                                            setConfirmHidden(!confirmHidden)
+                                        }
+                                    >
                                         {confirmHidden ? <EyeOff /> : <Eye />}
-                                        </div>
                                     </div>
-                                
+                                </div>
+
                                 {errors.confirmPassword && (
                                     <p className="mt-2 text-sm text-red-500">
                                         {errors.confirmPassword.message}
@@ -362,7 +371,7 @@ const SignUp: React.FC = () => {
                         </div>
 
                         <div>
-                            <Button
+                            {/* <Button
                                 type="button"
                                 className="w-full bg-blue-500 hover:bg-blue-400"
                                 onClick={handleGoogleSignUp}
@@ -373,7 +382,7 @@ const SignUp: React.FC = () => {
                                     className="h-5 w-5 mr-2" // Adjust size as needed
                                 />
                                 <span>Sign Up using Google</span>
-                            </Button>
+                            </Button> */}
                         </div>
                     </form>
                     <p className="mt-2 text-center text-sm text-gray-300">
