@@ -9,6 +9,7 @@ import {
     checkEmailExists,
     checkUsernameAvailability,
     useSignUp,
+    createUserWithGoogle
 } from "../../services/userService"
 
 import { Button } from "@/components/ui/button"
@@ -177,8 +178,17 @@ const SignUp: React.FC = () => {
         try {
             const result = await signInWithPopup(auth, googleProvider)
             const user = result.user
-            console.log("User signed up with Google:", user)
+
+            if (!user.email) {
+                toast.error("User email is not available");
+                return;
+            }
+
+            // Optionally send user data to backend
+            await createUserWithGoogle(user.email, username || user.displayName || user.email.split('@')[0]);
+
             toast.success("Successfully signed up with Google")
+
             // Optionally save user to Firestore
         } catch (error) {
             console.error("Error signing up with Google:", error)
@@ -371,7 +381,7 @@ const SignUp: React.FC = () => {
                         </div>
 
                         <div>
-                            {/* <Button
+                            { <Button
                                 type="button"
                                 className="w-full bg-blue-500 hover:bg-blue-400"
                                 onClick={handleGoogleSignUp}
@@ -382,7 +392,7 @@ const SignUp: React.FC = () => {
                                     className="h-5 w-5 mr-2" // Adjust size as needed
                                 />
                                 <span>Sign Up using Google</span>
-                            </Button> */}
+                            </Button> }
                         </div>
                     </form>
                     <p className="mt-2 text-center text-sm text-gray-300">

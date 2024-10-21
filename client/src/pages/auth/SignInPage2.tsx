@@ -203,7 +203,7 @@ const SignInPage2: React.FC = () => {
                         </div>
 
                         {/* Sign in with Google Button */}
-                        {/* <div className="mt-4">
+                        { <div className="mt-4">
                             <Button
                                 onClick={signInWithGoogle}
                                 className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600"
@@ -215,7 +215,7 @@ const SignInPage2: React.FC = () => {
                                 />
                                 <span>Continue with Google</span>
                             </Button>
-                        </div> */}
+                        </div> }
 
                         <p className="mt-2 text-center text-sm text-gray-300">
                             New User?{" "}

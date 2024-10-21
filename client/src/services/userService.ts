@@ -420,6 +420,37 @@ export const createUser = async (data: SignUpFormData) => {
     return response
 }
 
+export const createUserWithGoogle = async (email: string, username: string) => {
+    // This assumes the user is already authenticated with Google
+    const userCredential = await auth.currentUser;
+
+    if (!userCredential) {
+        throw new Error("User is not authenticated with Google");
+    }
+
+    const idTokenResult = await userCredential.getIdTokenResult();
+    const idToken = idTokenResult.token;
+
+    const response = await api.post(
+        "/api/users",
+        {
+            uid: userCredential.uid,
+            username: username, // You may want to prompt for this
+            email: email,
+            onboarded: false,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${idToken}`,
+            },
+        }
+    );
+
+    window.location.href = "/onboard"; // Redirect after successful creation
+
+    return response;
+};
+
 export const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
         const response = await api.post("/api/user/check-email", { email })
