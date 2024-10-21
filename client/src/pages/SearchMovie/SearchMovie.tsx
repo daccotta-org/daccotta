@@ -90,6 +90,11 @@ const SearchMovie: React.FC = () => {
         sessionStorage.setItem("searchHistory", JSON.stringify(updatedHistory))
     }
 
+    const handleClearHistory = () => {
+        setSearchHistory([])
+        sessionStorage.removeItem("searchHistory")
+    }
+
     const currentYear = new Date().getFullYear()
     const years = Array.from({ length: 70 }, (_, i) => currentYear - i)
     const genres = Object.entries(genreMap)
@@ -227,6 +232,14 @@ const SearchMovie: React.FC = () => {
                                     </button>
                                 </div>
                             ))}
+                            <div className="flex justify-end p-2">
+                                <button
+                                    onClick={handleClearHistory}
+                                    className="text-gray-500 hover:text-white"
+                                >
+                                    Clear History
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
