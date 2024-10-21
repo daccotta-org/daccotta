@@ -81,13 +81,26 @@ const SignInPage2: React.FC = () => {
     }
 
     const signInWithGoogle = async () => {
-        const provider = new GoogleAuthProvider()
+        const provider = new GoogleAuthProvider();
         try {
-            await signInWithPopup(auth, provider)
-            toast.success("Successfully signed in with Google!")
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            // Check if the user already exists in your backend
+            const email = user.email;
+            if (email) {
+                const emailExists = await checkEmailExists(email); // Ensure this function is defined
+
+                if (emailExists) {
+                    toast.success("Successfully signed in with Google!");
+                } else {
+                    toast.info("User does not exist. Redirecting to sign-up...");
+                    window.location.href = "/signup"; // Redirect to sign-up page
+                }
+            }
         } catch (error) {
-            console.error("Failed to sign in with Google:", error)
-            toast.error("Failed to sign in with Google. Please try again.")
+            console.error("Failed to sign in with Google:", error);
+            toast.error("Failed to sign in with Google. Please try again.");
         }
     }
 
