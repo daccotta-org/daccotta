@@ -341,6 +341,23 @@ export const createList = async (userId: string, data: CreateListData) => {
     }
 }
 
+export const deleteList = async (listId: string) => {
+    try {
+        const idToken = await auth.currentUser?.getIdToken()
+        const response = await api.delete(`/api/list/${listId}/remove-list`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+        })
+        console.log("Listsed deleted successfully:", response.data)
+        return response.data
+    } catch (error) {
+        console.error("Error deleting list:", error)
+        throw new Error("Failed to delete list")
+    }
+}
+
 export function useSignUp() {
     const queryClient = useQueryClient()
     const navigate = useNavigate()
