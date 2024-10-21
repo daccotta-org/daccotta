@@ -11,6 +11,23 @@ Hey movie lovers! Welcome to **Daccotta**, a web app designed to simplify your m
 ![daccotta](https://github.com/user-attachments/assets/120ce0eb-7009-448c-a5da-f4b7432db6e0)
 also be a part of the community and join our [discord](https://discord.gg/R859peEW) .
 
+<img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
+
+### This project is now OFFICIALLY accepted for
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/329829127-e79eb6de-81b1-4ffb-b6ed-f018bb977e88.png" alt="GSSoC 2024 Extd" width="80%">
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/hacktober.png" alt="Hacktober fest 2024" width="80%">
+</div>
+
+<br>
+    
+<img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
+
+
 ## 🎬 What is Daccotta?
 
 Daccotta is a platform built for film enthusiasts to discover, and showcase their taste in movies with like-minded individuals.
