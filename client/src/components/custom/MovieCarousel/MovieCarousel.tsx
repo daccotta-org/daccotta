@@ -179,7 +179,7 @@ const SkeletonLoader = () => {
                     <div className="h-12 bg-gray-700 rounded-md w-3/4 mb-4 animate-pulse"></div>
                     <div className="h-6 bg-gray-700 rounded-md w-1/2 mb-4 animate-pulse"></div>
                     <div className="h-6 bg-gray-700 rounded-md w-2/3 mb-8 animate-pulse"></div>
-                    <div className="h-12 bg-red-600 rounded-md w-40 animate-pulse"></div>
+                    <div className="h-12 bg-gray-800 opacity-50 rounded-md w-40 animate-pulse"></div>
                 </div>
             </div>
         </div>

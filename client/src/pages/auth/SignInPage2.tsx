@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 
 export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -37,7 +37,7 @@ const SignInPage2: React.FC = () => {
     const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null)
     const [isCheckingEmail, setIsCheckingEmail] = useState(false)
 
-    const [hidden, setHidden] = useState(true);
+    const [hidden, setHidden] = useState(true)
 
     const email = watch("email")
 
@@ -81,15 +81,15 @@ const SignInPage2: React.FC = () => {
     }
 
     const signInWithGoogle = async () => {
-        const provider = new GoogleAuthProvider();
+        const provider = new GoogleAuthProvider()
         try {
-            await signInWithPopup(auth, provider);
-            toast.success("Successfully signed in with Google!");
+            await signInWithPopup(auth, provider)
+            toast.success("Successfully signed in with Google!")
         } catch (error) {
-            console.error("Failed to sign in with Google:", error);
-            toast.error("Failed to sign in with Google. Please try again.");
+            console.error("Failed to sign in with Google:", error)
+            toast.error("Failed to sign in with Google. Please try again.")
         }
-    };
+    }
 
     return (
         <>
@@ -161,7 +161,10 @@ const SignInPage2: React.FC = () => {
                                             className="bg-gray-800 text-white"
                                             {...register("password")}
                                         />
-                                        <div className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-20 hover:cursor-pointer" onClick={()=>setHidden(!hidden)}>
+                                        <div
+                                            className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-20 hover:cursor-pointer"
+                                            onClick={() => setHidden(!hidden)}
+                                        >
                                             {hidden ? <EyeOff /> : <Eye />}
                                         </div>
                                     </div>
@@ -177,7 +180,10 @@ const SignInPage2: React.FC = () => {
                                 <Button
                                     type="submit"
                                     className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600"
-                                    disabled={signInMutation.isPending || !isEmailExists}
+                                    disabled={
+                                        signInMutation.isPending ||
+                                        !isEmailExists
+                                    }
                                 >
                                     {signInMutation.isPending
                                         ? "Signing In..."
@@ -197,7 +203,7 @@ const SignInPage2: React.FC = () => {
                         </div>
 
                         {/* Sign in with Google Button */}
-                        <div className="mt-4">
+                        {/* <div className="mt-4">
                             <Button
                                 onClick={signInWithGoogle}
                                 className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600"
@@ -209,7 +215,7 @@ const SignInPage2: React.FC = () => {
                                 />
                                 <span>Continue with Google</span>
                             </Button>
-                        </div>
+                        </div> */}
 
                         <p className="mt-2 text-center text-sm text-gray-300">
                             New User?{" "}

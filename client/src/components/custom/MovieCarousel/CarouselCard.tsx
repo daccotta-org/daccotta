@@ -82,7 +82,7 @@ const CarouselCard: React.FC<SimpleMovie> = ({
                             </div>
                         )}
                         <motion.button
-                            className="mt-4 sm:mt-6 px-4 sm:px-6 py-1 sm:py-2 bg-red-600 text-white text-sm sm:text-base rounded-full flex items-center hover:bg-red-700 transition-colors hidden sm:flex"
+                            className="mt-4 sm:mt-6 px-4 sm:px-6 py-1 sm:py-2 bg-gradient-to-tr from-gray-700 to-gray-900 text-white text-sm sm:text-base rounded-full flex items-center hover:bg-red-700 transition-colors hidden sm:flex"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
