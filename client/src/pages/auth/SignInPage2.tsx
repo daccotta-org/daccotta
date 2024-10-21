@@ -204,17 +204,17 @@ const SignInPage2: React.FC = () => {
                                         : "Sign In"}
                                 </Button>
                             </div>
-
-                            {/* Reset Password Button */}
-                            <div className="mt-4">
-                                <Button
-                                    onClick={resetPassword}
-                                    className="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-400 hover:to-red-600"
-                                >
-                                    Forgot Password?
-                                </Button>
-                            </div>
                         </form>
+                        {/* Reset Password Button */}
+                        <div className="mt-4">
+                            <Button
+                                onClick={resetPassword}
+                                className="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-400 hover:to-red-600"
+                                disabled={!isEmailExists}
+                            >
+                                Forgot Password?
+                            </Button>
+                        </div>
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
                                 <span className="w-full border-t border-gray-600" />
