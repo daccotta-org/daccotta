@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SimpleMovie } from "@/Types/Movie"
-import { getUserData, addMovieToList, removeMovieFromList } from "@/services/userService"
+import {
+    getUserData,
+    addMovieToList,
+    removeMovieFromList,
+} from "@/services/userService"
 import { useAuth } from "@/hooks/useAuth"
 import MovieSearch from "./MovieSearch"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "react-toastify"
 import MovieCard from "@/components/custom/MovieCard/MovieCard"
+import { ArrowLeft } from "lucide-react"
 
 export interface List {
     list_id: string
@@ -27,6 +32,7 @@ export default function MovieList() {
     const [movies, setMovies] = useState<SimpleMovie[]>([])
     const [listName, setListName] = useState<string>("")
     const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const navigate = useNavigate() // useNavigate hook
 
     useEffect(() => {
         const fetchListData = async () => {
@@ -70,13 +76,21 @@ export default function MovieList() {
         if (user?.uid && listId) {
             try {
                 await removeMovieFromList(listId, movieId)
-                setMovies((prevMovies) => prevMovies.filter(movie => movie.movie_id !== movieId))
+                setMovies((prevMovies) =>
+                    prevMovies.filter((movie) => movie.movie_id !== movieId)
+                )
                 toast.success("Movie removed from your list.")
             } catch (error) {
                 console.error("Error removing movie from list:", error)
-                toast.error("Failed to remove movie from the list. Please try again.")
+                toast.error(
+                    "Failed to remove movie from the list. Please try again."
+                )
             }
         }
+    }
+
+    const handleGoBack = () => {
+        navigate("/lists")
     }
 
     return (
@@ -86,24 +100,37 @@ export default function MovieList() {
                     <h1 className="text-4xl font-bold">
                         {listName || "My Movie List"}
                     </h1>
-                    <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-                        <DialogTrigger asChild>
-                            <Button
-                                size="icon"
-                                variant="outline"
-                                className="rounded-full w-10 h-10 hover:bg-slate-500"
-                            >
-                                <Plus className="h-6 w-6" />
-                                <span className="sr-only">Add movie</span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="text-white">
-                            <h2 className="text-lg font-semibold mb-4 text-center md:text-start">
-                                Add a Movie to Your List
-                            </h2>
-                            <MovieSearch onSelectMovie={handleAddMovie} />
-                        </DialogContent>
-                    </Dialog>
+                    <div className="flex space-x-2">
+                        <Button
+                            size="icon"
+                            variant="outline"
+                            className="rounded-full w-10 h-10 hover:bg-slate-500"
+                            onClick={handleGoBack}
+                        >
+                            <ArrowLeft className="h-6 w-6" /> {/* Arrow Icon */}
+                        </Button>
+                        <Dialog
+                            open={isSearchOpen}
+                            onOpenChange={setIsSearchOpen}
+                        >
+                            <DialogTrigger asChild>
+                                <Button
+                                    size="icon"
+                                    variant="outline"
+                                    className="rounded-full w-10 h-10 hover:bg-slate-500"
+                                >
+                                    <Plus className="h-6 w-6" />
+                                    <span className="sr-only">Add movie</span>
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="text-white">
+                                <h2 className="text-lg font-semibold mb-4 text-center md:text-start">
+                                    Add a Movie to Your List
+                                </h2>
+                                <MovieSearch onSelectMovie={handleAddMovie} />
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {movies.map((movie) => (
