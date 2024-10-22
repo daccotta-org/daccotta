@@ -23,7 +23,7 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
     const [listName, setListName] = useState("")
     const [description, setDescription] = useState("")
     const [isPublic, setIsPublic] = useState(false)
-    const [loading, setLoading] = useState(false) 
+    const [loading, setLoading] = useState(false)
     const { user } = useAuth()
 
     const handleSubmit = async () => {
@@ -42,11 +42,14 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
         } catch (error) {
             console.error("Error creating list:", error)
             // Handle error (e.g., show error message to user)
-        }finally {
+        } finally {
             setLoading(false) // Stop loading
         }
         window.location.reload()
     }
+
+    // Determine if the form is filled correctly
+    const isFormFilled = listName.trim() !== "" && description.trim() !== ""
 
     return (
         <DrawerContent>
@@ -60,7 +63,9 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
                 <div className="p-4 pb-0 white-font">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="list-name" className="white-font">List Name</Label>
+                            <Label htmlFor="list-name" className="white-font">
+                                List Name
+                            </Label>
                             <Input
                                 id="list-name"
                                 placeholder="Enter list name"
@@ -70,7 +75,9 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="description" className="white-font">Description</Label>
+                            <Label htmlFor="description" className="white-font">
+                                Description
+                            </Label>
                             <Textarea
                                 id="description"
                                 placeholder="Enter list description"
@@ -90,11 +97,19 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button onClick={handleSubmit} disabled={loading} className="white-font">
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={loading || !isFormFilled} // Disable if loading or form not filled
+                        className="white-font"
+                    >
                         {loading ? "Creating..." : "Create List"}
                     </Button>
                     <DrawerClose asChild>
-                        <Button variant="outline" onClick={onClose} disabled={loading}>
+                        <Button
+                            variant="outline"
+                            onClick={onClose}
+                            disabled={loading}
+                        >
                             Cancel
                         </Button>
                     </DrawerClose>
