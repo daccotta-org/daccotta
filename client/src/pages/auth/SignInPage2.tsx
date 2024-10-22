@@ -43,7 +43,7 @@ const SignInPage2: React.FC = () => {
 
     useEffect(() => {
         const checkEmailExistence = async () => {
-            if (email && email.endsWith("@gmail.com")) {
+            if (email) {
                 setIsCheckingEmail(true)
                 try {
                     const exists = await checkEmailExists(email)
@@ -118,8 +118,7 @@ const SignInPage2: React.FC = () => {
                                             className={`bg-gray-800 text-white ${errors.email ? "border-red-500" : ""}`}
                                             {...register("email")}
                                         />
-                                        {email &&
-                                            email.endsWith("@gmail.com") && (
+                                        {email && (
                                                 <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                                     {isCheckingEmail ? (
                                                         <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
