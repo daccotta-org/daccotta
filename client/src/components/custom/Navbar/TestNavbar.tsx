@@ -1,7 +1,8 @@
 import { FC } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Home, Search, Users, NotebookPen, List } from "lucide-react"
+import { Home, Search, Users, NotebookPen, List, LogOutIcon } from "lucide-react"
 import logo from "../../../assets/logo_light.svg"
+import { useAuth } from "../../../hooks/useAuth"
 
 const Navbar: FC = () => {
     const location = useLocation()
@@ -14,9 +15,19 @@ const Navbar: FC = () => {
     ]
 
     // Journal item
-    const journalItem = { path: "/journal", icon: NotebookPen, tip: "Journal" }
+    const journalItem = { path: "/journal", icon: NotebookPen, tip: "Journal" };
+    const logOutItem = { path: "/", icon: LogOutIcon, tip: "Sign Out" };
 
-    const isActive = (path: string) => location.pathname === path
+    const isActive = (path: string) => location.pathname === path;
+    const { signOut } = useAuth()
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error("Error signing out: ", error);
+        }
+    };
 
     return (
         <nav className="flex flex-col h-screen w-16 bg-black text-white">
@@ -55,6 +66,23 @@ const Navbar: FC = () => {
                     data-tip={journalItem.tip}
                 >
                     <journalItem.icon color="#c16cf9" className="w-6 h-6" />
+                </Link>
+            </div>
+
+            {/* Log Out at the bottom */}
+            <div className="p-4 mt-auto">
+                <Link
+                    onClick={handleSignOut}
+                    to={logOutItem.path}
+                    className={`block p-2 rounded-md tooltip tooltip-right ${
+                        isActive(logOutItem.path) ? "text-white" : "text-gray-400"
+                    }`}
+                    data-tip={logOutItem.tip}
+                >
+                    <logOutItem.icon
+                        color="#c16cf9"
+                        className="w-6 h-6"
+                    />
                 </Link>
             </div>
         </nav>
