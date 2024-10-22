@@ -27,6 +27,28 @@ also be a part of the community and join our [discord](https://discord.gg/R859pe
     
 <img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
+## 📑 Table of Contents
+
+1. [Introduction](#🌟-daccotta-🌟)
+2. [Project Overview](#🎬-what-is-daccotta)
+3. [Key Features](#🔑-key-features)
+    - [Coming Soon Features](#coming-soon)
+4. [Tech Stack](#🛠️-tech-stack)
+5. [Getting Started](#🚀-getting-started)
+    - [Setting Up Daccotta Repository](#🗂️-setting-up-daccotta-repository)
+    - [Installing Bun](#installing-bun)
+        - [For macOS](#for-macos)
+        - [For Windows](#for-windows)
+    - [Frontend-Only Setup](#🖥️-frontend-only-setup)
+    - [Setting Up Full Stack Daccotta](#🗂️-setting-up-full-stack-daccotta-client--server)
+        - [Setting Up MongoDB Atlas](#setting-up-mongodb-atlas)
+        - [Setting Up Firebase](#setting-up-firebase)
+        - [Running the Full Stack Project](#running-the-full-stack-project)
+6. [Our Valuable Contributors](#our-valuable-contributors-❤️✨)
+7. [Contributing](#🤝-contributing)
+8. [Contact](#📧-contact)
+9. [Attribution](#⚠️-attribution)
+
 
 ## 🎬 What is Daccotta?
 
