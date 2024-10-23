@@ -79,7 +79,14 @@ const JournalPage: React.FC = () => {
     }
 
     const handleAddEntry = async () => {
-        if (!selectedMovie || !dateWatched) return
+        if (!selectedMovie) {
+            toast.error("Please select a movie to add to the journal.") 
+            return
+        }
+        if(!dateWatched) {
+            toast.error("Please pick up a date to add to the journal.")
+            return
+        }
         setLoading(true) // Show loading spinner while sending
         try {
             await addJournalEntry.mutateAsync({
