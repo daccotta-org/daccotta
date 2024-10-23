@@ -43,7 +43,9 @@ const SignInPage: React.FC = () => {
 
     useEffect(() => {
         const checkEmailExistence = async () => {
-            if (email) {
+            const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
+
+            if (email && emailPattern.test(email)) {
                 setIsCheckingEmail(true)
                 try {
                     const exists = await checkEmailExists(email)
