@@ -385,6 +385,7 @@ const SignUp: React.FC = () => {
                                 type="button"
                                 className="w-full bg-blue-500 hover:bg-blue-400"
                                 onClick={handleGoogleSignUp}
+                                disabled={!isUsernameAvailable}
                             >
                                 <img
                                     src="/google.svg" // Adjust the path as needed
