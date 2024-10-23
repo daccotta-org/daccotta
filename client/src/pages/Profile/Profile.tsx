@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useAuth } from "../../hooks/useAuth"
-import { getUserData } from "../../services/userService"
+import { getUserData, updateUserUsername } from "../../services/userService"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 import { useNavigate } from "react-router-dom"
@@ -11,7 +11,17 @@ import {
     IconList,
     IconChartBar,
     IconMovie,
+    IconEdit
 } from "@tabler/icons-react"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogClose,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Users, Award } from "lucide-react"
 // import { BarChart1 } from "@/components/charts/BarChart"
 import { AnimatePresence, motion } from "framer-motion"
@@ -60,6 +70,8 @@ const Profile: React.FC = () => {
     const [stats, setStats] = useState<MovieStats | null>(null)
     const { useGetJournalEntries } = useJournal()
     const { data: journalEntries, isLoading, error } = useGetJournalEntries()
+    const [newUsername, setNewUsername] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // Local state for dialog
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -119,8 +131,37 @@ const Profile: React.FC = () => {
                 className="w-24 h-24 rounded-full"
             />
             <div className="text-center flex flex-col">
-                <h2 className="text-3xl font-bold">{userData?.userName}</h2>
-                <div className="flex flex-col items-center ">
+                <div className="flex items-center justify-center">
+                    <h2 className="text-3xl font-bold">{userData?.userName}</h2>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <IconEdit className="w-5 h-5 ml-2 text-gray-400 hover:cursor-pointer hover:text-gray-600" />
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Edit Username</DialogTitle>
+                                {/* <DialogDescription>Change your username below:</DialogDescription> */}
+                            </DialogHeader>
+                            <input
+                                type="text"
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                                className="p-2 rounded bg-gray-700 text-white"
+                                placeholder="Enter new username"
+                            />
+                            <div className="mt-4 flex justify-end">
+                                <button
+                                    onClick={() => {
+                                        handleEditUserName(); // Call your function
+                                        setIsDialogOpen(false); // Close dialog after submission
+                                    }}
+                                    className="p-2 rounded bg-blue-500 hover:bg-blue-600 text-white"
+                                >Submit
+                                </button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
                     <div className="flex gap-1 items-center justify-center">
                         <Users
                             className="w-4 mr-2 text-blue-400 hover:cursor-pointer hover:text-blue-600"
@@ -131,11 +172,22 @@ const Profile: React.FC = () => {
                     <div className="flex gap-1 items-center justify-center">
                         <Award className="w-4 h-4 mr-2 text-yellow-400" />
                         <p>{userData?.badges.length}</p>
-                    </div>
                 </div>
             </div>
         </div>
     )
+
+    // Define the function to handle the edit action
+    const handleEditUserName = async () => {
+        if (!user || !newUsername) return
+        try {
+            await updateUserUsername(user.uid, newUsername);
+            setUserData((prev) => prev ? { ...prev, userName: newUsername } : prev)
+            setNewUsername('') // Clear the input after submission
+        } catch (error) {
+            console.error("Error updating username:", error)
+        }
+    };
 
     const MoviePreview = ({ movie }: { movie: SimpleMovie }) => (
         <div className="flex items-center space-x-2 ">
