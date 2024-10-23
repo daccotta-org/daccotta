@@ -81,13 +81,26 @@ const SignInPage2: React.FC = () => {
     }
 
     const signInWithGoogle = async () => {
-        const provider = new GoogleAuthProvider()
+        const provider = new GoogleAuthProvider();
         try {
-            await signInWithPopup(auth, provider)
-            toast.success("Successfully signed in with Google!")
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            // Check if the user already exists in your backend
+            const email = user.email;
+            if (email) {
+                const emailExists = await checkEmailExists(email); // Ensure this function is defined
+
+                if (emailExists) {
+                    toast.success("Successfully signed in with Google!");
+                } else {
+                    toast.info("User does not exist. Redirecting to sign-up...");
+                    window.location.href = "/signup"; // Redirect to sign-up page
+                }
+            }
         } catch (error) {
-            console.error("Failed to sign in with Google:", error)
-            toast.error("Failed to sign in with Google. Please try again.")
+            console.error("Failed to sign in with Google:", error);
+            toast.error("Failed to sign in with Google. Please try again.");
         }
     }
 
@@ -227,7 +240,7 @@ const SignInPage2: React.FC = () => {
                         </div>
 
                         {/* Sign in with Google Button */}
-                        {/* <div className="mt-4">
+                        { <div className="mt-4">
                             <Button
                                 onClick={signInWithGoogle}
                                 className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600"
@@ -239,7 +252,7 @@ const SignInPage2: React.FC = () => {
                                 />
                                 <span>Continue with Google</span>
                             </Button>
-                        </div> */}
+                        </div> }
 
                         <p className="mt-2 text-center text-sm text-gray-300">
                             New User?{" "}
