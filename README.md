@@ -28,6 +28,28 @@ also be a part of the community and join our [discord](https://discord.gg/R859pe
 <img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
 
+## 📑 Table of Contents
+
+1. [🎬 What is Daccotta?](#-what-is-daccotta)
+2. [🔑 Key Features](#-key-features)
+   - [🚧 Coming Soon Features](#coming-soon)
+3. [🛠️ Tech Stack](#️-tech-stack)
+4. [🚀 Getting Started](#-getting-started)
+   - [🗂️ Setting Up Daccotta Repository](#️-setting-up-daccotta-repository)
+   - [🔧 Installing Bun](#installing-bun)
+     - [🍎 For macOS](#for-macos)
+     - [🪟 For Windows](#for-windows)
+   - [🖥️ Frontend-Only Setup](#️-frontend-only-setup)
+   - [🗂️ Setting Up Full Stack Daccotta](#️-setting-up-full-stack-daccotta-client--server)
+     - [💾 Setting Up MongoDB Atlas](#setting-up-mongodb-atlas)
+     - [🔐 Setting Up Firebase](#setting-up-firebase)
+     - [⚙️ Running the Full Stack Project](#running-the-full-stack-project)
+5. [❤️✨ Our Valuable Contributors](#our-valuable-contributors-️)
+6. [🤝 Contributing](#-contributing)
+7. [📧 Contact](#-contact)
+8. [⚠️ Attribution](#️-attribution)
+
+
 ## 🎬 What is Daccotta?
 
 Daccotta is a platform built for film enthusiasts to discover, and showcase their taste in movies with like-minded individuals.
