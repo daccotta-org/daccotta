@@ -420,6 +420,37 @@ export const createUser = async (data: SignUpFormData) => {
     return response
 }
 
+export const createUserWithGoogle = async (email: string, username: string) => {
+    // This assumes the user is already authenticated with Google
+    const userCredential = await auth.currentUser;
+
+    if (!userCredential) {
+        throw new Error("User is not authenticated with Google");
+    }
+
+    const idTokenResult = await userCredential.getIdTokenResult();
+    const idToken = idTokenResult.token;
+
+    const response = await api.post(
+        "/api/users",
+        {
+            uid: userCredential.uid,
+            username: username, // You may want to prompt for this
+            email: email,
+            onboarded: false,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${idToken}`,
+            },
+        }
+    );
+
+    window.location.href = "/onboard"; // Redirect after successful creation
+
+    return response;
+};
+
 export const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
         const response = await api.post("/api/user/check-email", { email })
@@ -610,3 +641,24 @@ export const removeMovieFromList = async (listId: string, movieId: string) => {
     )
     return response.data
 }
+
+export const updateUserUsername = async (userId: string, newUsername: string) => {
+    try {
+        const idToken = await auth.currentUser?.getIdToken();
+        const response = await api.patch(
+            `/api/user/${userId}/update-username`,
+            { username: newUsername },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${idToken}`,
+                },
+            }
+        );
+        console.log("Username updated successfully:", response.data);
+        return response.data.user; // Assuming the response contains the updated user object
+    } catch (error) {
+        console.error("Error updating username:", error);
+        //throw new Error("Failed to update username");
+    }
+};
