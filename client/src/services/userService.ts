@@ -642,23 +642,21 @@ export const removeMovieFromList = async (listId: string, movieId: string) => {
     return response.data
 }
 
-export const updateUserUsername = async (userId: string, newUsername: string) => {
+export const updateProfileImage = async (userId: string, profileImage: string) => {
     try {
         const idToken = await auth.currentUser?.getIdToken();
-        const response = await api.patch(
-            `/api/user/${userId}/update-username`,
-            { username: newUsername },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
-            }
-        );
-        console.log("Username updated successfully:", response.data);
-        return response.data.user; // Assuming the response contains the updated user object
+        const response = await api.put(`/api/user/${userId}/update-profile-image`, {
+            profileImage,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+        });
+        console.log("Profile image updated successfully:", response.data);
+        return response.data;
     } catch (error) {
-        console.error("Error updating username:", error);
-        //throw new Error("Failed to update username");
+        console.error("Error updating profile image:", error);
+        throw new Error("Failed to update profile image");
     }
 };

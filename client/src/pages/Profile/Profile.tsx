@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useAuth } from "../../hooks/useAuth"
-import { getUserData, updateUserUsername } from "../../services/userService"
+import { getUserData, updateProfileImage } from "../../services/userService"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 import { useNavigate } from "react-router-dom"
@@ -12,23 +12,14 @@ import {
     IconList,
     IconChartBar,
     IconMovie,
-    IconEdit
 } from "@tabler/icons-react"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogClose,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import { Users, Award } from "lucide-react"
 // import { BarChart1 } from "@/components/charts/BarChart"
 import { AnimatePresence, motion } from "framer-motion"
 import { calculateStats, MovieStats } from "@/lib/stats"
 import { useJournal } from "@/services/journalService"
 import DynamicBarChart from "@/components/charts/DynamicChart"
+import { toast } from "react-toastify"
 
 interface UserData {
     userName: string
@@ -156,22 +147,11 @@ const Profile: React.FC = () => {
                     <div className="flex gap-1 items-center justify-center">
                         <Award className="w-4 h-4 mr-2 text-yellow-400" />
                         <p>{userData?.badges.length}</p>
+                    </div>
                 </div>
             </div>
         </div>
     )
-
-    // Define the function to handle the edit action
-    const handleEditUserName = async () => {
-        if (!user || !newUsername) return
-        try {
-            await updateUserUsername(user.uid, newUsername);
-            setUserData((prev) => prev ? { ...prev, userName: newUsername } : prev)
-            setNewUsername('') // Clear the input after submission
-        } catch (error) {
-            console.error("Error updating username:", error)
-        }
-    };
 
     const MoviePreview = ({ movie }: { movie: SimpleMovie }) => (
         <div className="flex items-center space-x-2 ">
@@ -185,8 +165,25 @@ const Profile: React.FC = () => {
         </div>
     )
 
-    const handleAvatarUpdate = async (newAvatarUrl: string) => {
-        console.log("handle avatar clicked")
+    const handleUpdateProfileImage = async (newProfileImage: string) => {
+        const uid = user?.uid
+        if (!uid) {
+            toast.error("User ID is not available. Please log in again.")
+            return
+        }
+        try {
+            await updateProfileImage(uid, newProfileImage)
+            // Update the userData with the new profile image
+            setUserData((prevData) =>
+                prevData
+                    ? { ...prevData, profile_image: newProfileImage }
+                    : null
+            )
+            toast.success("Profile image updated successfully")
+        } catch (error) {
+            console.error("Error updating profile image:", error)
+            toast.error("Failed to update profile image. Please try again.")
+        }
     }
 
     const BentoGridItem: React.FC<{
@@ -332,8 +329,8 @@ const Profile: React.FC = () => {
             <AvatarSelectionModal
                 isOpen={isAvatarModalOpen}
                 onClose={() => setIsAvatarModalOpen(false)}
-                onSelectAvatar={handleAvatarUpdate}
-                currentAvatar={userData?.profile_image}
+                onSelectAvatar={handleUpdateProfileImage} // Pass the function here
+                currentAvatar={userData?.profile_image || ""}
             />
         </>
     )
