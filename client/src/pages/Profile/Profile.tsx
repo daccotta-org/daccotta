@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from "react"
 import { useAuth } from "../../hooks/useAuth"
-import { getUserData, updateUserUsername } from "../../services/userService"
+import { getUserData, updateProfileImage } from "../../services/userService"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 import { useNavigate } from "react-router-dom"
 import { Drawer } from "@/components/ui/drawer"
 import CreateList from "../CreateList/CreateList"
+import AvatarSelectionModal from "./AvatarSelectionModal"
 import {
     IconUser,
     IconList,
     IconChartBar,
     IconMovie,
-    IconEdit
 } from "@tabler/icons-react"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogClose,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import { Users, Award } from "lucide-react"
 // import { BarChart1 } from "@/components/charts/BarChart"
 import { AnimatePresence, motion } from "framer-motion"
 import { calculateStats, MovieStats } from "@/lib/stats"
 import { useJournal } from "@/services/journalService"
 import DynamicBarChart from "@/components/charts/DynamicChart"
+import { toast } from "react-toastify"
 
 interface UserData {
     userName: string
@@ -70,25 +62,26 @@ const Profile: React.FC = () => {
     const [stats, setStats] = useState<MovieStats | null>(null)
     const { useGetJournalEntries } = useJournal()
     const { data: journalEntries, isLoading, error } = useGetJournalEntries()
-    const [newUsername, setNewUsername] = useState("");
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // Local state for dialog
+    const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false)
 
     useEffect(() => {
         const fetchUserData = async () => {
-            if (!user?.uid) return;
+            if (!user?.uid) return
             try {
-                const data = await getUserData(user.uid);
-                setUserData(data);
+                const data = await getUserData(user.uid)
+                setUserData(data)
 
-                const currentList = data.lists[activeIndex];
+                const currentList = data.lists[activeIndex]
                 if (currentList?.movies) {
-                    const movieIds = currentList.movies.map((m: MovieInList) => m.movie_id);
-                    const movies = await fetchMoviesByIds(movieIds);
-                    setMovieData(movies);
+                    const movieIds = currentList.movies.map(
+                        (m: MovieInList) => m.movie_id
+                    )
+                    const movies = await fetchMoviesByIds(movieIds)
+                    setMovieData(movies)
                 }
             } catch (error) {
-                console.error("Error fetching user data:", error);
-                setUserData(null); // Handle error state
+                console.error("Error fetching user data:", error)
+                setUserData(null) // Handle error state
             }
         }
 
@@ -96,10 +89,10 @@ const Profile: React.FC = () => {
     }, [user, activeIndex])
 
     useEffect(() => {
-        if (!journalEntries) return;
-        const movieStats = calculateStats(journalEntries);
-        setStats(movieStats);
-    }, [journalEntries]);
+        if (!journalEntries) return
+        const movieStats = calculateStats(journalEntries)
+        setStats(movieStats)
+    }, [journalEntries])
 
     if (isLoading || !userData || !stats) {
         return (
@@ -125,46 +118,28 @@ const Profile: React.FC = () => {
 
     const ProfileInfo = () => (
         <div className="flex flex-row items-center justify-center gap-3 space-y-2">
-            <img
-                src={userData?.profile_image}
-                alt={userData?.userName}
-                className="w-24 h-24 rounded-full"
-            />
-            <div className="text-center flex flex-col">
-                <div className="flex items-center justify-center">
-                    <h2 className="text-3xl font-bold">{userData?.userName}</h2>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <IconEdit className="w-5 h-5 ml-2 text-gray-400 hover:cursor-pointer hover:text-gray-600" />
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Edit Username</DialogTitle>
-                                {/* <DialogDescription>Change your username below:</DialogDescription> */}
-                            </DialogHeader>
-                            <input
-                                type="text"
-                                value={newUsername}
-                                onChange={(e) => setNewUsername(e.target.value)}
-                                className="p-2 rounded bg-gray-700 text-white"
-                                placeholder="Enter new username"
-                            />
-                            <div className="mt-4 flex justify-end">
-                                <button
-                                    onClick={() => {
-                                        handleEditUserName(); // Call your function
-                                        setIsDialogOpen(false); // Close dialog after submission
-                                    }}
-                                    className="p-2 rounded bg-blue-500 hover:bg-blue-600 text-white"
-                                >Submit
-                                </button>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
+            <div className="relative">
+                <img
+                    src={userData?.profile_image}
+                    alt={userData?.userName}
+                    className="w-24 h-24 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => setIsAvatarModalOpen(true)}
+                />
+                <div
+                    className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer" // Add cursor-pointer here
+                    onClick={() => setIsAvatarModalOpen(true)}
+                >
+                    <span className="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded cursor-pointer">
+                        {"change"}
+                    </span>
                 </div>
+            </div>
+            <div className="text-center flex flex-col">
+                <h2 className="text-3xl font-bold">{userData?.userName}</h2>
+                <div className="flex flex-col items-center">
                     <div className="flex gap-1 items-center justify-center">
                         <Users
-                            className="w-4 mr-2 text-blue-400 hover:cursor-pointer hover:text-blue-600"
+                            className="w-4 mr-2 text-blue-400 hover:text-blue-600 cursor-pointer" // Ensure cursor-pointer is applied here
                             onClick={() => navigate("/friends")}
                         />
                         <p>{userData?.friends.length}</p>
@@ -172,22 +147,11 @@ const Profile: React.FC = () => {
                     <div className="flex gap-1 items-center justify-center">
                         <Award className="w-4 h-4 mr-2 text-yellow-400" />
                         <p>{userData?.badges.length}</p>
+                    </div>
                 </div>
             </div>
         </div>
     )
-
-    // Define the function to handle the edit action
-    const handleEditUserName = async () => {
-        if (!user || !newUsername) return
-        try {
-            await updateUserUsername(user.uid, newUsername);
-            setUserData((prev) => prev ? { ...prev, userName: newUsername } : prev)
-            setNewUsername('') // Clear the input after submission
-        } catch (error) {
-            console.error("Error updating username:", error)
-        }
-    };
 
     const MoviePreview = ({ movie }: { movie: SimpleMovie }) => (
         <div className="flex items-center space-x-2 ">
@@ -200,6 +164,27 @@ const Profile: React.FC = () => {
             <span className="text-sm font-medium">{movie.title}</span>
         </div>
     )
+
+    const handleUpdateProfileImage = async (newProfileImage: string) => {
+        const uid = user?.uid
+        if (!uid) {
+            toast.error("User ID is not available. Please log in again.")
+            return
+        }
+        try {
+            await updateProfileImage(uid, newProfileImage)
+            // Update the userData with the new profile image
+            setUserData((prevData) =>
+                prevData
+                    ? { ...prevData, profile_image: newProfileImage }
+                    : null
+            )
+            toast.success("Profile image updated successfully")
+        } catch (error) {
+            console.error("Error updating profile image:", error)
+            toast.error("Failed to update profile image. Please try again.")
+        }
+    }
 
     const BentoGridItem: React.FC<{
         title: string
@@ -221,113 +206,133 @@ const Profile: React.FC = () => {
     )
 
     return (
-        <div className="max-h-screen overflow-auto scrollbar-hide  px-12 lg:mt-0 lg:pt-2 pt-10 pb-6  text-white">
-            {/* <h1 className="text-4xl font-bold mb-8 text-center">
+        <>
+            <div className="max-h-screen overflow-auto scrollbar-hide  px-12 lg:mt-0 lg:pt-2 pt-10 pb-6  text-white">
+                {/* <h1 className="text-4xl font-bold mb-8 text-center">
                 Your Profile
             </h1> */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full scrollbar-hide mx-auto">
-                <BentoGridItem
-                    title="Profile Info"
-                    description="Your profile details and stats"
-                    icon={<IconUser className="h-6 w-6 text-blue-400" />}
-                >
-                    <ProfileInfo />
-                </BentoGridItem>
-                <BentoGridItem
-                    title="Your Lists"
-                    description="View and manage your movie lists"
-                    icon={<IconList className="h-6 w-6 text-green-400" />}
-                >
-                    <button
-                        onClick={() => navigate("/lists")}
-                        className="mb-4 text-green-400 hover:text-green-600 transition-colors"
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full scrollbar-hide mx-auto">
+                    <BentoGridItem
+                        title="Profile Info"
+                        description="Your profile details and stats"
+                        icon={<IconUser className="h-6 w-6 text-blue-400" />}
                     >
-                        View All Lists
-                    </button>
-                    {/* <div className="space-y-3 max-h-20 overflow-auto scrollbar-hide">
+                        <ProfileInfo />
+                    </BentoGridItem>
+                    <BentoGridItem
+                        title="Your Lists"
+                        description="View and manage your movie lists"
+                        icon={<IconList className="h-6 w-6 text-green-400" />}
+                    >
+                        <button
+                            onClick={() => navigate("/lists")}
+                            className="mb-4 text-green-400 hover:text-green-600 transition-colors"
+                        >
+                            View All Lists
+                        </button>
+                        {/* <div className="space-y-3 max-h-20 overflow-auto scrollbar-hide">
                         {movieData.slice(0, 5).map((movie) => (
                             <MoviePreview key={movie.id} movie={movie} />
                         ))}
                     </div> */}
-                    <div className="h-12 overflow-auto">
-                        {userData?.lists.map((item: List, index: number) => (
-                            <button
-                                key={item.list_id}
-                                className={`p-2 w-full mb-2 rounded-md text-left transition-all duration-300 ${
-                                    activeIndex === index
-                                        ? "bg-gradient-to-tr from-gray-900 to-gray-800"
-                                        : "bg-gray-700 hover:bg-gray-600"
-                                }`}
-                                onClick={() => setActiveIndex(index)}
-                            >
-                                {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </BentoGridItem>
-                <BentoGridItem
-                    title="Your Stats"
-                    description="View your movie watching statistics"
-                    icon={<IconChartBar className="h-6 w-6 text-yellow-400" />}
-                    className="md:row-span-2 flex flex-col justify-between flex-items-center"
-                >
-                    <button
-                        onClick={() => navigate(`/stats`)}
-                        className="text-yellow-400 hover:text-yellow-300 transition-colors"
+                        <div className="h-12 overflow-auto">
+                            {userData?.lists.map(
+                                (item: List, index: number) => (
+                                    <button
+                                        key={item.list_id}
+                                        className={`p-2 w-full mb-2 rounded-md text-left transition-all duration-300 ${
+                                            activeIndex === index
+                                                ? "bg-gradient-to-tr from-gray-900 to-gray-800"
+                                                : "bg-gray-700 hover:bg-gray-600"
+                                        }`}
+                                        onClick={() => setActiveIndex(index)}
+                                    >
+                                        {item.name}
+                                    </button>
+                                )
+                            )}
+                        </div>
+                    </BentoGridItem>
+                    <BentoGridItem
+                        title="Your Stats"
+                        description="View your movie watching statistics"
+                        icon={
+                            <IconChartBar className="h-6 w-6 text-yellow-400" />
+                        }
+                        className="md:row-span-2 flex flex-col justify-between flex-items-center"
                     >
-                        View Stats
-                    </button>
-                    <div className="h-full lg:mt-12 ">
-                        <DynamicBarChart data={monthlyWatchedData} />
-                    </div>
-                </BentoGridItem>
-
-                <BentoGridItem
-                    title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
-                    description={`Movies in ${userData?.lists[activeIndex]?.name || "selected list"}`}
-                    icon={<IconMovie className="h-6 w-6 text-purple-400" />}
-                    className="md:col-span-2"
-                >
-                    <AnimatePresence>
-                        <motion.div
-                            key={activeIndex}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
+                        <button
+                            onClick={() => navigate(`/stats`)}
+                            className="text-yellow-400 hover:text-yellow-300 transition-colors"
                         >
-                            <div className="space-y-3 max-h-28 overflow-auto scrollbar-hide">
-                                {movieData.map((movie) => (
-                                    <MoviePreview key={movie.id} movie={movie} />
-                                ))}
-                            </div>
-                            <button
-                                onClick={() => handleSelectList(userData?.lists[activeIndex].list_id!)}
-                                className="mt-4 text-purple-400 hover:text-purple-700 transition-colors"
-                            >
-                                View Full List
-                            </button>
-                        </motion.div>
-                    </AnimatePresence>
-                </BentoGridItem>
-                <BentoGridItem
-                    title="AI Recommendations"
-                    description="Personalized movie recommendations"
-                    icon={<IconMovie className="h-6 w-6 text-purple-400" />}
-                    className="md:col-span-3"
-                >
-                    <button
-                        onClick={() => navigate("/recommendations")}
-                        className="text-purple-400 hover:text-purple-300 transition-colors"
+                            View Stats
+                        </button>
+                        <div className="h-full lg:mt-12 ">
+                            <DynamicBarChart data={monthlyWatchedData} />
+                        </div>
+                    </BentoGridItem>
+
+                    <BentoGridItem
+                        title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
+                        description={`Movies in ${userData?.lists[activeIndex]?.name || "selected list"}`}
+                        icon={<IconMovie className="h-6 w-6 text-purple-400" />}
+                        className="md:col-span-2"
                     >
-                        coming soon
-                    </button>
-                </BentoGridItem>
+                        <AnimatePresence>
+                            <motion.div
+                                key={activeIndex}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <div className="space-y-3 max-h-28 overflow-auto scrollbar-hide">
+                                    {movieData.map((movie) => (
+                                        <MoviePreview
+                                            key={movie.id}
+                                            movie={movie}
+                                        />
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() =>
+                                        handleSelectList(
+                                            userData?.lists[activeIndex]
+                                                .list_id!
+                                        )
+                                    }
+                                    className="mt-4 text-purple-400 hover:text-purple-700 transition-colors"
+                                >
+                                    View Full List
+                                </button>
+                            </motion.div>
+                        </AnimatePresence>
+                    </BentoGridItem>
+                    <BentoGridItem
+                        title="AI Recommendations"
+                        description="Personalized movie recommendations"
+                        icon={<IconMovie className="h-6 w-6 text-purple-400" />}
+                        className="md:col-span-3"
+                    >
+                        <button
+                            onClick={() => navigate("/recommendations")}
+                            className="text-purple-400 hover:text-purple-300 transition-colors"
+                        >
+                            coming soon
+                        </button>
+                    </BentoGridItem>
+                </div>
+                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                    <CreateList onClose={handleCloseDrawer} />
+                </Drawer>
             </div>
-            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-                <CreateList onClose={handleCloseDrawer} />
-            </Drawer>
-        </div>
+            <AvatarSelectionModal
+                isOpen={isAvatarModalOpen}
+                onClose={() => setIsAvatarModalOpen(false)}
+                onSelectAvatar={handleUpdateProfileImage} // Pass the function here
+                currentAvatar={userData?.profile_image || ""}
+            />
+        </>
     )
 }
 
