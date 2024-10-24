@@ -5,6 +5,26 @@
 Hey movie lovers! Welcome to **Daccotta**, a web app designed to simplify your movie-watching experience and make it easy to share your favorite films with friends. Think of us as your go-to social network for everything movies! 🎥🍿
 
 **Love it?** 👉 _Don't forget to star this repo!_ 🌟
+<table align="center">
+    <thead align="center">
+        <tr border: 2px;>
+            <td><b>🌟 Stars</b></td>
+            <td><b>🍴 Forks</b></td>
+            <td><b>🐛 Issues</b></td>
+            <td><b>🔔 Open PRs</b></td>
+            <td><b>🔕 Close PRs</b></td>
+        </tr>
+     </thead>
+    <tbody>
+      <tr>
+          <td><img alt="Stars" src="https://img.shields.io/github/stars/daccotta-org/daccotta?style=flat&logo=github"/></td>
+          <td><img alt="Forks" src="https://img.shields.io/github/forks/daccotta-org/daccotta?style=flat&logo=github"/></td>
+          <td><img alt="Issues" src="https://img.shields.io/github/issues/daccotta-org/daccotta?style=flat&logo=github"/></td>
+          <td><img alt="Open Pull Requests" src="https://img.shields.io/github/issues-pr/daccotta-org/daccotta?style=flat&logo=github"/></td>
+          <td><img alt="Closed Pull Requests" src="https://img.shields.io/github/issues-pr-closed/daccotta-org/daccotta?style=flat&color=critical&logo=github"/></td>
+      </tr>
+    </tbody>
+</table>
 
 ---
 
