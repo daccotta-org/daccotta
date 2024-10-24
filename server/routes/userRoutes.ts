@@ -13,6 +13,7 @@ import {
 } from "../controllers/userController"
 import ListModel from "../models/List"
 import mongoose from "mongoose"
+import { updateUserProfileImage } from "../controllers/userController";
 
 const router = Router()
 
@@ -49,5 +50,6 @@ router.post(
 //Route to check unique username
 router.get("/check-username/:userName", checkUsernameAvailability)
 router.get("/:uid/search", verifyToken, searchUsers)
+router.put("/:uid/profile/image", verifyToken, updateUserProfileImage);
 
 export { router as userRoutes }

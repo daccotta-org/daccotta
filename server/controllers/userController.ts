@@ -201,3 +201,31 @@ export const completeOnboarding = async (req: Request, res: Response) => {
       }
   }
 }
+
+export const updateUserProfileImage = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.params;
+    const { profile_image } = req.body;
+
+    if (req.user?.uid !== uid) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    const user = await User.findById(uid);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.profile_image = profile_image;
+
+    await user.save();
+
+    res.json({
+      message: "Profile image updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

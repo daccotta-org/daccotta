@@ -9,7 +9,9 @@ interface UsernameAndAvatarProps {
 const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
     const { setValue, watch } = useFormContext()
     const profileUrl = watch("profile_image")
-    const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number | null>(null)
+    const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<
+        number | null
+    >(null)
 
     const handleAvatarSelect = (index: number) => {
         setSelectedAvatarIndex(index)
@@ -26,7 +28,9 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
         <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
             <div className="lg:col-span-2 h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black text-white">
                 <div className="max-w-md w-full space-y-8">
-                    <h2 className="mt-6 text-center text-3xl font-extrabold">Choose an Avatar</h2>
+                    <h2 className="mt-6 text-center text-3xl font-extrabold">
+                        Choose an Avatar
+                    </h2>
                     <div className="grid grid-cols-3 gap-4">
                         {avatars.map((avatar, index) => (
                             <img
@@ -34,7 +38,9 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
                                 src={avatar.profile}
                                 alt={`Avatar ${index + 1}`}
                                 className={`w-full h-auto cursor-pointer transition-transform duration-200 ease-in-out hover:scale-105 rounded-lg ${
-                                    selectedAvatarIndex === index ? "ring-2 ring-offset-2 ring-white" : ""
+                                    selectedAvatarIndex === index
+                                        ? "ring-2 ring-offset-2 ring-white"
+                                        : ""
                                 }`}
                                 onClick={() => handleAvatarSelect(index)}
                             />
