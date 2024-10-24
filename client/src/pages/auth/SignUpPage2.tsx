@@ -125,7 +125,9 @@ const SignUp: React.FC = () => {
 
     useEffect(() => {
         const checkEmailAvailability = async () => {
-            if (email && email.endsWith("@gmail.com")) {
+            const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
+
+            if (email && emailPattern.test(email)) {
                 setIsCheckingEmail(true)
                 try {
                     const emailExists = await checkEmailExists(email)
@@ -268,7 +270,7 @@ const SignUp: React.FC = () => {
                                         className={`bg-gray-800 text-white ${errors.email ? "border-red-500" : ""}`}
                                         {...register("email")}
                                     />
-                                    {email && email.endsWith("@gmail.com") && (
+                                    {email && (
                                         <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                             {isCheckingEmail ? (
                                                 <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
