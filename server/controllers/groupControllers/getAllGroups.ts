@@ -1,9 +1,6 @@
 // controllers/groups/getAllGroups.ts
-
 import { type Request, type Response } from 'express';
-
 import User from '../../models/User';
-import Group from '../../models/Group';
 
 export const getAllGroups = async (req: Request, res: Response) => {
   try {

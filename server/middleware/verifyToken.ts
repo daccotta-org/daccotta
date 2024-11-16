@@ -5,21 +5,14 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
   try {
     const authHeader = req.headers.authorization;
     const idToken = authHeader && authHeader.split('Bearer ')[1];
-    
-    
-    
+
     if (!idToken) {
       return res.status(401).json({ error: 'No token provided' });
     }
-    
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    
-    
+    const decodedToken = await admin.auth().verifyIdToken(idToken);    
     // Attach the decoded token to the request object
     req.user = decodedToken;
-    
-    
-    
+
     next();
   } catch (error) {
     console.error('Error verifying token:', error);

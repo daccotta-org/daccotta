@@ -1,6 +1,11 @@
 import { type Request, type Response } from 'express';
 import User from '../models/User';
 
+/**
+ * @param req 
+ * @param res 
+ * Note: Check if the username is available when input.
+ */
 export const checkUsernameAvailability = async (req: Request, res: Response) => {
   try {
     const { userName } = req.params;
@@ -13,6 +18,13 @@ export const checkUsernameAvailability = async (req: Request, res: Response) => 
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+/**
+ * @param req 
+ * @param res 
+ * Note: Check if the email exists.
+ */
 export const checkEmailExists= async (req:Request, res:Response) => {
   const { email } = req.body;
   try {
@@ -26,6 +38,13 @@ export const checkEmailExists= async (req:Request, res:Response) => {
     return res.status(500).json({ message: 'Server error' });
   }
 }
+
+/**
+ * 
+ * @param req 
+ * @param res 
+ * Note: search user based on the query parameters.
+ */
 export const searchUsers = async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
@@ -202,4 +221,34 @@ export const completeOnboarding = async (req: Request, res: Response) => {
   }
 }
 
+export const updateProfileImage = async (req: Request, res: Response) => {
+  try {
+      const { userId } = req.params;
+      const userIdFromToken = req.user?.uid;
 
+      if (!userIdFromToken || userIdFromToken !== userId) {
+          return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const { profileImage } = req.body;
+
+      if (!profileImage) {
+          return res.status(400).json({ error: "Profile image URL is required" });
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { profile_image: profileImage },
+          { new: true } 
+      );
+
+      if (!updatedUser) {
+          return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json({ message: "Profile image updated successfully", user: updatedUser });
+  } catch (error) {
+      console.error("Error updating profile image:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
+}
