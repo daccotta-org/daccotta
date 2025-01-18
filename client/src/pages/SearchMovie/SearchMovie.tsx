@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { FaSearch } from "react-icons/fa"
 import { toast } from "react-toastify"
-import { useSearchMovies, useGetRecommendedMovies } from "@/services/movieService"
+import {
+    useSearchMovies,
+    useGetRecommendedMovies,
+} from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
 import { genreMap } from "@/lib/stats"
 import { X, ChevronDown } from "lucide-react"
@@ -81,6 +84,10 @@ const SearchMovie: React.FC = () => {
         toast.error("An error occurred while searching for movies.")
     }
 
+    if (recommendedMoviesError) {
+        toast.error("An error occurred while fetching recommended movies.")
+    }
+
     const handleClick = (id: string, title: any) => () => {
         const timestamp = new Date().toLocaleString()
         const updatedHistory = [
@@ -132,7 +139,9 @@ const SearchMovie: React.FC = () => {
     }
 
     const handleLanguageSelect = (languageCode: string) => {
-        setSelectedLanguage(languageCode === selectedLanguage ? "" : languageCode)
+        setSelectedLanguage(
+            languageCode === selectedLanguage ? "" : languageCode
+        )
     }
 
     return (
@@ -225,7 +234,9 @@ const SearchMovie: React.FC = () => {
                                 {languages.map(({ code, name }) => (
                                     <DropdownMenuItem
                                         key={code}
-                                        onClick={() => handleLanguageSelect(code)}
+                                        onClick={() =>
+                                            handleLanguageSelect(code)
+                                        }
                                     >
                                         {name}
                                     </DropdownMenuItem>
@@ -362,62 +373,75 @@ const SearchMovie: React.FC = () => {
                             )
                         )}
 
-                    {/* Recommended Movies Section */}
-                    {(selectedYear || selectedGenre) && (
-                      <div className="px-4">
-                        {isLoadingRecommended ? (
-                            <div className="text-center text-gray-400">Loading...</div>
-                        ) : (
-                        <>
-                        {recommendedMovies && recommendedMovies.length > 0 && (
-                            <>
-                            <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">
-                                Recommended Movies
-                            </h2>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                            {recommendedMovies.map(
-                                (movie: SimpleMovie) => (
-                                <div
-                                    key={movie.id}
-                                    className="cursor-pointer transition-transform duration-300 hover:scale-105"
-                                    onClick={handleClick(
-                                        movie.id,
-                                        movie.title
-                                    )}
-                                >
-                                    {movie.poster_path ? (
-                                        <img
-                                            src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-                                            alt={movie.title}
-                                            className="w-full h-auto rounded"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-0 pb-[150%] bg-gray-800 rounded flex items-center justify-center">
-                                            <span className="text-center p-2">
-                                                {movie.title}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <h3 className="mt-2 text-sm font-medium truncate">
-                                        {movie.title}
-                                    </h3>
-                                    <p className="text-xs text-gray-400">
-                                        {
-                                            movie.release_date?.split(
-                                                "-"
-                                            )[0]
-                                        }
-                                    </p>
-                                </div>
-                                )
-                            )}
+                        {/* Recommended Movies Section */}
+                        {(selectedYear || selectedGenre) && (
+                            <div className="px-4">
+                                {isLoadingRecommended ? (
+                                    <div className="text-center text-gray-400">
+                                        Loading...
+                                    </div>
+                                ) : (
+                                    <>
+                                        {recommendedMovies &&
+                                            recommendedMovies.length > 0 && (
+                                                <>
+                                                    <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">
+                                                        Recommended Movies
+                                                    </h2>
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                                                        {recommendedMovies.map(
+                                                            (
+                                                                movie: SimpleMovie
+                                                            ) => (
+                                                                <div
+                                                                    key={
+                                                                        movie.id
+                                                                    }
+                                                                    className="cursor-pointer transition-transform duration-300 hover:scale-105"
+                                                                    onClick={handleClick(
+                                                                        movie.id,
+                                                                        movie.title
+                                                                    )}
+                                                                >
+                                                                    {movie.poster_path ? (
+                                                                        <img
+                                                                            src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                                                                            alt={
+                                                                                movie.title
+                                                                            }
+                                                                            className="w-full h-auto rounded"
+                                                                        />
+                                                                    ) : (
+                                                                        <div className="w-full h-0 pb-[150%] bg-gray-800 rounded flex items-center justify-center">
+                                                                            <span className="text-center p-2">
+                                                                                {
+                                                                                    movie.title
+                                                                                }
+                                                                            </span>
+                                                                        </div>
+                                                                    )}
+                                                                    <h3 className="mt-2 text-sm font-medium truncate">
+                                                                        {
+                                                                            movie.title
+                                                                        }
+                                                                    </h3>
+                                                                    <p className="text-xs text-gray-400">
+                                                                        {
+                                                                            movie.release_date?.split(
+                                                                                "-"
+                                                                            )[0]
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </>
+                                            )}
+                                    </>
+                                )}
                             </div>
-                            </>
                         )}
-                        </>
-                        )}
-                      </div>
-                    )}
                     </>
                 )}
             </div>

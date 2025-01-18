@@ -26,7 +26,7 @@ import { searchMovies } from "@/services/movieService"
 import { toast } from "react-toastify"
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-import Stars from '../../components/ui/stars'; // Adjust the path as necessary
+import Stars from "../../components/ui/stars" // Adjust the path as necessary
 
 interface AxiosError {
     response?: {
@@ -36,13 +36,31 @@ interface AxiosError {
     }
     message: string
 }
+
+interface JournalEntry {
+    _id: string
+    movie: {
+        movie_id: string
+        title: string
+        poster_path: string
+        release_date: string
+    }
+    dateWatched: string
+    rewatches: number
+    rating: number
+}
+
 const JournalPage: React.FC = () => {
-    const { useGetJournalEntries, useAddJournalEntry, useDeleteJournalEntry, useEditJournalEntry } =
-        useJournal()
+    const {
+        useGetJournalEntries,
+        useAddJournalEntry,
+        useDeleteJournalEntry,
+        //useEditJournalEntry,
+    } = useJournal()
     const { data: journalEntries, isLoading } = useGetJournalEntries()
     const addJournalEntry = useAddJournalEntry()
     const deleteJournalEntry = useDeleteJournalEntry()
-    const editJournalEntry = useEditJournalEntry()
+    //const editJournalEntry = useEditJournalEntry()
 
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
@@ -54,12 +72,12 @@ const JournalPage: React.FC = () => {
     const [rewatches, setRewatches] = useState(1)
     const [isAddingEntry, setIsAddingEntry] = useState(false)
     const [hoveredEntry, setHoveredEntry] = useState<string | null>(null)
-    const [rating, setRating] = useState<number | null>(null); // State for rating
+    const [rating, setRating] = useState<number | null>(null) // State for rating
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [entryToDelete, setEntryToDelete] = useState<string | null>(null)
-    const [entryToEdit, setEntryToEdit] = useState<string | null>(null)
-    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    //const [entryToEdit, setEntryToEdit] = useState<string | null>(null)
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
     const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
 
@@ -78,7 +96,7 @@ const JournalPage: React.FC = () => {
     }
 
     const handleEditEntry = async () => {
-        handleAddEntry();
+        handleAddEntry()
     }
 
     const handleOpenDeleteDialog = (
@@ -87,7 +105,7 @@ const JournalPage: React.FC = () => {
     ) => {
         event.stopPropagation() // Prevent the click from propagating to the parent div
         setEntryToDelete(entryId)
-        setEntryToEdit(entryId)
+        //setEntryToEdit(entryId)
         setIsDeleteDialogOpen(true)
     }
 
@@ -96,7 +114,7 @@ const JournalPage: React.FC = () => {
             toast.error("Please select a movie to add to the journal.")
             return
         }
-        if(!dateWatched) {
+        if (!dateWatched) {
             toast.error("Please pick up a date to add to the journal.")
             return
         }
@@ -176,40 +194,39 @@ const JournalPage: React.FC = () => {
     }
 
     const sortedEntries = useMemo(() => {
-        if (!journalEntries) return [];
+        if (!journalEntries) return []
 
-        const selectedMonth = filterDate ? filterDate.getMonth() : null;
-        const selectedYear = filterDate ? filterDate.getFullYear() : null;
+        const selectedMonth = filterDate ? filterDate.getMonth() : null
+        const selectedYear = filterDate ? filterDate.getFullYear() : null
 
-        const filteredEntries = journalEntries.filter(entry => {
-            const watchedDate = new Date(entry.dateWatched);
-            const entryMonth = watchedDate.getMonth();
-            const entryYear = watchedDate.getFullYear();
+        const filteredEntries = journalEntries.filter((entry) => {
+            const watchedDate = new Date(entry.dateWatched)
+            const entryMonth = watchedDate.getMonth()
+            const entryYear = watchedDate.getFullYear()
 
             return (
                 (selectedMonth === null || entryMonth === selectedMonth) &&
                 (selectedYear === null || entryYear === selectedYear)
-            );
-        });
+            )
+        })
 
         const sorted = [...filteredEntries].sort(
             (a, b) =>
                 new Date(b.dateWatched).getTime() -
                 new Date(a.dateWatched).getTime()
-        );
+        )
 
-        const groupedByMonth:any = {};
+        const groupedByMonth: any = {}
         sorted.forEach((entry) => {
-            const monthYear = format(new Date(entry.dateWatched), "MMMM yyyy");
+            const monthYear = format(new Date(entry.dateWatched), "MMMM yyyy")
             if (!groupedByMonth[monthYear]) {
-                groupedByMonth[monthYear] = [];
+                groupedByMonth[monthYear] = []
             }
-            groupedByMonth[monthYear].push(entry);
-        });
+            groupedByMonth[monthYear].push(entry)
+        })
 
-        return groupedByMonth;
-    }, [journalEntries, filterDate]);
-
+        return groupedByMonth
+    }, [journalEntries, filterDate])
 
     if (isLoading) {
         return (
@@ -228,214 +245,227 @@ const JournalPage: React.FC = () => {
                 <div className="flex justify-between w-full items-center mb-6">
                     <h1 className="text-4xl font-bold">My Movie Journal</h1>
                     <div className="flex items-center">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <div className="flex items-center p-2">
-                                <Button
-                                    variant="outline"
-                                    className={cn(
-                                        "w-full justify-start text-left font-normal",
-                                        !filterDate && "text-muted-foreground"
-                                    )}
-                                >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {filterDate ? (
-                                        format(filterDate, "MMMM yyyy")
-                                    ) : (
-                                        <span>filter</span>
-                                    )}
-                                </Button>
-                            </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-68 p-0" align="start">
-                            <div className="flex flex-col p-4">
-                                <Calendar
-                                    mode="single"
-                                    selected={filterDate}
-                                    onSelect={(date) => {
-                                        setFilterDate(date);
-                                    }}
-                                    initialFocus
-                                />
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setFilterDate(undefined)}
-                                    className="mt-2 w-full text-red-500"
-                                >
-                                    Clear
-                                </Button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <div className="flex items-center p-2">
+                                    <Button
+                                        variant="outline"
+                                        className={cn(
+                                            "w-full justify-start text-left font-normal",
+                                            !filterDate &&
+                                                "text-muted-foreground"
+                                        )}
+                                    >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {filterDate ? (
+                                            format(filterDate, "MMMM yyyy")
+                                        ) : (
+                                            <span>filter</span>
+                                        )}
+                                    </Button>
+                                </div>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-68 p-0" align="start">
+                                <div className="flex flex-col p-4">
+                                    <Calendar
+                                        mode="single"
+                                        selected={filterDate}
+                                        onSelect={(date) => {
+                                            setFilterDate(date)
+                                        }}
+                                        initialFocus
+                                    />
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setFilterDate(undefined)}
+                                        className="mt-2 w-full text-red-500"
+                                    >
+                                        Clear
+                                    </Button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
 
-
-                    <Dialog
-                        open={isAddingEntry}
-                        onOpenChange={setIsAddingEntry}
-                    >
-                        <DialogTrigger asChild>
-                            <Button
-                                size="icon"
-                                variant="outline"
-                                className="rounded-full w-10 h-10 text-white"
-                            >
-                                <Plus className="h-6 w-6" />
-                                <span className="sr-only">
-                                    Add journal entry
-                                </span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className=" xs:w-[400px] sm:max-w-[400px] max-w-[400px]">
-                            <DialogHeader>
-                                <DialogTitle className="text-2xl text-white font-bold">
-                                    Add New Journal Entry
-                                </DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    {/* <Label
+                        <Dialog
+                            open={isAddingEntry}
+                            onOpenChange={setIsAddingEntry}
+                        >
+                            <DialogTrigger asChild>
+                                <Button
+                                    size="icon"
+                                    variant="outline"
+                                    className="rounded-full w-10 h-10 text-white"
+                                >
+                                    <Plus className="h-6 w-6" />
+                                    <span className="sr-only">
+                                        Add journal entry
+                                    </span>
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className=" xs:w-[400px] sm:max-w-[400px] max-w-[400px]">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl text-white font-bold">
+                                        Add New Journal Entry
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        {/* <Label
                                         htmlFor="movie-search"
                                         className="text-sm font-medium"
                                     >
                                         Search Movie
                                     </Label> */}
-                                    <div className="flex space-x-2">
-                                        <Input
-                                            id="movie-search"
-                                            value={searchQuery}
-                                            onChange={(e) => {
-                                                setSearchQuery(e.target.value)
-                                                handleSearchMovie()
-                                            }}
-                                            placeholder="Enter movie title"
-                                            className="flex-grow text-white"
-                                        />
-                                        {/* <Button
+                                        <div className="flex space-x-2">
+                                            <Input
+                                                id="movie-search"
+                                                value={searchQuery}
+                                                onChange={(e) => {
+                                                    setSearchQuery(
+                                                        e.target.value
+                                                    )
+                                                    handleSearchMovie()
+                                                }}
+                                                placeholder="Enter movie title"
+                                                className="flex-grow text-white"
+                                            />
+                                            {/* <Button
                                             onClick={handleSearchMovie}
                                             className="shrink-0"
                                         >
                                             Search
                                         </Button> */}
-                                    </div>
-                                    {searchResults.length > 0 && (
-                                        <ul className="mt-2 border rounded-md max-h-40 overflow-y-auto bg-white">
-                                            {searchResults.map((movie) => (
-                                                <li
-                                                    key={movie.id}
-                                                    className="p-2 hover:bg-muted cursor-pointer transition-colors"
-                                                    onClick={() =>
-                                                        handleSelectMovie(movie)
-                                                    }
-                                                >
-                                                    {movie.title} (
-                                                    {
-                                                        movie.release_date?.split(
-                                                            "-"
-                                                        )[0]
-                                                    }
-                                                    )
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                                {selectedMovie && (
-                                    <div className="p-4 bg-muted rounded-lg">
-                                        <div className="flex items-center space-x-4">
-                                            <img
-                                                src={`https://image.tmdb.org/t/p/w92${selectedMovie.poster_path}`}
-                                                alt={selectedMovie.title}
-                                                className="w-10 h-auto rounded"
-                                            />
-                                            <div className="flex flex-row">
-                                                <h3 className="font-semibold mb-2">
-                                                    {/* Selected Movie:{" "} */}
-                                                    {selectedMovie.title}
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {/* Release Year:{" "} */}
+                                        </div>
+                                        {searchResults.length > 0 && (
+                                            <ul className="mt-2 border rounded-md max-h-40 overflow-y-auto bg-white">
+                                                {searchResults.map((movie) => (
+                                                    <li
+                                                        key={movie.id}
+                                                        className="p-2 hover:bg-muted cursor-pointer transition-colors"
+                                                        onClick={() =>
+                                                            handleSelectMovie(
+                                                                movie
+                                                            )
+                                                        }
+                                                    >
+                                                        {movie.title} (
                                                         {
-                                                            selectedMovie.release_date?.split(
+                                                            movie.release_date?.split(
                                                                 "-"
                                                             )[0]
                                                         }
-                                                    </p>
-                                                </h3>
+                                                        )
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                    {selectedMovie && (
+                                        <div className="p-4 bg-muted rounded-lg">
+                                            <div className="flex items-center space-x-4">
+                                                <img
+                                                    src={`https://image.tmdb.org/t/p/w92${selectedMovie.poster_path}`}
+                                                    alt={selectedMovie.title}
+                                                    className="w-10 h-auto rounded"
+                                                />
+                                                <div className="flex flex-row">
+                                                    <h3 className="font-semibold mb-2">
+                                                        {/* Selected Movie:{" "} */}
+                                                        {selectedMovie.title}
+                                                        <p className="text-sm text-muted-foreground">
+                                                            {/* Release Year:{" "} */}
+                                                            {
+                                                                selectedMovie.release_date?.split(
+                                                                    "-"
+                                                                )[0]
+                                                            }
+                                                        </p>
+                                                    </h3>
+                                                </div>
                                             </div>
                                         </div>
+                                    )}
+                                    <div>
+                                        <h2 className="text-lg font-semibold text-white">
+                                            Rate this movie:
+                                        </h2>
+                                        <Stars
+                                            rating={rating}
+                                            onRatingChange={setRating}
+                                        />
+                                        <p className="mt-2 text-white">
+                                            Your Rating:{" "}
+                                            {rating ? rating : "Not rated yet"}
+                                        </p>
                                     </div>
-                                )}
-                                <div>
-                                <h2 className="text-lg font-semibold text-white">Rate this movie:</h2>
-                                    <Stars rating={rating} onRatingChange={setRating} />
-                                    <p className="mt-2 text-white">
-                                        Your Rating: {rating ? rating : 'Not rated yet'}
-                                    </p>
-                                </div>
-                                <div className="space-y-2 text-gray-300">
-                                    <Label
-                                        htmlFor="rewatches"
-                                        className="text-sm   font-medium"
-                                    >
-                                        Times Watched
-                                    </Label>
-                                    <Input
-                                        id="rewatches"
-                                        type="number"
-                                        value={rewatches}
-                                        onChange={(e) =>
-                                            setRewatches(
-                                                parseInt(e.target.value)
-                                            )
-                                        }
-                                        min={1}
-                                        className="w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-sm text-gray-300 font-medium">
-                                        Date Watched
-                                    </Label>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                className={cn(
-                                                    "w-full justify-start text-left font-normal",
-                                                    !dateWatched &&
-                                                        "text-muted-foreground"
-                                                )}
-                                            >
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                {dateWatched ? (
-                                                    format(dateWatched, "PPP")
-                                                ) : (
-                                                    <span>Pick a date</span>
-                                                )}
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            className="w-auto p-0"
-                                            align="start"
+                                    <div className="space-y-2 text-gray-300">
+                                        <Label
+                                            htmlFor="rewatches"
+                                            className="text-sm   font-medium"
                                         >
-                                            <Calendar
-                                                mode="single"
-                                                selected={dateWatched}
-                                                onSelect={setDateWatched}
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
+                                            Times Watched
+                                        </Label>
+                                        <Input
+                                            id="rewatches"
+                                            type="number"
+                                            value={rewatches}
+                                            onChange={(e) =>
+                                                setRewatches(
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
+                                            min={1}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-sm text-gray-300 font-medium">
+                                            Date Watched
+                                        </Label>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "w-full justify-start text-left font-normal",
+                                                        !dateWatched &&
+                                                            "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {dateWatched ? (
+                                                        format(
+                                                            dateWatched,
+                                                            "PPP"
+                                                        )
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent
+                                                className="w-auto p-0"
+                                                align="start"
+                                            >
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={dateWatched}
+                                                    onSelect={setDateWatched}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                    <Button
+                                        disabled={loading}
+                                        onClick={handleAddEntry}
+                                        className="w-full"
+                                    >
+                                        {loading ? "Adding..." : "Add"}
+                                    </Button>
                                 </div>
-                                <Button
-                                    disabled={loading}
-                                    onClick={handleAddEntry}
-                                    className="w-full"
-                                >
-                                    {loading ? "Adding..." : "Add"}
-                                </Button>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
                 {Object.entries(sortedEntries).map(([monthYear, entries]) => (
@@ -444,7 +474,7 @@ const JournalPage: React.FC = () => {
                             {monthYear}
                         </h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {entries.map((entry) => (
+                            {(entries as JournalEntry[]).map((entry: any) => (
                                 <div
                                     key={entry._id}
                                     className="relative w-full h-full group"
@@ -480,7 +510,7 @@ const JournalPage: React.FC = () => {
                                             Times Watched: {entry.rewatches}
                                         </p>
                                         <p className="text-sm text-gray-300">
-                                           Rating: {entry.rating}
+                                            Rating: {entry.rating}
                                         </p>
 
                                         {/* Delete button visible on hover for desktop, always visible on mobile */}
@@ -525,21 +555,24 @@ const JournalPage: React.FC = () => {
                     <DialogHeader>
                         <DialogTitle></DialogTitle>
                     </DialogHeader>
-                    <p className="text-white">
-                        Update Your Journal Entry
-                    </p>
+                    <p className="text-white">Update Your Journal Entry</p>
                     <DialogFooter>
                         <Button
                             variant="outline"
                             className="text-white"
-                            onClick={() => {setIsDeleteDialogOpen(false); setIsEditDialogOpen(true);}}
-                        >Edit
+                            onClick={() => {
+                                setIsDeleteDialogOpen(false)
+                                setIsEditDialogOpen(true)
+                            }}
+                        >
+                            Edit
                         </Button>
                         <Button
                             variant="outline"
                             className="text-white"
                             onClick={() => setIsDeleteDialogOpen(false)}
-                        >Cancel
+                        >
+                            Cancel
                         </Button>
                         <Button
                             variant="outline"
@@ -552,26 +585,24 @@ const JournalPage: React.FC = () => {
                 </DialogContent>
             </Dialog>
 
-            <Dialog
-                open={isEditDialogOpen}
-                onOpenChange={setIsEditDialogOpen}
-            >
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                 <DialogContent>
-                <p className="text-white">
-                    Edit Your Journal Entry
-                </p>
+                    <p className="text-white">Edit Your Journal Entry</p>
                     <DialogFooter>
                         <Button
                             variant="outline"
                             className="text-white"
                             onClick={() => setIsEditDialogOpen(false)}
-                        >Cancel
+                        >
+                            Cancel
                         </Button>
                         <Button
                             variant="outline"
                             className="bg-green-800 text-white"
                             onClick={handleEditEntry}
-                        > Submit
+                        >
+                            {" "}
+                            Submit
                         </Button>
                     </DialogFooter>
                 </DialogContent>

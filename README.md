@@ -298,7 +298,7 @@ We'd love your help to make **Daccotta** even better! If you're interested in co
 <td align="center"><img src="https://media.licdn.com/dms/image/v2/D5603AQEY9rnV-tmIyA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1728535091373?e=1736380800&v=beta&t=bMR--TA3hLMOMrp4Z1FDZIFJ35mmqV_ScN9qxBPVN8o" width=150px height=150px /></a></br> <h4 style="color:red;">ASHU KUMAR</h4>
  <a href="https://www.linkedin.com/in/ashukumar22/"><img src="https://user-images.githubusercontent.com/74038190/235294012-0a55e343-37ad-4b0f-924f-c8431d9d2483.gif" width="32px" height="32px"></img></a>
 </td>
-<td align="center"><img src="[https://media.licdn.com/dms/image/v2/D5603AQFp7y1ybjjkBw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1724591751024?e=1735171200&v=beta&t=rfzm248w4SajKg-hNJFpmMe87MZWKj1kf2utUHViQ2Q](https://media.licdn.com/dms/image/v2/D5603AQFbnO-aIdE8SA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1732037871912?e=1739404800&v=beta&t=V_rnIJHGdyKzEjsqjXvyBLJN37HzC0rQCxBJj8a_IoE)" width=150px height=150px /></a></br> <h4 style="color:red;">SIDDHARTH GUPTA</h4>
+<td align="center"><img src="https://avatars.githubusercontent.com/u/143296945?v=4" width=150px height=150px /></a></br> <h4 style="color:red;">SIDDHARTH GUPTA</h4>
  <a href="https://www.linkedin.com/in/siddharthgupta007/"><img src="https://user-images.githubusercontent.com/74038190/235294012-0a55e343-37ad-4b0f-924f-c8431d9d2483.gif" width="32px" height="32px"></img></a>
 </td>
 
