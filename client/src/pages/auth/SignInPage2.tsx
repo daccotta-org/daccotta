@@ -14,7 +14,11 @@ import "react-toastify/dist/ReactToastify.css"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
+import {
+    //signInWithPopup,
+    // GoogleAuthProvider,
+    sendPasswordResetEmail,
+} from "firebase/auth"
 
 export const signInSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -43,7 +47,8 @@ const SignInPage2: React.FC = () => {
 
     useEffect(() => {
         const checkEmailExistence = async () => {
-            const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
+            const emailPattern =
+                /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
 
             if (email && emailPattern.test(email)) {
                 setIsCheckingEmail(true)
@@ -82,43 +87,45 @@ const SignInPage2: React.FC = () => {
         signInMutation.mutate(data)
     }
 
-    const signInWithGoogle = async () => {
-        const provider = new GoogleAuthProvider();
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
+    // const signInWithGoogle = async () => {
+    //     const provider = new GoogleAuthProvider()
+    //     try {
+    //         const result = await signInWithPopup(auth, provider)
+    //         const user = result.user
 
-            // Check if the user already exists in your backend
-            const email = user.email;
-            if (email) {
-                const emailExists = await checkEmailExists(email); // Ensure this function is defined
+    //         // Check if the user already exists in your backend
+    //         const email = user.email
+    //         if (email) {
+    //             const emailExists = await checkEmailExists(email) // Ensure this function is defined
 
-                if (emailExists) {
-                    toast.success("Successfully signed in with Google!");
-                } else {
-                    toast.info("User does not exist. Redirecting to sign-up...");
-                    window.location.href = "/signup"; // Redirect to sign-up page
-                }
-            }
-        } catch (error) {
-            console.error("Failed to sign in with Google:", error);
-            toast.error("Failed to sign in with Google. Please try again.");
-        }
-    }
+    //             if (emailExists) {
+    //                 toast.success("Successfully signed in with Google!")
+    //             } else {
+    //                 toast.info("User does not exist. Redirecting to sign-up...")
+    //                 window.location.href = "/signup" // Redirect to sign-up page
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error("Failed to sign in with Google:", error)
+    //         toast.error("Failed to sign in with Google. Please try again.")
+    //     }
+    // }
 
     const resetPassword = async () => {
         if (!email) {
-            toast.error("Please enter your email address.");
-            return;
+            toast.error("Please enter your email address.")
+            return
         }
         try {
-            await sendPasswordResetEmail(auth, email);
-            toast.success("Password reset email sent! Check your inbox.");
+            await sendPasswordResetEmail(auth, email)
+            toast.success("Password reset email sent! Check your inbox.")
         } catch (error) {
-            console.error("Failed to send password reset email:", error);
-            toast.error("Failed to send password reset email. Please try again.");
+            console.error("Failed to send password reset email:", error)
+            toast.error(
+                "Failed to send password reset email. Please try again."
+            )
         }
-    };
+    }
 
     return (
         <>
@@ -148,24 +155,22 @@ const SignInPage2: React.FC = () => {
                                             {...register("email")}
                                         />
                                         {email && (
-                                                <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                                    {isCheckingEmail ? (
-                                                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                                                    ) : isEmailExists ===
-                                                      true ? (
-                                                        <CheckCircle
-                                                            className="text-green-500"
-                                                            size={16}
-                                                        />
-                                                    ) : isEmailExists ===
-                                                      false ? (
-                                                        <XCircle
-                                                            className="text-red-500"
-                                                            size={16}
-                                                        />
-                                                    ) : null}
-                                                </span>
-                                            )}
+                                            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                                {isCheckingEmail ? (
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                                                ) : isEmailExists === true ? (
+                                                    <CheckCircle
+                                                        className="text-green-500"
+                                                        size={16}
+                                                    />
+                                                ) : isEmailExists === false ? (
+                                                    <XCircle
+                                                        className="text-red-500"
+                                                        size={16}
+                                                    />
+                                                ) : null}
+                                            </span>
+                                        )}
                                     </div>
                                     {errors.email && (
                                         <p className="mt-2 text-sm text-red-500">
@@ -241,8 +246,9 @@ const SignInPage2: React.FC = () => {
                         </div>
 
                         {/* Sign in with Google Button */}
-                        { <div className="mt-4">
-                            <Button
+                        {
+                            <div className="mt-4">
+                                {/* <Button
                                 onClick={signInWithGoogle}
                                 className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600"
                             >
@@ -252,8 +258,9 @@ const SignInPage2: React.FC = () => {
                                     className="h-5 w-5 mr-2" // Adjust size as needed
                                 />
                                 <span>Continue with Google</span>
-                            </Button>
-                        </div> }
+                            </Button> */}
+                            </div>
+                        }
 
                         <p className="mt-2 text-center text-sm text-gray-300">
                             New User?{" "}

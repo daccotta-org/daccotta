@@ -9,18 +9,19 @@ import {
     checkEmailExists,
     checkUsernameAvailability,
     useSignUp,
-    createUserWithGoogle
+    //createUserWithGoogle,
 } from "../../services/userService"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth" // Import for Google auth
-import { auth } from "../../lib/firebase" // Adjust the import path if needed
-import { toast } from "react-toastify"
+// import { GoogleAuthProvider,  signInWithPopup} from "firebase/auth" // Import for Google auth
+
+// import { auth } from "../../lib/firebase" // Adjust the import path if needed
+// import { toast } from "react-toastify"
 
 // Schema definitions...
-const googleProvider = new GoogleAuthProvider()
+//const googleProvider = new GoogleAuthProvider()
 
 // Schema definitions (unchanged)
 const usernameSchema = z
@@ -125,7 +126,8 @@ const SignUp: React.FC = () => {
 
     useEffect(() => {
         const checkEmailAvailability = async () => {
-            const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
+            const emailPattern =
+                /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
 
             if (email && emailPattern.test(email)) {
                 setIsCheckingEmail(true)
@@ -176,27 +178,30 @@ const SignUp: React.FC = () => {
         e.preventDefault()
     }
 
-    const handleGoogleSignUp = async () => {
-        try {
-            const result = await signInWithPopup(auth, googleProvider)
-            const user = result.user
+    // const handleGoogleSignUp = async () => {
+    //     try {
+    //         const result = await signInWithPopup(auth, googleProvider)
+    //         const user = result.user
 
-            if (!user.email) {
-                toast.error("User email is not available");
-                return;
-            }
+    //         if (!user.email) {
+    //             toast.error("User email is not available")
+    //             return
+    //         }
 
-            // Optionally send user data to backend
-            await createUserWithGoogle(user.email, username || user.displayName || user.email.split('@')[0]);
+    //         // Optionally send user data to backend
+    //         await createUserWithGoogle(
+    //             user.email,
+    //             username || user.displayName || user.email.split("@")[0]
+    //         )
 
-            toast.success("Successfully signed up with Google")
+    //         toast.success("Successfully signed up with Google")
 
-            // Optionally save user to Firestore
-        } catch (error) {
-            console.error("Error signing up with Google:", error)
-            toast.error("Error signing up with Google")
-        }
-    }
+    //         // Optionally save user to Firestore
+    //     } catch (error) {
+    //         console.error("Error signing up with Google:", error)
+    //         toast.error("Error signing up with Google")
+    //     }
+    // }
 
     return (
         <div className="w-full min-h-screen lg:grid lg:grid-cols-5">
@@ -383,7 +388,7 @@ const SignUp: React.FC = () => {
                         </div>
 
                         <div>
-                            { <Button
+                            {/* { <Button
                                 type="button"
                                 className="w-full bg-blue-500 hover:bg-blue-400"
                                 onClick={handleGoogleSignUp}
@@ -395,7 +400,7 @@ const SignUp: React.FC = () => {
                                     className="h-5 w-5 mr-2" // Adjust size as needed
                                 />
                                 <span>Sign Up using Google</span>
-                            </Button> }
+                            </Button> } */}
                         </div>
                     </form>
                     <p className="mt-2 text-center text-sm text-gray-300">
