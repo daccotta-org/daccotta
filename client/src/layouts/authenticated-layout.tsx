@@ -2,7 +2,7 @@ import React from "react"
 import { Outlet } from "react-router-dom"
 
 import "./layout.css"
-import { DockDemo } from "@/components/ui/DockBar"
+//import { DockDemo } from "@/components/ui/DockBar"
 import Navbar from "@/components/custom/Navbar/TestNavbar"
 
 const AuthenticatedLayout: React.FC = () => {
