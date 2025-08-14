@@ -291,7 +291,6 @@
 //     return response.data
 // }
 
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { createUserWithEmailAndPassword } from "firebase/auth"
@@ -300,7 +299,7 @@ import { IUser } from "../Types/User"
 import { SignUpFormData } from "../Types/validationSchema"
 import { auth } from "../lib/firebase"
 import { SimpleMovie } from "@/Types/Movie"
-// import { API_BASE_URL } from "../config/environment"
+import { config } from "@/lib/config"
 
 interface CreateListData {
     name: string
@@ -310,7 +309,7 @@ interface CreateListData {
 }
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: config.api.baseUrl,
 })
 
 export const createList = async (userId: string, data: CreateListData) => {
@@ -422,14 +421,14 @@ export const createUser = async (data: SignUpFormData) => {
 
 export const createUserWithGoogle = async (email: string, username: string) => {
     // This assumes the user is already authenticated with Google
-    const userCredential = await auth.currentUser;
+    const userCredential = await auth.currentUser
 
     if (!userCredential) {
-        throw new Error("User is not authenticated with Google");
+        throw new Error("User is not authenticated with Google")
     }
 
-    const idTokenResult = await userCredential.getIdTokenResult();
-    const idToken = idTokenResult.token;
+    const idTokenResult = await userCredential.getIdTokenResult()
+    const idToken = idTokenResult.token
 
     const response = await api.post(
         "/api/users",
@@ -444,12 +443,12 @@ export const createUserWithGoogle = async (email: string, username: string) => {
                 Authorization: `Bearer ${idToken}`,
             },
         }
-    );
+    )
 
-    window.location.href = "/onboard"; // Redirect after successful creation
+    window.location.href = "/onboard" // Redirect after successful creation
 
-    return response;
-};
+    return response
+}
 
 export const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
@@ -506,15 +505,12 @@ export const checkOnboardedStatus = async (
         const idToken = await auth.currentUser?.getIdToken()
         console.log("in check onboarded token is : ", idToken)
 
-        const response = await api.get(
-            `/api/user/${userId}/onboarded`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
-            }
-        )
+        const response = await api.get(`/api/user/${userId}/onboarded`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+        })
 
         return response.data.onboarded
     } catch (error) {
@@ -562,15 +558,12 @@ export const checkUsernameAvailability = async (
     try {
         const idToken = await auth.currentUser?.getIdToken()
 
-        const response = await api.get(
-            `/api/user/check-username/${username}`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
-            }
-        )
+        const response = await api.get(`/api/user/check-username/${username}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+        })
 
         return response.data.isAvailable
     } catch (error) {
@@ -605,17 +598,24 @@ export const getUserData_page = async (uid?: string) => {
     return response.data
 }
 
-export const fetchMovieToList = async (uid: string, page: number, limit: number) => {
+export const fetchMovieToList = async (
+    uid: string,
+    page: number,
+    limit: number
+) => {
     const idToken = await auth.currentUser?.getIdToken()
-    const response = await api.get(`/api/list/${uid}?page=${page}&limit=${limit}`, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
+    const response = await api.get(
+        `/api/list/${uid}?page=${page}&limit=${limit}`,
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
         }
-    })
+    )
 
-    console.log("response :: ", response.data);
-    return response.data;
+    console.log("response :: ", response.data)
+    return response.data
 }
 
 export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
@@ -642,34 +642,38 @@ export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
 
 export const removeMovieFromList = async (listId: string, movieId: string) => {
     const idToken = await auth.currentUser?.getIdToken()
-    const response = await api.delete(
-        `/api/list/${listId}/remove-movie`,
-        {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
-            data: { movie_id: movieId }, // Send movie_id in the request body
-        }
-    )
+    const response = await api.delete(`/api/list/${listId}/remove-movie`, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+        },
+        data: { movie_id: movieId }, // Send movie_id in the request body
+    })
     return response.data
 }
 
-export const updateProfileImage = async (userId: string, profileImage: string) => {
+export const updateProfileImage = async (
+    userId: string,
+    profileImage: string
+) => {
     try {
-        const idToken = await auth.currentUser?.getIdToken();
-        const response = await api.put(`/api/user/${userId}/update-profile-image`, {
-            profileImage,
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
+        const idToken = await auth.currentUser?.getIdToken()
+        const response = await api.put(
+            `/api/user/${userId}/update-profile-image`,
+            {
+                profileImage,
             },
-        });
-        console.log("Profile image updated successfully:", response.data);
-        return response.data;
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${idToken}`,
+                },
+            }
+        )
+        console.log("Profile image updated successfully:", response.data)
+        return response.data
     } catch (error) {
-        console.error("Error updating profile image:", error);
-        throw new Error("Failed to update profile image");
+        console.error("Error updating profile image:", error)
+        throw new Error("Failed to update profile image")
     }
-};
+}

@@ -3,8 +3,9 @@ import axios from "axios"
 import { useAuth } from "@/hooks/useAuth"
 import { getIdToken } from "firebase/auth"
 import { SimpleMovie } from "@/Types/Movie"
+import { config } from "@/lib/config"
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api`
+const API_URL = `${config.api.baseUrl}/api`
 
 interface Journal {
     _id: string

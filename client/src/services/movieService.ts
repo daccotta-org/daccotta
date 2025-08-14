@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { SimpleMovie, TMDBMovie } from "../Types/Movie"
+import { config } from "@/lib/config"
 
-const TMDB_TOKEN = import.meta.env.VITE_ACCESS_KEY
-
-const BASE_URL = "https://api.themoviedb.org/3"
-
-const DISCOVER_MOVIE_URL="https://api.themoviedb.org/3/discover/movie";
+const TMDB_TOKEN = config.tmdb.apiKey
+const BASE_URL = config.tmdb.baseUrl
+const DISCOVER_MOVIE_URL = `${config.tmdb.baseUrl}/discover/movie`
 // movieService.ts
 
 export const fetchMovieDetails = async (movieId: string) => {
@@ -41,8 +40,8 @@ export const useGetRecommendedMovies = (year: any, genre: any) => {
         queryKey: ["recommendedMovies", year, genre],
         queryFn: () => getRecommendedMovies(year, genre),
         enabled: !!year && !!genre, // Only fetch if both year and genre are provided
-    });
-};
+    })
+}
 
 export const getRecommendedMovies = async (year: number, genre: number) => {
     const url = `${DISCOVER_MOVIE_URL}?api_key=${TMDB_TOKEN}&primary_release_year=${year}&with_genres=${genre}&language=en-US&sort_by=release_date.desc&page=1`
