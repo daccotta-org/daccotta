@@ -400,7 +400,7 @@ export const createUser = async (data: SignUpFormData) => {
     const idToken = idTokenResult.token
 
     const response = await api.post(
-        "/api/users",
+        "/api/user/",
         {
             uid: userCredential.user.uid,
             username: data.username,
@@ -431,7 +431,7 @@ export const createUserWithGoogle = async (email: string, username: string) => {
     const idToken = idTokenResult.token
 
     const response = await api.post(
-        "/api/users",
+        "/api/user/",
         {
             uid: userCredential.uid,
             username: username, // You may want to prompt for this
