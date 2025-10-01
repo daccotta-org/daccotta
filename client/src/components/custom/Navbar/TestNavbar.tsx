@@ -1,11 +1,22 @@
-import { FC } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { FC, useState, type MouseEvent } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Home, Search, Users, NotebookPen, List, LogOutIcon } from "lucide-react"
 import logo from "../../../assets/logo_light.svg"
 import { useAuth } from "../../../hooks/useAuth"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "../../ui/dialog"
+import { Button } from "../../ui/button"
 
 const Navbar: FC = () => {
     const location = useLocation()
+    const navigate = useNavigate()
+    const [confirmOpen, setConfirmOpen] = useState(false)
 
     const navItems = [
         { path: "/", icon: Home, tip: "Home" },
@@ -23,11 +34,13 @@ const Navbar: FC = () => {
 
     const handleSignOut = async () => {
         try {
-            await signOut();
+            await signOut()
+            setConfirmOpen(false)
+            navigate("/", { replace: true })
         } catch (error) {
-            console.error("Error signing out: ", error);
+            console.error("Error signing out: ", error)
         }
-    };
+    }
 
     return (
         <nav className="flex flex-col h-screen w-16 bg-black text-white">
@@ -72,18 +85,36 @@ const Navbar: FC = () => {
             {/* Log Out at the bottom */}
             <div className="p-4 mt-auto">
                 <Link
-                    onClick={handleSignOut}
+                    onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+                        e.preventDefault()
+                        setConfirmOpen(true)
+                    }}
                     to={logOutItem.path}
                     className={`block p-2 rounded-md tooltip tooltip-right ${
                         isActive(logOutItem.path) ? "text-white" : "text-gray-400"
                     }`}
                     data-tip={logOutItem.tip}
                 >
-                    <logOutItem.icon
-                        color="#c16cf9"
-                        className="w-6 h-6"
-                    />
+                    <logOutItem.icon color="#c16cf9" className="w-6 h-6" />
                 </Link>
+                <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Confirm Logout</DialogTitle>
+                            <DialogDescription>
+                                are you sure you want to logout?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button variant="destructive" onClick={handleSignOut}>
+                                Remove
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </nav>
     )
