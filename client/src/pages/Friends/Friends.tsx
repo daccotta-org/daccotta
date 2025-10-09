@@ -224,7 +224,7 @@ const FriendsSearch: React.FC = () => {
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <h2 className="text-lg font-semibold mb-4">
-                                    ALL FRIENDS — {friends?.length || 0}
+                                    ALL FRIENDS — {friends?.friends?.length || 0}
                                 </h2>
                                 {/* limit drop down */}
                                 <div>
@@ -308,7 +308,7 @@ const FriendsSearch: React.FC = () => {
                                     ))}
                                 </ul>
                                 {
-                                    friends.friends.length > 0 && (
+                                    (friends?.friends?.length || 0) > 0 && (
                                         <Pagination>
                                             <PaginationContent>
                                                 <PaginationItem>
