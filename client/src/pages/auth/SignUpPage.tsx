@@ -180,6 +180,17 @@ const SignUp: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* TODO: authClient.signIn.social({ provider: "google" }) */}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full opacity-60"
+                        disabled
+                        title="Coming soon"
+                    >
+                        Continue with Google
+                    </Button>
+
                     <p className="mt-2 text-center text-sm text-gray-300">
                         Already have an account?{" "}
                         <Link

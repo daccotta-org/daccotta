@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "axios": "^1.11.0",
+    "better-auth": "1.6.26",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "firebase-admin": "^14.2.0",
     "mongodb": "^7.5.0",
     "mongoose": "^9.0.0"
   },

@@ -11,8 +11,6 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.43.0",
-    "@clerk/themes": "^2.4.13",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.1",
@@ -34,10 +32,10 @@
     "@tanstack/react-query": "^5.85.0",
     "@tanstack/react-query-devtools": "^5.85.0",
     "axios": "^1.11.0",
+    "better-auth": "1.6.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "firebase": "^12.1.0",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.539.0",
     "react": "^19.1.1",
