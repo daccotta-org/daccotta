@@ -17,6 +17,15 @@ import { getUserData } from "@/services/userService"
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "./dialog"
+import { Button } from "./button"
 
 const options = [
     { label: "Profile", icon: <AccountCircleIcon /> },
@@ -37,6 +46,7 @@ export interface SimpleDialogProps {
 function SimplePopover(props: SimpleDialogProps) {
     const navigate = useNavigate()
     const { signOut } = useAuth()
+    const [confirmOpen, setConfirmOpen] = useState(false)
 
     const handleSignOut = async () => {
         try {
@@ -54,12 +64,15 @@ function SimplePopover(props: SimpleDialogProps) {
         } else if (value === "Settings") {
             navigate("/"), toast.warning("Coming Soon!")
         } else if (value === "Sign Out") {
-            handleSignOut()
+            setConfirmOpen(true)
+            // Don't close the popover yet so the dialog can be shown
+            return
         }
         onClose(value)
     }
 
     return (
+        <>
         <List
             sx={{ pt: 0 }}
             className="flex flex-col items-start bg-background text-white"
@@ -96,6 +109,31 @@ function SimplePopover(props: SimpleDialogProps) {
                 </ListItem>
             ))}
         </List>
+        <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirm Logout</DialogTitle>
+                    <DialogDescription>
+                        are you sure you want to logout?
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        onClick={async () => {
+                            await handleSignOut()
+                            setConfirmOpen(false)
+                        }}
+                    >
+                        Remove
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        </>
     )
 }
 

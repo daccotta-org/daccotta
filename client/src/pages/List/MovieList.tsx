@@ -143,7 +143,7 @@ export default function MovieList() {
                             onRemove={() => handleRemoveMovie(movie.movie_id)} // Pass the remove handler
                         />
                     ))}
-                    <Card className="relative lg:w-48 lg:h-64 w-28 h-36 rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition duration-300 ease-in-out hover:scale-105">
+                    <Card className="relative w-full mx-auto sm:max-w-40 md:max-w-48 lg:max-w-56 h-60 sm:h-60 md:h-72 lg:h-84 rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition duration-300 ease-in-out hover:scale-105">
                         <CardContent className="p-0 flex items-center justify-center h-[256px] ">
                             <div
                                 className="text-center p-4"

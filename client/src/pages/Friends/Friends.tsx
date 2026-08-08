@@ -52,8 +52,14 @@ const FriendsSearch: React.FC = () => {
     const [friendRequestStatus, setFriendRequestStatus] = useState<{ [key: string]: { loading: boolean; sent: boolean } }>({});
     const [requestLoading, setRequestLoading] = useState<{ [key: string]: { accept: boolean; reject: boolean } }>({});
     const { data: friends, isLoading: isLoadingFriends, refetch: refetchFriends } = useGetFriends({page: pagination.page, limit: pagination.limit})
-    const { data: pendingRequests, isLoading: isLoadingRequests, refetch: refetchPendingRequests } =
+    const { data: pendingRequestsRaw, isLoading: isLoadingRequests, refetch: refetchPendingRequests } =
         useGetPendingRequests({page: pagination.page, limit: pagination.limit})
+
+    const pendingRequests = Array.isArray(pendingRequestsRaw?.pendingRequests)
+        ? pendingRequestsRaw.pendingRequests
+        : Array.isArray(pendingRequestsRaw)
+            ? pendingRequestsRaw
+            : [];
     const {
         data: searchResults,
         isLoading: isLoadingSearch,
@@ -192,7 +198,7 @@ const FriendsSearch: React.FC = () => {
                             onClick={() => setActiveTab("pending")}
                         >
                             Pending
-                            {pendingRequests?.length > 0 && (
+                            {pendingRequests.length > 0 && (
                                 <span className="absolute top-1 -m-1 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full">
                                     {pendingRequests.length}
                                 </span>
@@ -218,7 +224,7 @@ const FriendsSearch: React.FC = () => {
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <h2 className="text-lg font-semibold mb-4">
-                                    ALL FRIENDS — {friends?.length || 0}
+                                    ALL FRIENDS — {friends?.friends?.length || 0}
                                 </h2>
                                 {/* limit drop down */}
                                 <div>
@@ -302,7 +308,7 @@ const FriendsSearch: React.FC = () => {
                                     ))}
                                 </ul>
                                 {
-                                    friends.friends.length > 0 && (
+                                    (friends?.friends?.length || 0) > 0 && (
                                         <Pagination>
                                             <PaginationContent>
                                                 <PaginationItem>
@@ -382,10 +388,12 @@ const FriendsSearch: React.FC = () => {
                             </div>
                             {isLoadingRequests ? (
                                 <p>Loading requests...</p>
+                            ) : pendingRequests.length === 0 ? (
+                                <p className="text-gray-400">No pending friend requests.</p>
                             ) : (
                                 <>
                                 <ul className="space-y-4">
-                                    {pendingRequests?.pendingRequests?.map((request: any) => (
+                                    {pendingRequests.map((request: any) => (
                                         <motion.li
                                             key={request._id}
                                             className="flex flex-col items-start justify-between bg-gray-800 p-3 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700 md:flex-row md:items-center"

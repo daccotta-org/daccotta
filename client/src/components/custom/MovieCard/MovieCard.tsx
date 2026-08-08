@@ -82,7 +82,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     return (
         <>
             <motion.div
-                className="relative w-32 sm:w-40 md:w-48 lg:w-56 h-48 sm:h-60 md:h-72 lg:h-84 rounded-lg overflow-hidden shadow-lg cursor-pointer group"
+                className="relative w-full mx-auto sm:max-w-40 md:max-w-48 lg:max-w-56 h-60 sm:h-60 md:h-72 lg:h-84 rounded-lg overflow-hidden shadow-lg cursor-pointer group"
                 onClick={handleClick}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
