@@ -2,7 +2,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 @import "tailwindcss";
-@plugin "daisyui";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -98,34 +97,34 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 5%;
     --secondary-foreground: 0 0% 100%;
-    --accent: 324 85% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 264 35% 92%;
+    --accent-foreground: 294 67% 3%;
     --destructive: 21 87% 38%;
     --destructive-foreground: 0 0% 100%;
-    --ring: 294 85% 45%;
+    --ring: 294 10% 70%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 294 44% 3%;
-    --foreground: 294 23% 98%;
-    --muted: 264 35% 14%;
-    --muted-foreground: 264 15% 64%;
-    --popover: 294 44% 3%;
-    --popover-foreground: 294 23% 98%;
-    --card: 294 44% 3%;
-    --card-foreground: 294 23% 98%;
-    --border: 294 3% 10%;
-    --input: 294 3% 10%;
+    --background: 240 6% 4%;
+    --foreground: 0 0% 98%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --popover: 240 6% 6%;
+    --popover-foreground: 0 0% 98%;
+    --card: 240 6% 6%;
+    --card-foreground: 0 0% 98%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
     --primary: 294 85% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 5%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 324 85% 45%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 21 87% 46%;
-    --destructive-foreground: 0 0% 100%;
-    --ring: 294 85% 45%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --ring: 240 4% 30%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;

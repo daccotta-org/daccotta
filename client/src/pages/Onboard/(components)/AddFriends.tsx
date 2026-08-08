@@ -3,10 +3,12 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { useSearchUsers } from "../../../services/userService"
 import { toast } from "react-toastify"
-import { RxCrossCircled } from "react-icons/rx"
+import { XCircle } from "lucide-react"
 import { useAuth } from "../../../hooks/useAuth"
 import "../../../index.css"
 import CircularIndeterminate from "@/components/ui/loading"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 // Define the Friends schema
 export const friendsSchema = z.object({
@@ -85,9 +87,9 @@ const AddFriends: React.FC<Props> = ({
                     Add Friends
                 </h2>
                 <div className="relative mb-6">
-                    <input
+                    <Input
                         type="text"
-                        className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white justify-center flex"
+                        className="w-[320px] sm:w-[400px]"
                         placeholder="Search users"
                         onKeyDown={handleKeyDown}
                         value={searchTerm}
@@ -113,15 +115,16 @@ const AddFriends: React.FC<Props> = ({
                                             )}
                                             <span>{user.userName}</span>
                                         </div>
-                                        <button
+                                        <Button
                                             type="button"
-                                            className="btn btn-secondary btn-sm"
+                                            variant="secondary"
+                                            size="sm"
                                             onClick={() =>
                                                 handleAddFriend(user)
                                             }
                                         >
                                             Add
-                                        </button>
+                                        </Button>
                                     </li>
                                 ))}
                         </ul>
@@ -154,7 +157,7 @@ const AddFriends: React.FC<Props> = ({
                                             handleRemoveFriend(friend._id)
                                         }
                                     >
-                                        <RxCrossCircled size="24px" />
+                                        <XCircle className="h-6 w-6" />
                                     </button>
                                 </li>
                             ))}
@@ -167,22 +170,22 @@ const AddFriends: React.FC<Props> = ({
                     </span>
                 )}
                 <div className="mt-10 self-end lg:self-auto flex w-full justify-evenly">
-                    <button
+                    <Button
                         type="button"
-                        className="btn btn-secondary text-white"
+                        variant="secondary"
                         onClick={onPrevious}
                         disabled={isSubmitting}
                     >
                         Previous
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
-                        className="btn btn-outline hover:bg-primary hover:text-white"
+                        variant="outline"
                         onClick={onSubmit}
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? "Submitting..." : "Final Submit"}
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FFEBCD]">

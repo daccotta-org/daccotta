@@ -1,4 +1,4 @@
-import { Cross2Icon, MixerHorizontalIcon } from "@radix-ui/react-icons"
+import { Settings2, X } from "lucide-react"
 import * as Popover from "@radix-ui/react-popover"
 
 const PopoverRadix = () => (
@@ -8,7 +8,7 @@ const PopoverRadix = () => (
                 className="rounded-full w-[35px] h-[35px] inline-flex items-center justify-center text-violet11 bg-white shadow-[0_2px_10px] shadow-blackA4 hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black cursor-default outline-none"
                 aria-label="Update dimensions"
             >
-                <MixerHorizontalIcon />
+                <Settings2 className="h-4 w-4" />
             </button>
         </Popover.Trigger>
         <Popover.Portal>
@@ -77,7 +77,7 @@ const PopoverRadix = () => (
                     className="rounded-full h-[25px] w-[25px] inline-flex items-center justify-center text-violet11 absolute top-[5px] right-[5px] hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 outline-none cursor-default"
                     aria-label="Close"
                 >
-                    <Cross2Icon />
+                    <X className="h-4 w-4" />
                 </Popover.Close>
                 <Popover.Arrow className="fill-white" />
             </Popover.Content>

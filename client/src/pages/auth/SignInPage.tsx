@@ -67,7 +67,6 @@ const SignInPage2: React.FC = () => {
                                     errors={errors}
                                     email={email}
                                     emailValidation={emailValidation}
-                                    variant="shadcn"
                                 />
 
                                 <div>

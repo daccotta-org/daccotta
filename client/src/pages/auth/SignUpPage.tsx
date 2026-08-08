@@ -91,7 +91,6 @@ const SignUp: React.FC = () => {
                                 errors={errors}
                                 username={username}
                                 usernameValidation={usernameValidation}
-                                variant="shadcn"
                             />
                             
                             <EmailAvailabilityField
@@ -99,7 +98,6 @@ const SignUp: React.FC = () => {
                                 errors={errors}
                                 email={email}
                                 emailAvailability={emailAvailability}
-                                variant="shadcn"
                             />
 
                             <div>

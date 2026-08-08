@@ -1,6 +1,6 @@
 import { FC, useState, type MouseEvent } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { Home, Search, Users, NotebookPen, List, LogOutIcon } from "lucide-react"
+import { Home, Search, Users, NotebookPen, List, LogOut } from "lucide-react"
 import logo from "../../../assets/logo_light.svg"
 import { useAuth } from "../../../hooks/useAuth"
 import {
@@ -12,6 +12,12 @@ import {
     DialogTitle,
 } from "../../ui/dialog"
 import { Button } from "../../ui/button"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "../../ui/tooltip"
 
 const Navbar: FC = () => {
     const location = useLocation()
@@ -25,11 +31,10 @@ const Navbar: FC = () => {
         { path: "/lists", icon: List, tip: "Lists" },
     ]
 
-    // Journal item
-    const journalItem = { path: "/journal", icon: NotebookPen, tip: "Journal" };
-    const logOutItem = { path: "/", icon: LogOutIcon, tip: "Sign Out" };
+    const journalItem = { path: "/journal", icon: NotebookPen, tip: "Journal" }
+    const logOutItem = { path: "/", icon: LogOut, tip: "Sign Out" }
 
-    const isActive = (path: string) => location.pathname === path;
+    const isActive = (path: string) => location.pathname === path
     const { signOut } = useAuth()
 
     const handleSignOut = async () => {
@@ -43,80 +48,105 @@ const Navbar: FC = () => {
     }
 
     return (
-        <nav className="flex flex-col h-screen w-16 bg-black text-white">
-            <div className="p-4">
-                <Link to="/" className="block">
-                    <img src={logo} className="rounded-md" alt="Logo" />
-                </Link>
-            </div>
-            <ul className="flex-1 px-2">
-                {navItems.map((item) => (
-                    <li key={item.path} className="mb-4">
-                        <Link
-                            to={item.path}
-                            className={`block p-2 rounded-md tooltip tooltip-right ${
-                                isActive(item.path)
-                                    ? "text-white"
-                                    : "text-gray-400"
-                            }`}
-                            data-tip={item.tip}
-                        >
-                            <item.icon className="w-6 h-6" />
-                        </Link>
-                    </li>
-                ))}
-            </ul>
+        <TooltipProvider delayDuration={200}>
+            <nav className="flex h-screen w-16 flex-col bg-black text-white">
+                <div className="p-4">
+                    <Link to="/" className="block">
+                        <img src={logo} className="rounded-md" alt="Logo" />
+                    </Link>
+                </div>
+                <ul className="flex-1 px-2">
+                    {navItems.map((item) => (
+                        <li key={item.path} className="mb-4">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Link
+                                        to={item.path}
+                                        className={`block rounded-md p-2 ${
+                                            isActive(item.path)
+                                                ? "text-white"
+                                                : "text-gray-400"
+                                        }`}
+                                        aria-label={item.tip}
+                                    >
+                                        <item.icon className="h-6 w-6" />
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                    {item.tip}
+                                </TooltipContent>
+                            </Tooltip>
+                        </li>
+                    ))}
+                </ul>
 
-            {/* Journal link aligned at the bottom */}
-            <div className="p-4 mt-auto">
-                <Link
-                    to={journalItem.path}
-                    className={`block p-2 rounded-md tooltip tooltip-right ${
-                        isActive(journalItem.path)
-                            ? "text-white"
-                            : "text-gray-400"
-                    }`}
-                    data-tip={journalItem.tip}
-                >
-                    <journalItem.icon color="#c16cf9" className="w-6 h-6" />
-                </Link>
-            </div>
+                <div className="mt-auto p-4">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Link
+                                to={journalItem.path}
+                                className={`block rounded-md p-2 ${
+                                    isActive(journalItem.path)
+                                        ? "text-white"
+                                        : "text-gray-400"
+                                }`}
+                                aria-label={journalItem.tip}
+                            >
+                                <journalItem.icon className="h-6 w-6 text-primary" />
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            {journalItem.tip}
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
 
-            {/* Log Out at the bottom */}
-            <div className="p-4 mt-auto">
-                <Link
-                    onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-                        e.preventDefault()
-                        setConfirmOpen(true)
-                    }}
-                    to={logOutItem.path}
-                    className={`block p-2 rounded-md tooltip tooltip-right ${
-                        isActive(logOutItem.path) ? "text-white" : "text-gray-400"
-                    }`}
-                    data-tip={logOutItem.tip}
-                >
-                    <logOutItem.icon color="#c16cf9" className="w-6 h-6" />
-                </Link>
-                <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Confirm Logout</DialogTitle>
-                            <DialogDescription>
-                                are you sure you want to logout?
-                            </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
-                                Cancel
-                            </Button>
-                            <Button variant="destructive" onClick={handleSignOut}>
-                                Remove
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            </div>
-        </nav>
+                <div className="mt-auto p-4">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Link
+                                onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+                                    e.preventDefault()
+                                    setConfirmOpen(true)
+                                }}
+                                to={logOutItem.path}
+                                className="block rounded-md p-2 text-gray-400"
+                                aria-label={logOutItem.tip}
+                            >
+                                <logOutItem.icon className="h-6 w-6 text-primary" />
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            {logOutItem.tip}
+                        </TooltipContent>
+                    </Tooltip>
+                    <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Confirm Logout</DialogTitle>
+                                <DialogDescription>
+                                    Are you sure you want to logout?
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setConfirmOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={handleSignOut}
+                                >
+                                    Sign Out
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            </nav>
+        </TooltipProvider>
     )
 }
 

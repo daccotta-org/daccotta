@@ -1,10 +1,12 @@
 import React, { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { RxCrossCircled } from "react-icons/rx"
+import { XCircle } from "lucide-react"
 import { toast } from "react-toastify"
 import { z } from "zod"
 import "../../../index.css"
 import { useSearchPerson } from "../../../services/directorService"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 // Define the Director schema
 const directorSchema = z.object({
@@ -73,13 +75,13 @@ const Directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
                     Select Your Top 5 Directors
                 </h2>
                 <div className="relative mb-6">
-                    <input
+                    <Input
                         type="text"
                         placeholder="Search directors"
                         value={searchTerm}
                         onKeyDown={handleKeyDown}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="input input-bordered w-[320px] sm:w-[400px] bg-transparent text-white"
+                        className="w-[320px] sm:w-[400px]"
                     />
                     {isLoading && <p>Loading...</p>}
                     {directorsData &&
@@ -139,7 +141,7 @@ const Directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
                                             handleRemoveDirector(director?.id)
                                         }
                                     >
-                                        <RxCrossCircled size="24px" />
+                                        <XCircle className="h-6 w-6" />
                                     </button>
                                 </li>
                             ))}
@@ -152,20 +154,16 @@ const Directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
                     </span>
                 )}
                 <div className="mt-10 self-end lg:self-auto flex w-full justify-evenly">
-                    <button
+                    <Button
                         type="button"
-                        className="btn btn-secondary text-white"
+                        variant="secondary"
                         onClick={onPrevious}
                     >
                         Previous
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline hover:bg-primary hover:text-white"
-                        onClick={onNext}
-                    >
+                    </Button>
+                    <Button type="button" variant="outline" onClick={onNext}>
                         Next
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FAEBD7]">

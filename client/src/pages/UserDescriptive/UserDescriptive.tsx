@@ -4,14 +4,8 @@ import { useFriends } from "@/services/friendsService"
 import { useJournal } from "@/services/journalService"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
-import {
-    IconChartBar,
-    IconList,
-    IconMovie,
-    IconUser,
-} from "@tabler/icons-react"
+import { Award, BarChart3, Clapperboard, List, User, Users } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Award, Users } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -139,14 +133,14 @@ const UserDescriptivePage: React.FC = () => {
                 <BentoGridItem
                     title="Profile Info"
                     description="User profile details and stats"
-                    icon={<IconUser className="h-6 w-6 text-blue-400" />}
+                    icon={<User className="h-6 w-6 text-blue-400" />}
                 >
                     <ProfileInfo />
                 </BentoGridItem>
                 <BentoGridItem
                     title="User's Lists"
                     description="View and explore user's movie lists"
-                    icon={<IconList className="h-6 w-6 text-green-400" />}
+                    icon={<List className="h-6 w-6 text-green-400" />}
                 >
                     <div className="space-y-2 h-12 overflow-auto ">
                         {userData.lists.map((item: any, index: number) => (
@@ -167,7 +161,7 @@ const UserDescriptivePage: React.FC = () => {
                 <BentoGridItem
                     title="User Stats"
                     description="View user's movie watching statistics"
-                    icon={<IconChartBar className="h-6 w-6 text-yellow-400" />}
+                    icon={<BarChart3 className="h-6 w-6 text-yellow-400" />}
                     className="md:row-span-2"
                 >
                     <h2
@@ -181,7 +175,7 @@ const UserDescriptivePage: React.FC = () => {
                 <BentoGridItem
                     title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
                     description={`Movies in ${userData.lists[activeIndex]?.name || "selected list"}`}
-                    icon={<IconMovie className="h-6 w-6 text-purple-400" />}
+                    icon={<Clapperboard className="h-6 w-6 text-purple-400" />}
                     className="md:col-span-2"
                 >
                     <AnimatePresence>

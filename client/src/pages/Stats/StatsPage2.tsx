@@ -6,12 +6,7 @@ import {
 } from "@/components/ui/chart"
 import { calculateStats, MovieStats } from "@/lib/stats"
 import { useJournal } from "@/services/journalService"
-import {
-    IconChartBar,
-    IconList,
-    IconMovie,
-    IconUser,
-} from "@tabler/icons-react"
+import { BarChart3, Clapperboard, List, User } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import FullPageLoader from "@/components/ui/FullPageLoader"
 import {
@@ -117,7 +112,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Total Movies Watched"
                     description="Your lifetime movie count"
-                    icon={<IconMovie className="h-6 w-6 text-blue-400" />}
+                    icon={<Clapperboard className="h-6 w-6 text-blue-400" />}
                 >
                     <div className="text-4xl font-bold text-center">
                         {stats.totalWatched}
@@ -127,7 +122,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Monthly Trend"
                     description="Your movie watching pattern"
-                    icon={<IconChartBar className="h-6 w-6 text-green-400" />}
+                    icon={<BarChart3 className="h-6 w-6 text-green-400" />}
                     className="md:col-span-1 row-span-1"
                 >
                     <ChartContainer config={chartConfig}>
@@ -180,7 +175,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Top 3 Genres"
                     description="Your most watched genres"
-                    icon={<IconList className="h-6 w-6 text-yellow-400" />}
+                    icon={<List className="h-6 w-6 text-yellow-400" />}
                 >
                     <ul className="space-y-2">
                         {stats.topGenres.map((genre, index) => (
@@ -195,7 +190,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Genre Distribution"
                     description="Breakdown of your watched genres"
-                    icon={<IconChartBar className="h-6 w-6 text-purple-400" />}
+                    icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
                     className="md:col-span-2"
                 >
                     <ChartContainer
@@ -258,7 +253,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Favorite Decade"
                     description="Your most watched era"
-                    icon={<IconUser className="h-6 w-6 text-red-400" />}
+                    icon={<User className="h-6 w-6 text-red-400" />}
                 >
                     <div className="text-center">
                         <div className="text-4xl font-bold mb-2">

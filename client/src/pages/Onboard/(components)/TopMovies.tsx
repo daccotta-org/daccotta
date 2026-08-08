@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { useSearchMovies } from "../../../services/movieService"
-import { RxCrossCircled } from "react-icons/rx"
+import { XCircle } from "lucide-react"
 import { toast } from "react-toastify"
 import { Movie } from "../../../Types/Movie"
 import { movieSchema } from "../../../Types/Movie"
 import CircularIndeterminate from "@/components/ui/loading"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 export const topMoviesSchema = z.object({
     topMovies: z.array(movieSchema).max(5),
@@ -100,13 +102,12 @@ const TopMovies: React.FC<Props> = ({
                     </h2>
                     <div className="mt-8 space-y-6">
                         <div className="relative">
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Search movies"
                                 value={searchTerm}
                                 onKeyDown={handleKeyDown}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 bg-black text-white"
                             />
                             {isLoading && (
                                 <div className="mt-2">
@@ -184,7 +185,7 @@ const TopMovies: React.FC<Props> = ({
                                                 }
                                                 className="text-gray-400 hover:text-white"
                                             >
-                                                <RxCrossCircled size="24px" />
+                                                <XCircle className="h-6 w-6" />
                                             </button>
                                         </li>
                                     ))}
@@ -197,24 +198,20 @@ const TopMovies: React.FC<Props> = ({
                             </span>
                         )}
                         <div className="flex justify-between pt-10">
-                            <button
+                            <Button
                                 type="button"
-                                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                variant="secondary"
                                 onClick={onPrevious}
                             >
                                 Previous
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
-                                className={`px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                                    isSubmitDisabled
-                                        ? "bg-gray-800 hover:bg-gray-700 cursor-not-allowed"
-                                        : "bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                                }`}
+                                disabled={isSubmitDisabled}
                                 onClick={handleSubmit}
                             >
                                 {isSubmitting ? "Submitting..." : "Submit"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

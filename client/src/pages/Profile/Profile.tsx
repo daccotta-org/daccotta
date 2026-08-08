@@ -7,13 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { Drawer } from "@/components/ui/drawer"
 import CreateList from "../CreateList/CreateList"
 import AvatarSelectionModal from "./AvatarSelectionModal"
-import {
-    IconUser,
-    IconList,
-    IconChartBar,
-    IconMovie,
-} from "@tabler/icons-react"
-import { Users, Award } from "lucide-react"
+import { Award, BarChart3, Clapperboard, List, User, Users } from "lucide-react"
 // import { BarChart1 } from "@/components/charts/BarChart"
 import { AnimatePresence, motion } from "framer-motion"
 import { calculateStats, MovieStats } from "@/lib/stats"
@@ -212,14 +206,14 @@ const Profile: React.FC = () => {
                     <BentoGridItem
                         title="Profile Info"
                         description="Your profile details and stats"
-                        icon={<IconUser className="h-6 w-6 text-blue-400" />}
+                        icon={<User className="h-6 w-6 text-blue-400" />}
                     >
                         <ProfileInfo />
                     </BentoGridItem>
                     <BentoGridItem
                         title="Your Lists"
                         description="View and manage your movie lists"
-                        icon={<IconList className="h-6 w-6 text-green-400" />}
+                        icon={<List className="h-6 w-6 text-green-400" />}
                     >
                         <button
                             onClick={() => navigate("/lists")}
@@ -254,7 +248,7 @@ const Profile: React.FC = () => {
                         title="Your Stats"
                         description="View your movie watching statistics"
                         icon={
-                            <IconChartBar className="h-6 w-6 text-yellow-400" />
+                            <BarChart3 className="h-6 w-6 text-yellow-400" />
                         }
                         className="md:row-span-2 flex flex-col justify-between flex-items-center"
                     >
@@ -272,7 +266,7 @@ const Profile: React.FC = () => {
                     <BentoGridItem
                         title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
                         description={`Movies in ${userData?.lists[activeIndex]?.name || "selected list"}`}
-                        icon={<IconMovie className="h-6 w-6 text-purple-400" />}
+                        icon={<Clapperboard className="h-6 w-6 text-purple-400" />}
                         className="md:col-span-2"
                     >
                         <AnimatePresence>
@@ -307,7 +301,7 @@ const Profile: React.FC = () => {
                     <BentoGridItem
                         title="AI Recommendations"
                         description="Personalized movie recommendations"
-                        icon={<IconMovie className="h-6 w-6 text-purple-400" />}
+                        icon={<Clapperboard className="h-6 w-6 text-purple-400" />}
                         className="md:col-span-3"
                     >
                         <button

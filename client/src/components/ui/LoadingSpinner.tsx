@@ -17,7 +17,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
     return (
         <div
-            className={`border-white border-t-transparent rounded-full animate-spin ${sizeClasses[size]} ${className}`}
+            className={`border-primary border-t-transparent rounded-full animate-spin ${sizeClasses[size]} ${className}`}
         />
     )
 }
