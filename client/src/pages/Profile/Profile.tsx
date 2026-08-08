@@ -20,6 +20,7 @@ import { calculateStats, MovieStats } from "@/lib/stats"
 import { useJournal } from "@/services/journalService"
 import DynamicBarChart from "@/components/charts/DynamicChart"
 import { toast } from "react-toastify"
+import FullPageLoader from "@/components/ui/FullPageLoader"
 
 interface UserData {
     userName: string
@@ -95,11 +96,7 @@ const Profile: React.FC = () => {
     }, [journalEntries])
 
     if (isLoading || !userData || !stats) {
-        return (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-            </div>
-        )
+        return <FullPageLoader message="Loading profile..." />
     }
 
     if (error) return <div>Error loading stats. Please try again later.</div>
@@ -295,12 +292,11 @@ const Profile: React.FC = () => {
                                     ))}
                                 </div>
                                 <button
-                                    onClick={() =>
-                                        handleSelectList(
-                                            userData?.lists[activeIndex]
-                                                .list_id!
-                                        )
-                                    }
+                                    onClick={() => {
+                                        const listId =
+                                            userData?.lists[activeIndex]?.list_id
+                                        if (listId) handleSelectList(listId)
+                                    }}
                                     className="mt-4 text-purple-400 hover:text-purple-700 transition-colors"
                                 >
                                     View Full List

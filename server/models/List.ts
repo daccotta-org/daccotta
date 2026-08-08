@@ -1,5 +1,5 @@
-import  mongoose,{ Schema } from 'mongoose';
-import { movieInListSchema, type MovieInList } from './movie';
+import mongoose, { Schema, type Document } from "mongoose"
+import { movieInListSchema, type MovieInList } from "./movie"
 
 export interface List extends Document {
   list_id: string;

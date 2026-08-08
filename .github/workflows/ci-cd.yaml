@@ -1,4 +1,4 @@
-name: CI/CD Workflow for Daccotta ⚡
+name: CI/CD Workflow for Daccotta
 
 on:
   push:
@@ -10,124 +10,78 @@ on:
       - main
 
 jobs:
-  # Job 1: Set up Node.js and run tests
-  test:
-    name: Run Tests and Linting
+  lint-and-build:
+    name: Lint and Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x] # Testing on multiple Node versions
     steps:
-      # Checkout repository
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Set up Node.js environment
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          version: 10.4.1
 
-      # Install dependencies (Frontend)
-      - name: Install Frontend Dependencies
-        working-directory: ./client
-        run: bun install
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
 
-      # Install dependencies (Backend)
-      - name: Install Backend Dependencies
-        working-directory: ./server
-        run: bun install
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
-      # Lint the frontend code
-      - name: Lint Frontend Code
-        working-directory: ./client
-        run: bun run lint
+      - name: Typecheck Server
+        run: pnpm --filter server build
 
-      # Lint the backend code
-      - name: Lint Backend Code
-        working-directory: ./server
-        run: bun run lint
+      - name: Lint Client
+        run: pnpm --filter client lint
 
-      # Run frontend tests
-      - name: Run Frontend Tests
-        working-directory: ./client
-        run: bun run test -- --coverage
+      - name: Build Client
+        run: pnpm --filter client build
 
-      # Run backend tests
-      - name: Run Backend Tests
-        working-directory: ./server
-        run: bun run test -- --coverage
-
-  # Job 2: Build the frontend app and deploy preview to Netlify
   build-and-preview:
     name: Build and Deploy Preview to Netlify
     runs-on: ubuntu-latest
-    needs: test
+    needs: lint-and-build
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js 16.x
-        uses: actions/setup-node@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 16.x
+          version: 10.4.1
 
-      - name: Install Frontend Dependencies
-        working-directory: ./client
-        run: bun install
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build Frontend
-        working-directory: ./client
-        run: bun run build
+        run: pnpm --filter client build
 
-      # Deploy to Netlify for preview
       - name: Install Netlify CLI
-        run: bun install -g netlify-cli
+        run: pnpm add -g netlify-cli
 
       - name: Deploy Preview to Netlify
+        id: netlify
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          netlify deploy --dir=./client/build --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --message="Deploy Preview for PR #${{ github.event.pull_request.number }}" --json | tee deploy-output.json
+          URL=$(netlify deploy --dir=./client/dist --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --message="Deploy Preview for PR #${{ github.event.pull_request.number }}" --json | jq -r '.deploy_url')
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
 
-      # Post Netlify Preview URL as a comment on the PR
       - name: Add Netlify Preview URL as PR Comment
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            🚀 Preview deployment available: [Netlify Preview URL](${{
-            steps.deploy-output.outputs.url }})
-
-  # Job 3: Deploy to Production (only on main branch push)
-  deploy:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' # Only deploy on main branch
-    needs: build-and-preview
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # Install Backend Dependencies for Deployment
-      - name: Install Backend Dependencies
-        working-directory: ./server
-        run: bun install --production
-
-      # Install Frontend Dependencies for Deployment
-      - name: Install Frontend Dependencies
-        working-directory: ./client
-        run: bun install --production
-
-      # Deploy Backend (Node.js server)
-      - name: Deploy Backend to Server
-        run: |
-          ssh user@your-server-ip 'cd /path/to/server && git pull && bun install --production && pm2 restart server-app'
-
-      # Deploy Frontend (React build)
-      - name: Deploy Frontend to Server
-        run: |
-          scp -r ./client/build/* user@your-server-ip:/path/to/client/public
+            Preview deployment available: ${{ steps.netlify.outputs.url }}

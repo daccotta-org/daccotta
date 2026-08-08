@@ -28,7 +28,7 @@ interface Props {
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-const directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
+const Directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
     const {
         setValue,
         watch,
@@ -181,4 +181,4 @@ const directors: React.FC<Props> = ({ onNext, onPrevious, handleKeyDown }) => {
     )
 }
 
-export default directors
+export default Directors

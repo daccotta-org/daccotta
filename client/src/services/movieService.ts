@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { SimpleMovie, TMDBMovie } from "../Types/Movie"
+import { config } from "@/lib/config"
 
-const TMDB_TOKEN = import.meta.env.VITE_ACCESS_KEY
-
-const BASE_URL = "https://api.themoviedb.org/3"
-
-const DISCOVER_MOVIE_URL="https://api.themoviedb.org/3/discover/movie";
+const TMDB_TOKEN = config.tmdb.apiKey
+const BASE_URL = config.tmdb.baseUrl
+const DISCOVER_MOVIE_URL = `${config.tmdb.baseUrl}/discover/movie`
 // movieService.ts
 
 export const fetchMovieDetails = async (movieId: string) => {
@@ -41,14 +40,24 @@ export const useGetRecommendedMovies = (year: any, genre: any) => {
         queryKey: ["recommendedMovies", year, genre],
         queryFn: () => getRecommendedMovies(year, genre),
         enabled: !!year && !!genre, // Only fetch if both year and genre are provided
-    });
-};
+    })
+}
 
 export const getRecommendedMovies = async (year: number, genre: number) => {
-    const url = `${DISCOVER_MOVIE_URL}?api_key=${TMDB_TOKEN}&primary_release_year=${year}&with_genres=${genre}&language=en-US&sort_by=release_date.desc&page=1`
-
     try {
-        const response = await axios.get(url)
+        const response = await axios.get(DISCOVER_MOVIE_URL, {
+            params: {
+                primary_release_year: year,
+                with_genres: genre,
+                language: "en-US",
+                sort_by: "release_date.desc",
+                page: 1,
+            },
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${TMDB_TOKEN}`,
+            },
+        })
         return response.data.results.map((movie: TMDBMovie) => ({
             id: movie.id.toString(),
             title: movie.title,
@@ -132,36 +141,34 @@ export const searchMovies = async (
     language?: string
 ): Promise<SimpleMovie[]> => {
     if (query.length < 3) return []
-    let url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`
-
-    if (year) {
-        url += `&year=${year}`
-    }
-
-    if (genreId) {
-        url += `&with_genres=${genreId}`
-    }
-
-    if (language) {
-        url += `&language=${language}`
-    }
 
     try {
-        const { data } = await axios.get(url, {
+        const { data } = await axios.get(`${BASE_URL}/search/movie`, {
             params: {
-                api_key: TMDB_TOKEN,
-                query: query,
+                query,
+                ...(year && { year }),
+                ...(language && { language }),
             },
             headers: {
                 accept: "application/json",
                 Authorization: `Bearer ${TMDB_TOKEN}`,
             },
         })
-        return data.results.map((movie: TMDBMovie) => ({
+
+        let results: TMDBMovie[] = data.results
+
+        if (genreId) {
+            results = results.filter((movie) =>
+                movie.genre_ids?.includes(genreId)
+            )
+        }
+
+        return results.map((movie: TMDBMovie) => ({
+            movie_id: movie.id.toString(),
             id: movie.id.toString(),
             title: movie.title,
             poster_path: movie.poster_path,
-            release_date: movie.release_date,
+            release_date: movie.release_date ?? "",
             genre_ids: movie.genre_ids,
         }))
     } catch (error) {

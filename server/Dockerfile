@@ -1,20 +1,16 @@
-FROM oven/bun:1
+FROM node:22-alpine
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if available)
-COPY package*.json ./
-COPY bun.lockb ./
+RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 
-# Install dependencies
-RUN bun install --production
+COPY package.json ./
+RUN pnpm install --frozen-lockfile=false
 
-# Copy the rest of your app's source code
 COPY . .
 
-# Expose the port your app runs on
+ENV NODE_ENV=production
 EXPOSE 8080
 
-# Start the application
-CMD ["bun", "main.ts"]
+# Railway injects PORT; app uses process.env.PORT || 8080
+CMD ["pnpm", "start"]

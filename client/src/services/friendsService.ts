@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuth } from "@/hooks/useAuth"
+import { config } from "@/lib/config"
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api`
+const API_URL = `${config.api.baseUrl}/api`
 interface FriendMovie {
     id: string
     movie_id: string
@@ -22,11 +23,20 @@ export function useFriends() {
     const { user } = useAuth()
     const queryClient = useQueryClient()
 
-    const getFriends = async ({page, limit} : {page: number; limit: number}) => {
+    const getFriends = async ({
+        page,
+        limit,
+    }: {
+        page: number
+        limit: number
+    }) => {
         const idToken = await user?.getIdToken()
-        const response = await axios.get(`${API_URL}/friends?page=${page}&limit=${limit}`, {
-            headers: { Authorization: `Bearer ${idToken}` },
-        })
+        const response = await axios.get(
+            `${API_URL}/friends?page=${page}&limit=${limit}`,
+            {
+                headers: { Authorization: `Bearer ${idToken}` },
+            }
+        )
         return response.data
     }
 
@@ -72,11 +82,20 @@ export function useFriends() {
         return response.data
     }
 
-    const getPendingRequests = async ({page, limit}: {page: number, limit: number}) => {
+    const getPendingRequests = async ({
+        page,
+        limit,
+    }: {
+        page: number
+        limit: number
+    }) => {
         const idToken = await user?.getIdToken()
-        const response = await axios.get(`${API_URL}/friends/requests?page=${page}&limit=${limit}`, {
-            headers: { Authorization: `Bearer ${idToken}` },
-        })
+        const response = await axios.get(
+            `${API_URL}/friends/requests?page=${page}&limit=${limit}`,
+            {
+                headers: { Authorization: `Bearer ${idToken}` },
+            }
+        )
         return response.data
     }
 
@@ -93,10 +112,10 @@ export function useFriends() {
     }
 
     return {
-        useGetFriends: ({page, limit}: {page: number, limit: number}) =>
+        useGetFriends: ({ page, limit }: { page: number; limit: number }) =>
             useQuery({
                 queryKey: ["friends"],
-                queryFn: () => getFriends({page, limit}),
+                queryFn: () => getFriends({ page, limit }),
             }),
         useSendFriendRequest: () =>
             useMutation({
@@ -120,10 +139,16 @@ export function useFriends() {
                 onSuccess: () =>
                     queryClient.invalidateQueries({ queryKey: ["friends"] }),
             }),
-        useGetPendingRequests: ({page, limit}: {page: number, limit: number}) =>
+        useGetPendingRequests: ({
+            page,
+            limit,
+        }: {
+            page: number
+            limit: number
+        }) =>
             useQuery({
                 queryKey: ["friendRequests"],
-                queryFn: () => getPendingRequests({page, limit}),
+                queryFn: () => getPendingRequests({ page, limit }),
             }),
         useGetFriendData: (username: string) =>
             useQuery({

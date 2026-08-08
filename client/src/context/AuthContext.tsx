@@ -1,110 +1,122 @@
-
-import React, { createContext, useEffect, useState, useCallback } from 'react';
-import { getAuth, onAuthStateChanged, User, signOut, getIdToken } from 'firebase/auth';
-import axios from 'axios';
-import app, { auth } from '../lib/firebase';
-import { NavigateFunction } from 'react-router-dom';
+import React, { createContext, useEffect, useState, useCallback } from "react"
+import {
+    getAuth,
+    onAuthStateChanged,
+    User,
+    signOut,
+    getIdToken,
+} from "firebase/auth"
+import axios from "axios"
+import app, { auth } from "../lib/firebase"
+import { NavigateFunction } from "react-router-dom"
+import { config } from "@/lib/config"
 
 interface AuthState {
-  user: User | null;
-  isLoaded: boolean;
-  sessionId: string | null;
-  idToken: string | null;
-  isOnboarded: boolean | undefined;
+    user: User | null
+    isLoaded: boolean
+    sessionId: string | null
+    idToken: string | null
+    isOnboarded: boolean | undefined
 }
 
 interface AuthContextType extends AuthState {
-  routerPush: (to: string) => void;
-  routerReplace: (to: string) => void;
-  signOut: () => Promise<void>;
-  updateOnboardingStatus: (status: boolean) => void;
-  checkOnboardingStatus: () => Promise<void>;
+    routerPush: (to: string) => void
+    routerReplace: (to: string) => void
+    signOut: () => Promise<void>
+    updateOnboardingStatus: (status: boolean) => void
+    checkOnboardingStatus: () => Promise<void>
 }
 
 const initialAuthState: AuthState = {
-  user: null,
-  isLoaded: false,
-  sessionId: null,
-  idToken: null,
-  isOnboarded: undefined,
-};
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-interface AuthProviderProps {
-  children: React.ReactNode;
-  navigate: NavigateFunction;
+    user: null,
+    isLoaded: false,
+    sessionId: null,
+    idToken: null,
+    isOnboarded: undefined,
 }
 
-export function AuthProvider({ children, navigate }: AuthProviderProps) {  
-  const [authState, setAuthState] = useState<AuthState>(initialAuthState);
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-  const checkOnboardingStatus = useCallback(async () => {
-    if (authState.user) {
-      try {
-        const idToken = await getIdToken(authState.user);
-        const response = await axios.get(`${VITE_API_BASE_URL}/api/user/${authState.user.uid}/onboarded`, {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        setAuthState(prevState => ({ ...prevState, isOnboarded: response.data.onboarded }));
-      } catch (error) {
-        console.error("Error fetching onboarding status:", error);
-        setAuthState(prevState => ({ ...prevState, isOnboarded: false }));
-      }
-    }
-  }, [authState.user]);
+interface AuthProviderProps {
+    children: React.ReactNode
+    navigate: NavigateFunction
+}
 
-  useEffect(() => {
-    const auth = getAuth(app);
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      let idToken = null;
+export function AuthProvider({ children, navigate }: AuthProviderProps) {
+    const [authState, setAuthState] = useState<AuthState>(initialAuthState)
 
-      if (user) {
-        try {
-          idToken = await getIdToken(user);
-        } catch (error) {
-          console.error("Error getting ID token:", error);
+    const checkOnboardingStatus = useCallback(async () => {
+        if (authState.user) {
+            try {
+                const idToken = await getIdToken(authState.user)
+                const response = await axios.get(
+                    `${config.api.baseUrl}/api/user/${authState.user.uid}/onboarded`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${idToken}`,
+                        },
+                    }
+                )
+                setAuthState((prevState) => ({
+                    ...prevState,
+                    isOnboarded: response.data.onboarded,
+                }))
+            } catch (error) {
+                console.error("Error fetching onboarding status:", error)
+                setAuthState((prevState) => ({
+                    ...prevState,
+                    isOnboarded: false,
+                }))
+            }
         }
-      }
+    }, [authState.user])
 
-      setAuthState({
-        user,
-        isLoaded: true,
-        sessionId: user ? Math.random().toString(36).substr(2, 9) : null,
-        idToken,
-        isOnboarded: undefined,
-      });
+    useEffect(() => {
+        const auth = getAuth(app)
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            let idToken = null
 
-      if (user) {
-        checkOnboardingStatus();
-      }
-    });
+            if (user) {
+                try {
+                    idToken = await getIdToken(user)
+                } catch (error) {
+                    console.error("Error getting ID token:", error)
+                }
+            }
 
-    return () => unsubscribe();
-  }, [checkOnboardingStatus]);
+            setAuthState({
+                user,
+                isLoaded: true,
+                sessionId: user
+                    ? Math.random().toString(36).substr(2, 9)
+                    : null,
+                idToken,
+                isOnboarded: undefined,
+            })
 
-  const updateOnboardingStatus = (status: boolean) => {
-    setAuthState(prevState => ({ ...prevState, isOnboarded: status }));
-  };
+            if (user) {
+                checkOnboardingStatus()
+            }
+        })
 
-  const routerPush = (to: string) => navigate(to);
-  const routerReplace = (to: string) => navigate(to, { replace: true });
-  
-  const value = {
-    ...authState,
-    routerPush,
-    routerReplace,
-    signOut: () => signOut(auth),
-    updateOnboardingStatus,
-    checkOnboardingStatus,
-  };
+        return () => unsubscribe()
+    }, [checkOnboardingStatus])
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+    const updateOnboardingStatus = (status: boolean) => {
+        setAuthState((prevState) => ({ ...prevState, isOnboarded: status }))
+    }
+
+    const routerPush = (to: string) => navigate(to)
+    const routerReplace = (to: string) => navigate(to, { replace: true })
+
+    const value = {
+        ...authState,
+        routerPush,
+        routerReplace,
+        signOut: () => signOut(auth),
+        updateOnboardingStatus,
+        checkOnboardingStatus,
+    }
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

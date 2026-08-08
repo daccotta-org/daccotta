@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
+import FullPageLoader from "@/components/ui/FullPageLoader"
 const RootLayout: React.FC = () => {
     const { user, isOnboarded, isLoaded, checkOnboardingStatus } = useAuth()
     const location = useLocation()
@@ -12,11 +13,7 @@ const RootLayout: React.FC = () => {
     }, [user, isOnboarded, checkOnboardingStatus])
 
     if (!isLoaded) {
-        return (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-    </div>
-        )
+        return <FullPageLoader message="Loading application..." />
     }
 
     // Paths that don't require authentication
@@ -33,11 +30,7 @@ const RootLayout: React.FC = () => {
 
     // If onboarding status is still undefined, show loading
     if (isOnboarded === undefined) {
-        return (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="border-4 border-primary border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
-            </div>
-        )
+        return <FullPageLoader message="Checking onboarding status..." />
     }
 
     if (!isOnboarded) {

@@ -59,7 +59,7 @@ also be a part of the community and join our [discord](https://discord.gg/R859pe
 3. [🛠️ Tech Stack](#️-tech-stack)
 4. [🚀 Getting Started](#-getting-started)
     - [🗂️ Setting Up Daccotta Repository](#️-setting-up-daccotta-repository)
-    - [🔧 Installing Bun](#installing-bun)
+    - [🔧 Installing Node.js + pnpm](#installing-nodejs--pnpm)
         - [🍎 For macOS](#for-macos)
         - [🪟 For Windows](#for-windows)
     - [🖥️ Frontend-Only Setup](#️-frontend-only-setup)
@@ -100,7 +100,8 @@ Daccotta is built using a modern and efficient tech stack to provide the best ex
 -   **Frontend**: React.js
 -   **Styling**: TailwindCSS + [shadcn](https://shadcn.dev/) etc.
 -   **Data Fetching & State Management**: [TanStack Query](https://tanstack.com/query) + axios.
--   **Backend**: Bun + express
+-   **Backend**: Node.js + Express
+-   **Package manager**: pnpm (workspaces)
 -   **Database**: MongoDB Atlas (Cloud)
 -   **Authentication**: Firebase
 
@@ -121,54 +122,41 @@ To set up and run **Daccotta** locally, follow the steps below:
     cd daccotta
     ```
 
-### <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Bullseye.png" alt="Bullseye" width="40" height="40" />Installing Bun
+### <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Bullseye.png" alt="Bullseye" width="40" height="40" />Installing Node.js + pnpm
 
-**Bun** is a fast all-in-one JavaScript runtime we use to manage both the frontend and backend. You'll need to install Bun before proceeding with any setup.
+Daccotta uses **Node.js 22+** and **pnpm** workspaces for the client and server.
 
 #### For macOS:
 
-1. Open your terminal.
-2. Run the following command to install Bun:
+1. Install Node.js 22 (via [nvm](https://github.com/nvm-sh/nvm) or [nodejs.org](https://nodejs.org/)).
+2. Enable pnpm with Corepack:
 
     ```bash
-    curl -fsSL https://bun.sh/install | bash -s "bun-v1.1.27"
+    corepack enable
+    corepack prepare pnpm@10.4.1 --activate
     ```
-
-3. Restart all your terminals after installing bun.
 
 #### For Windows:
 
-To install, paste this into a powershell (run powershell as administrator):
+1. Install Node.js 22 from [nodejs.org](https://nodejs.org/).
+2. In PowerShell (or your terminal):
 
-```bash
-powershell -c "irm bun.sh/install.ps1|iex"
-```
-
-or paste this
-
-```bash
-npm install -g bun
-```
-
-**Restart all your terminals after installing bun inclduing vscode.**
+    ```bash
+    corepack enable
+    corepack prepare pnpm@10.4.1 --activate
+    ```
 
 ### 🖥️ Frontend-Only Setup
 
 If you only want to contribute to the frontend, follow these steps:
 
-1. Navigate to the client folder:
+1. From the repo root, install workspace dependencies:
 
     ```bash
-    cd client
+    pnpm install
     ```
 
-2. Install dependencies:
-
-    ```bash
-    bun i
-    ```
-
-3. Create a `.env` file in the `client` directory and paste the following content:
+2. Create a `.env` file in the `client` directory and paste the following content:
 
     ```
     VITE_ACCESS_KEY= "your tmdb key"
@@ -181,15 +169,15 @@ If you only want to contribute to the frontend, follow these steps:
     VITE_API_BASE_URL=https://daccotta-5loj.onrender.com
     ```
 
-4. You still need to setup your tmdb account and get an API key from them , its free and takes just 5 mins. refer to their [docs](https://developer.themoviedb.org/docs/getting-started). if you still face any issues contact to the maintainers of the repo we may be able to provide you with a test key.
+3. You still need to setup your tmdb account and get an API key from them , its free and takes just 5 mins. refer to their [docs](https://developer.themoviedb.org/docs/getting-started). if you still face any issues contact to the maintainers of the repo we may be able to provide you with a test key.
 
-5. Start the frontend development server:
+4. Start the frontend development server:
 
     ```bash
-    bun run dev
+    pnpm --filter client dev
     ```
 
-6. Your frontend should now be running at `http://localhost:5173`.
+5. Your frontend should now be running at `http://localhost:5173`.
 
 #### Test Account Credentials
 
@@ -204,11 +192,10 @@ If you're setting up the full stack, continue with these steps:
 
 refer to .env.example files for env variables
 
-1. Install dependencies for the server:
+1. From the repo root, install all workspace dependencies:
 
     ```bash
-    cd ../server
-    bun i
+    pnpm install
     ```
 
 2. **Setting Up MongoDB Atlas**:
@@ -250,22 +237,14 @@ refer to .env.example files for env variables
 -   After setting up, To access the service account, head over to your Firebase console, click on the Settings icon in the top-left corner of the developer console, and select Project Settings. Then, select the Service Account tab, and click on Generate new private key, rename that file to `firebases.json` and place it in your server folder.
     ![image](https://github.com/user-attachments/assets/085081d6-3eb1-4018-99ad-cfcf8c7d1a83)
 
-5. **Running the Full Stack Project**:
+4. **Running the Full Stack Project**:
 
-    - Return to the root directory:
+    - From the root directory, start both frontend and backend with:
         ```bash
-        cd ..
-        ```
-    - Install all dependencies at the root level:
-        ```bash
-        bun i
-        ```
-    - Start both frontend and backend with:
-        ```bash
-        bun start:all
+        pnpm start:all
         ```
 
-6. Your full stack app should now be running! 🎉 Open your browser and go to `http://localhost:5173`.
+5. Your full stack app should now be running! 🎉 Open your browser and go to `http://localhost:5173`.
 
 ---
 

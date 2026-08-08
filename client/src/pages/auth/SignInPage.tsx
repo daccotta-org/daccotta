@@ -1,31 +1,23 @@
-import React from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { auth } from "../../lib/firebase"
-import {
-    signInWithEmailAndPassword,
-    // signInWithPopup,
-    // GoogleAuthProvider,
-    // OAuthProvider,
-} from "firebase/auth"
-import { useMutation } from "@tanstack/react-query"
-import { z } from "zod"
 import { Link } from "react-router-dom"
-import "../../index.css"
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
-import { checkEmailExists } from "@/services/userService"
-import { useState, useEffect } from "react"
+import { Eye, EyeOff } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
-export const signInSchema = z.object({
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-})
-console.log("Hello", import.meta.env.VITE_PROJECT_ID)
-export type SignInFormData = z.infer<typeof signInSchema>
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { sendPasswordResetEmail } from "firebase/auth"
 
-const SignInPage: React.FC = () => {
+import { signInSchema, SignInFormData } from "@/lib/validation"
+import { useEmailValidation } from "@/hooks/useEmailValidation"
+import { useSignIn } from "@/hooks/useSignIn"
+import EmailField from "@/components/auth/EmailField"
+
+const SignInPage2: React.FC = () => {
     const {
         register,
         handleSubmit,
@@ -36,155 +28,139 @@ const SignInPage: React.FC = () => {
         resolver: zodResolver(signInSchema),
     })
 
-    const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null)
-    const [isCheckingEmail, setIsCheckingEmail] = useState(false)
+    const [hidden, setHidden] = useState(true)
 
     const email = watch("email")
-
-    useEffect(() => {
-        const checkEmailExistence = async () => {
-            const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
-
-            if (email && emailPattern.test(email)) {
-                setIsCheckingEmail(true)
-                try {
-                    const exists = await checkEmailExists(email)
-                    setIsEmailExists(exists)
-                } catch (error) {
-                    console.error("Error checking email existence:", error)
-                    setIsEmailExists(null)
-                } finally {
-                    setIsCheckingEmail(false)
-                }
-            } else {
-                setIsEmailExists(null)
-            }
-        }
-        const debounce = setTimeout(checkEmailExistence, 500)
-        return () => clearTimeout(debounce)
-    }, [email])
-
-    const signInMutation = useMutation({
-        mutationFn: (data: SignInFormData) =>
-            signInWithEmailAndPassword(auth, data.email, data.password),
-        onSuccess: () => {
-            toast.success("Successfully signed in!")
-            reset()
-        },
-        onError: (error) => {
-            console.error("Failed to sign in:", error)
-            toast.error("Incorrect email or password. Please try again.")
-            reset()
-        },
-    })
+    const emailValidation = useEmailValidation(email)
+    const signInMutation = useSignIn(reset)
 
     const onSubmit = (data: SignInFormData) => {
         signInMutation.mutate(data)
     }
 
+    const resetPassword = async () => {
+        if (!email) {
+            toast.error("Please enter your email address.")
+            return
+        }
+        try {
+            await sendPasswordResetEmail(auth, email)
+            toast.success("Password reset email sent! Check your inbox.")
+        } catch (error) {
+            console.error("Failed to send password reset email:", error)
+            toast.error(
+                "Failed to send password reset email. Please try again."
+            )
+        }
+    }
+
     return (
         <>
-            <div className="w-full lg:grid lg:grid-cols-5 h-screen">
-                {/* Form Section */}
-                <div className="h-full flex flex-col items-center justify-evenly  p-8  lg:p-20 lg:col-span-2 bg-main">
-                    <h2 className="text-3xl font-bold mb-2  ">Sign In</h2>
-                    <img
-                        src="/movie_signup.svg"
-                        alt="Sign In Illustration"
-                        className="w-[400px] h-auto lg:hidden"
-                    />
-                    <div className="flex flex-col gap-2  w-full">
+            <div className="w-full min-h-screen lg:grid lg:grid-cols-5 font-heading">
+                <div className="lg:col-span-2 h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black text-white">
+                    <div className="max-w-md w-full space-y-8">
+                        <div>
+                            <h2 className="mt-6 text-center text-3xl font-extrabold">
+                                Sign In
+                            </h2>
+                        </div>
                         <form
+                            className="mt-8 space-y-6"
                             onSubmit={handleSubmit(onSubmit)}
-                            className="w-full max-w-md"
                         >
-                            <div className="form-control relative">
-                                <label className="label">
-                                    <span className="label-text">Email</span>
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="email"
-                                        placeholder="Email"
-                                        className={`input input-bordered bg-transparent w-full pr-10 ${
-                                            errors.email ? "input-error" : ""
-                                        }`}
-                                        {...register("email")}
-                                    />
-                                    {email && (
-                                        <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            {isCheckingEmail ? (
-                                                <span className="loading loading-spinner loading-sm"></span>
-                                            ) : isEmailExists === true ? (
-                                                <FaCheckCircle className="text-success" />
-                                            ) : isEmailExists === false ? (
-                                                <FaTimesCircle
-                                                    className="text-error tooltip tooltip-top"
-                                                    data-tip="Email not found"
-                                                />
-                                            ) : null}
-                                        </span>
+                            <div className="space-y-4 text-white">
+                                <EmailField
+                                    register={register}
+                                    errors={errors}
+                                    email={email}
+                                    emailValidation={emailValidation}
+                                    variant="shadcn"
+                                />
+
+                                <div>
+                                    <Label
+                                        htmlFor="password"
+                                        className="sr-only"
+                                    >
+                                        Password
+                                    </Label>
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={hidden ? "password" : "text"}
+                                            placeholder="Password"
+                                            className="bg-gray-800 text-white"
+                                            {...register("password")}
+                                        />
+                                        <div
+                                            className="absolute top-0 p-2 right-2 h-full aspect-square flex justify-center items-center z-20 hover:cursor-pointer"
+                                            onClick={() => setHidden(!hidden)}
+                                        >
+                                            {hidden ? <EyeOff /> : <Eye />}
+                                        </div>
+                                    </div>
+                                    {errors.password && (
+                                        <p className="mt-2 text-sm text-red-500">
+                                            {errors.password.message}
+                                        </p>
                                     )}
                                 </div>
-                                {errors.email && (
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">
-                                            {errors.email.message}
-                                        </span>
-                                    </label>
-                                )}
                             </div>
-                            <div className="form-control mb-4">
-                                <label className="label">
-                                    <span className="label-text">Password</span>
-                                </label>
-                                <input
-                                    type="password"
-                                    placeholder="Password"
-                                    className="input bg-transparent input-bordered w-full"
-                                    {...register("password")}
-                                />
-                                {errors.password && (
-                                    <span className="text-error">
-                                        {errors.password.message}
-                                    </span>
-                                )}
-                            </div>
-                            <div className="form-control mb-4">
-                                <button
-                                    className="btn btn-primary text-white w-full"
+
+                            <div>
+                                <Button
                                     type="submit"
-                                    disabled={signInMutation.isPending}
+                                    className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600"
+                                    disabled={
+                                        signInMutation.isPending ||
+                                        !emailValidation.isEmailExists
+                                    }
                                 >
                                     {signInMutation.isPending
                                         ? "Signing In..."
                                         : "Sign In"}
-                                </button>
+                                </Button>
                             </div>
-                            <div className="divider">OR</div>
-
-                            <p className="lg:mt-4 mt-12 text-center">
-                                New User?{" "}
-                                <Link
-                                    to="/signup"
-                                    className="link link-primary"
-                                >
-                                    Sign Up
-                                </Link>
-                            </p>
                         </form>
+                        {/* Reset Password Button */}
+                        <div className="mt-4">
+                            <Button
+                                onClick={resetPassword}
+                                className="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-400 hover:to-red-600"
+                                disabled={!emailValidation.isEmailExists}
+                            >
+                                Forgot Password?
+                            </Button>
+                        </div>
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-gray-600" />
+                            </div>
+                            <div className="relative flex justify-center text-sm">
+                                <span className="px-2 bg-black text-gray-400">
+                                    OR
+                                </span>
+                            </div>
+                        </div>
+
+                        <p className="mt-2 text-center text-sm text-gray-300">
+                            New User?{" "}
+                            <Link
+                                to="/signup"
+                                className="font-medium text-blue-400 hover:text-blue-300"
+                            >
+                                Sign Up
+                            </Link>
+                        </p>
                     </div>
                 </div>
 
-                {/* Image Section */}
-                <div className="hidden lg:flex lg:items-center lg:justify-center lg:col-span-3 bg-[#FFFAA0]">
-                    <div className="w-full h-full flex items-center justify-center">
-                        <img
-                            src="/movie_signup.svg"
-                            alt="Sign In Illustration"
-                            className="w-[400px] h-auto"
-                        />
-                    </div>
+                <div className="hidden lg:flex lg:col-span-3 bg-[#FF204E] items-center justify-center">
+                    <img
+                        src="/movie_signup.svg"
+                        alt="Sign In Illustration"
+                        className="w-[400px] h-auto"
+                    />
                 </div>
             </div>
             <ToastContainer />
@@ -192,4 +168,4 @@ const SignInPage: React.FC = () => {
     )
 }
 
-export default SignInPage
+export default SignInPage2

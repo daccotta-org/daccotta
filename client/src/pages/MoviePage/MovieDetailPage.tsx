@@ -86,7 +86,7 @@ const MovieDetailPage: React.FC = () => {
                     isPublic: true,
                 }
 
-                let newList = await createList(user.uid, {
+                const newList = await createList(user.uid, {
                     ...createListData,
                     list_type: "user",
                 })
@@ -164,7 +164,7 @@ const MovieDetailPage: React.FC = () => {
                     description: "My WatchList",
                     isPublic: true,
                 }
-                let newList = await createList(user.uid, {
+                const newList = await createList(user.uid, {
                     ...createListData,
                     list_type: "user",
                 })

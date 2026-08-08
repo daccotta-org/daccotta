@@ -106,7 +106,7 @@ To maintain code consistency across the project, please adhere to the following:
 Run the lint checks before pushing your changes:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ## Setup Instructions
@@ -115,12 +115,12 @@ For detailed setup instructions, please refer to our [README](./README.md).
 
 ### Frontend Setup
 
--   Install dependencies using Bun.
+-   Install dependencies with `pnpm install` from the repo root.
 -   Set environment variables for Firebase and API endpoints.
 
 ### Backend Setup
 
--   Install Bun and dependencies.
+-   Use Node.js 22+ and pnpm (Corepack).
 -   Configure MongoDB and Firebase settings in your `.env` file.
 
 For more details, check out the [README](./README.md).
