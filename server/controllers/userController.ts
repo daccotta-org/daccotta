@@ -1,7 +1,8 @@
 import { type Request, type Response } from "express"
 import User from "../models/User"
-import { getAuth } from "firebase-admin/auth"
 import mongoose from "mongoose"
+import { fromNodeHeaders } from "better-auth/node"
+import { auth } from "../lib/auth"
 
 /**
  * @param req
@@ -264,31 +265,28 @@ export const updateProfileImage = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
     try {
-        const { uid, email, age, username } = req.body
-        console.log(uid, email, age, username)
+        const { email, age, username } = req.body
 
-        // Verify the Firebase ID token
-        const authHeader = req.headers.authorization
-        const idToken = authHeader && authHeader.split("Bearer ")[1]
-        if (!idToken) {
-            console.log("No token provided")
+        const session = await auth.api.getSession({
+            headers: fromNodeHeaders(req.headers),
+        })
+
+        if (!session) {
             return res.status(401).json({ error: "No token provided" })
         }
 
-        console.log("token decode")
-        const decodedToken = await getAuth().verifyIdToken(idToken)
-        console.log("decoded token ", decodedToken)
-        console.log("user ")
+        const uid = session.user.id
 
-        if (decodedToken.uid !== uid) {
-            console.log("Unauthorized")
+        if (email && session.user.email && email !== session.user.email) {
             return res.status(403).json({ error: "Unauthorized" })
         }
 
-        // Check if username is already taken
-        const existingUser = await User.findOne({ email })
+        const resolvedEmail = session.user.email || email
+
+        const existingUser = await User.findOne({
+            $or: [{ email: resolvedEmail }, { _id: uid }],
+        })
         if (existingUser) {
-            console.log("email is already in use.")
             return res.status(400).json({ error: "email is already in use." })
         }
 
@@ -369,7 +367,7 @@ export const createUser = async (req: Request, res: Response) => {
         const newUser = new User({
             _id: uid,
             userName: username,
-            email,
+            email: resolvedEmail,
             age,
             groups: [
                 {

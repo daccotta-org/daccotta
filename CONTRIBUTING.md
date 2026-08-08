@@ -26,20 +26,19 @@ You have two ways to contribute:
 
 ### 1. Frontend Only
 
-If you wish to contribute **only to the frontend**, you don't need to set up Firebase or MongoDB.
+If you wish to contribute **only to the frontend**, you don't need to set up MongoDB or auth secrets (point at a shared backend).
 
 1. **Pull the latest changes from the `dev` branch**:
     ```bash
     git pull origin dev
     ```
-2. **Firebase Configuration**:  
-   Enter the Firebase config in `firebase.ts` provided by us , its a test account.
-3. **API URL Configuration**:  
+2. **API URL Configuration**:  
    Set the backend URL in your environment file:
     ```bash
-    VITE_API_BASE_URL= https://mock-backend-32tp.onrender.com
+    VITE_API_BASE_URL=https://your-backend-url
+    VITE_ACCESS_KEY=your_tmdb_key
     ```
-4. **Install dependencies and run the frontend**:  
+3. **Install dependencies and run the frontend**:  
    Follow the steps in the [README](./README.md) to install dependencies and run the frontend.
 
 ### 2. Full-Stack Contribution
@@ -50,16 +49,19 @@ For full project contribution, you need to set up both the frontend and backend.
     ```bash
     git pull origin dev
     ```
-2. **Set up Firebase**:
-    - Create a Firebase project and retrieve the Firebase config.
-    - Add the config to `firebaseConfig.ts`.
-3. **Set up MongoDB**:
+2. **Set up MongoDB**:
     - Create an account on [MongoDB Atlas](https://www.mongodb.com/atlas/database).
-    - Set up your cluster and database.
-    - Add your MongoDB connection string to the environment variables:
+    - Create your cluster and database.
+    - Add your MongoDB connection string to `server/.env`:
         ```bash
         MONGO_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/daccotta?retryWrites=true&w=majority
         ```
+3. **Set up better-auth** (see `server/.env.example`):
+    ```bash
+    BETTER_AUTH_SECRET=   # openssl rand -base64 32
+    BETTER_AUTH_URL=http://localhost:8080
+    CLIENT_URL=http://localhost:5173
+    ```
 4. **Install dependencies**:  
    Follow the steps in the [README](./README.md) for both frontend and backend setup.
 

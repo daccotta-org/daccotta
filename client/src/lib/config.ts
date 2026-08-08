@@ -8,27 +8,9 @@ export const config = {
         baseUrl: "https://api.themoviedb.org/3",
         imageBaseUrl: "https://image.tmdb.org/t/p",
     },
-    firebase: {
-        apiKey: import.meta.env.VITE_API_KEY,
-        authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_PROJECT_ID,
-        storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_APP_ID,
-    },
 } as const
 
-// Validate required environment variables
-const requiredEnvVars = [
-    "VITE_API_BASE_URL",
-    "VITE_ACCESS_KEY",
-    "VITE_API_KEY",
-    "VITE_AUTH_DOMAIN",
-    "VITE_PROJECT_ID",
-    "VITE_STORAGE_BUCKET",
-    "VITE_MESSAGING_SENDER_ID",
-    "VITE_APP_ID",
-]
+const requiredEnvVars = ["VITE_API_BASE_URL", "VITE_ACCESS_KEY"]
 
 export const validateConfig = () => {
     const missing = requiredEnvVars.filter(
@@ -40,7 +22,6 @@ export const validateConfig = () => {
     }
 }
 
-// Call validation in development
 if (import.meta.env.DEV) {
     validateConfig()
 }

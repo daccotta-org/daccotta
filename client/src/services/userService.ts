@@ -1,305 +1,11 @@
-// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-// import axios from "axios"
-// import { createUserWithEmailAndPassword } from "firebase/auth"
-// import { useNavigate } from "react-router-dom"
-// import { IUser } from "../Types/User"
-// import { SignUpFormData } from "../Types/validationSchema"
-// import { auth } from "../lib/firebase"
-// import { SimpleMovie } from "@/Types/Movie"
-
-// interface CreateListData {
-//     name: string
-//     description: string
-//     isPublic: boolean
-//     list_type: "user" | "group"
-// }
-
-// export const createList = async (userId: string, data: CreateListData) => {
-//     console.log("in create list token is : ", auth.currentUser?.getIdToken())
-//     console.log("in create list userId is : ", userId)
-//     console.log("in create list data is : ", data)
-//     try {
-//         const idToken = await auth.currentUser?.getIdToken()
-//         const response = await axios.post(
-//             `http://localhost:8080/api/list/create`,
-//             {
-//                 ...data,
-//                 movies: [],
-//                 members: [{ user_id: userId, is_author: true }],
-//             },
-//             {
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${idToken}`,
-//                 },
-//             }
-//         )
-//         console.log("response :: ", response.data)
-//         return response.data
-//     } catch (error) {
-//         console.error("Error creating list:", error)
-//         throw new Error("Failed to create list")
-//     }
-// }
-
-// export function useSignUp() {
-//     const queryClient = useQueryClient()
-//     const navigate = useNavigate()
-//     return useMutation({
-//         mutationFn: (data: SignUpFormData) => createUser(data),
-
-//         onMutate: () => {
-//             console.log("onMutate")
-//         },
-//         onSuccess: (response) => {
-//             console.log("onSuccess")
-//             console.log(response.data)
-//             navigate("/")
-
-//             //Notify("success", response?.data?.message);
-//         },
-//         onError: (error) => {
-//             if (axios.isAxiosError(error)) {
-//                 console.error("onError", error?.response)
-//                 //Notify("error", error?.response?.data?.message);
-//             }
-//         },
-
-//         onSettled: async (_, error) => {
-//             if (error) {
-//                 console.error("onSettled error", error)
-//             } else {
-//                 await queryClient.invalidateQueries({ queryKey: ["users"] })
-//             }
-//         },
-//     })
-// }
-// export const createUser = async (data: SignUpFormData) => {
-//     const userCredential = await createUserWithEmailAndPassword(
-//         auth,
-//         data.email,
-//         data.password
-//     )
-//     const idTokenResult = await userCredential.user.getIdTokenResult()
-//     const idToken = idTokenResult.token
-
-//     const response = await axios.post(
-//         "http://localhost:8080/api/users",
-//         {
-//             uid: userCredential.user.uid,
-//             username: data.username,
-//             email: data.email,
-//             // age: data.age,
-//             onboarded: false, // Add this line
-//         },
-//         {
-//             headers: {
-//                 Authorization: `Bearer ${idToken}`,
-//             },
-//         }
-//     )
-
-//     // Redirect to onboarding page
-//     window.location.href = "/onboard"
-
-//     return response
-// }
-
-// export const checkEmailExists = async (email: string): Promise<boolean> => {
-//     try {
-//         const response = await axios.post(
-//             "http://localhost:8080/api/user/check-email",
-//             { email }
-//         )
-//         return response.data.exists
-//     } catch (error) {
-//         throw new Error("Failed to check Email")
-//     }
-// }
-
-// export const updateUserProfile = async (
-//     userId: string,
-//     data: Partial<IUser>
-// ): Promise<IUser> => {
-//     try {
-//         const idToken = await auth.currentUser?.getIdToken()
-//         console.log("in profile token is : ", idToken)
-
-//         console.log(
-//             "data :: of UID before api call ",
-//             userId,
-//             "is here: ",
-//             data
-//         )
-
-//         const response = await axios.post(
-//             `http://localhost:8080/api/user/${userId}/complete-onboarding`,
-//             data,
-//             {
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${idToken}`,
-//                 },
-//             }
-//         )
-//         console.log("response :: ", response.data)
-
-//         const updatedUser = response.data.user
-
-//         // Update local storage if onboarded status changed
-
-//         if (data.onboarded !== undefined) {
-//             localStorage.setItem("onboarded", updatedUser.onboarded.toString())
-//         }
-
-//         return updatedUser
-//     } catch (error) {
-//         throw new Error("Failed to update user profile")
-//     }
-// }
-
-// export const checkOnboardedStatus = async (
-//     userId: string
-// ): Promise<boolean> => {
-//     try {
-//         const idToken = await auth.currentUser?.getIdToken()
-//         console.log("in check onboarded token is : ", idToken)
-
-//         const response = await axios.get(
-//             `http://localhost:8080/api/user/${userId}/onboarded`,
-//             {
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${idToken}`,
-//                 },
-//             }
-//         )
-
-//         return response.data.onboarded
-//     } catch (error) {
-//         throw new Error("Failed to check onboarded status")
-//     }
-// }
-// export const searchUsers = async (
-//     searchTerm: string,
-//     uid: string | undefined
-// ) => {
-//     try {
-//         const idToken = await auth.currentUser?.getIdToken()
-
-//         if (!uid) {
-//             throw new Error("User not authenticated")
-//         }
-
-//         const response = await axios.get(
-//             `http://localhost:8080/api/user/${uid}/search?term=${searchTerm}`,
-//             {
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${idToken}`,
-//                 },
-//             }
-//         )
-//         return response.data
-//     } catch (error) {
-//         console.error("Error searching users:", error)
-//         throw new Error("Failed to search users")
-//     }
-// }
-// // export const searchUsers = async (searchTerm: string): Promise<IUser[]> => {
-// //   // Simulate API call delay
-// //   await new Promise(resolve => setTimeout(resolve, 500));
-
-// //   return mockUsers.filter(user =>
-// //     user.username.toLowerCase().includes(searchTerm.toLowerCase())
-// //   );
-// // };
-// export const useSearchUsers = (searchTerm: string, uid: string | undefined) =>
-//     useQuery({
-//         queryKey: ["users", searchTerm],
-//         queryFn: () => searchUsers(searchTerm, uid),
-//         enabled: searchTerm.length > 2,
-//     })
-
-// export const checkUsernameAvailability = async (
-//     username: string
-// ): Promise<boolean> => {
-//     try {
-//         const idToken = await auth.currentUser?.getIdToken()
-
-//         const response = await axios.get(
-//             `http://localhost:8080/api/user/check-username/${username}`,
-//             {
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${idToken}`,
-//                 },
-//             }
-//         )
-
-//         return response.data.isAvailable
-//     } catch (error) {
-//         console.error("Error checking username availability:", error)
-//         throw new Error("Failed to check username availability")
-//     }
-// }
-
-// export const getUserData = async (uid?: string) => {
-//     const idToken = await auth.currentUser?.getIdToken()
-
-//     const response = await axios.get(`http://localhost:8080/api/user/${uid}`, {
-//         headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${idToken}`,
-//         },
-//     })
-//     console.log("response :: ", response.data)
-//     return response.data
-// }
-// export const getUserData_page = async (uid?: string) => {
-//     const idToken = await auth.currentUser?.getIdToken()
-
-//     const response = await axios.get(`http://localhost:8080/api/user/${uid}/other`, {
-//         headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${idToken}`,
-//         },
-//     })
-//     console.log("response :: ", response.data)
-//     return response.data
-// }
-
-// export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
-//     const idToken = await auth.currentUser?.getIdToken()
-//     console.log("movie is : ", movie)
-//     const response = await axios.post(
-//         `http://localhost:8080/api/list/${listId}/add-movie`,
-//         {
-//             movie_id: movie.id,
-//             title: movie.title,
-//             poster_path: movie.poster_path,
-//             release_date: movie.release_date,
-//             genre_ids: movie.genre_ids,
-//         },
-//         {
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 Authorization: `Bearer ${idToken}`,
-//             },
-//         }
-//     )
-//     return response.data
-// }
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
-import { createUserWithEmailAndPassword } from "firebase/auth"
 import { useNavigate } from "react-router-dom"
 import { IUser } from "../Types/User"
 import { SignUpFormData } from "../Types/validationSchema"
-import { auth } from "../lib/firebase"
 import { SimpleMovie } from "@/Types/Movie"
 import { config } from "@/lib/config"
+import { authClient, authHeaders } from "@/lib/auth-client"
 
 interface CreateListData {
     name: string
@@ -312,12 +18,15 @@ const api = axios.create({
     baseURL: config.api.baseUrl,
 })
 
+function jsonAuthHeaders() {
+    return {
+        "Content-Type": "application/json",
+        ...authHeaders(),
+    }
+}
+
 export const createList = async (userId: string, data: CreateListData) => {
-    console.log("in create list token is : ", auth.currentUser?.getIdToken())
-    console.log("in create list userId is : ", userId)
-    console.log("in create list data is : ", data)
     try {
-        const idToken = await auth.currentUser?.getIdToken()
         const response = await api.post(
             `/api/list/create`,
             {
@@ -326,13 +35,9 @@ export const createList = async (userId: string, data: CreateListData) => {
                 members: [{ user_id: userId, is_author: true }],
             },
             {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
+                headers: jsonAuthHeaders(),
             }
         )
-        console.log("response :: ", response.data)
         return response.data
     } catch (error) {
         console.error("Error creating list:", error)
@@ -342,14 +47,9 @@ export const createList = async (userId: string, data: CreateListData) => {
 
 export const deleteList = async (listId: string) => {
     try {
-        const idToken = await auth.currentUser?.getIdToken()
         const response = await api.delete(`/api/list/${listId}/remove-list`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
+            headers: jsonAuthHeaders(),
         })
-        console.log("Listsed deleted successfully:", response.data)
         return response.data
     } catch (error) {
         console.error("Error deleting list:", error)
@@ -362,24 +62,14 @@ export function useSignUp() {
     const navigate = useNavigate()
     return useMutation({
         mutationFn: (data: SignUpFormData) => createUser(data),
-
-        onMutate: () => {
-            console.log("onMutate")
-        },
-        onSuccess: (response) => {
-            console.log("onSuccess")
-            console.log(response.data)
+        onSuccess: () => {
             navigate("/")
-
-            //Notify("success", response?.data?.message);
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
                 console.error("onError", error?.response)
-                //Notify("error", error?.response?.data?.message);
             }
         },
-
         onSettled: async (_, error) => {
             if (error) {
                 console.error("onSettled error", error)
@@ -391,70 +81,49 @@ export function useSignUp() {
 }
 
 export const createUser = async (data: SignUpFormData) => {
-    const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-    )
-    const idTokenResult = await userCredential.user.getIdTokenResult()
-    const idToken = idTokenResult.token
+    const signUpResult = await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.username,
+    })
+
+    if (signUpResult.error) {
+        throw new Error(signUpResult.error.message || "Failed to sign up")
+    }
+
+    const sessionUser = signUpResult.data?.user
+    if (!sessionUser) {
+        throw new Error("Sign up succeeded but no user returned")
+    }
 
     const response = await api.post(
         "/api/user/",
         {
-            uid: userCredential.user.uid,
             username: data.username,
             email: data.email,
             onboarded: false,
         },
         {
-            headers: {
-                Authorization: `Bearer ${idToken}`,
-            },
+            headers: authHeaders(),
         }
     )
 
     window.location.href = "/onboard"
-
     return response
 }
 
-export const createUserWithGoogle = async (email: string, username: string) => {
-    // This assumes the user is already authenticated with Google
-    const userCredential = await auth.currentUser
-
-    if (!userCredential) {
-        throw new Error("User is not authenticated with Google")
-    }
-
-    const idTokenResult = await userCredential.getIdTokenResult()
-    const idToken = idTokenResult.token
-
-    const response = await api.post(
-        "/api/user/",
-        {
-            uid: userCredential.uid,
-            username: username, // You may want to prompt for this
-            email: email,
-            onboarded: false,
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${idToken}`,
-            },
-        }
+// TODO: enable when Google OAuth is configured — authClient.signIn.social({ provider: "google" })
+export const createUserWithGoogle = async (_email: string, _username: string) => {
+    throw new Error(
+        "Google sign-up is not enabled yet. See TODO in server/lib/auth.ts"
     )
-
-    window.location.href = "/onboard" // Redirect after successful creation
-
-    return response
 }
 
 export const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
         const response = await api.post("/api/user/check-email", { email })
         return response.data.exists
-    } catch (error) {
+    } catch {
         throw new Error("Failed to check Email")
     }
 }
@@ -464,27 +133,13 @@ export const updateUserProfile = async (
     data: Partial<IUser>
 ): Promise<IUser> => {
     try {
-        const idToken = await auth.currentUser?.getIdToken()
-        console.log("in profile token is : ", idToken)
-
-        console.log(
-            "data :: of UID before api call ",
-            userId,
-            "is here: ",
-            data
-        )
-
         const response = await api.post(
             `/api/user/${userId}/complete-onboarding`,
             data,
             {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
+                headers: jsonAuthHeaders(),
             }
         )
-        console.log("response :: ", response.data)
 
         const updatedUser = response.data.user
 
@@ -493,7 +148,7 @@ export const updateUserProfile = async (
         }
 
         return updatedUser
-    } catch (error) {
+    } catch {
         throw new Error("Failed to update user profile")
     }
 }
@@ -502,18 +157,12 @@ export const checkOnboardedStatus = async (
     userId: string
 ): Promise<boolean> => {
     try {
-        const idToken = await auth.currentUser?.getIdToken()
-        console.log("in check onboarded token is : ", idToken)
-
         const response = await api.get(`/api/user/${userId}/onboarded`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
+            headers: jsonAuthHeaders(),
         })
 
         return response.data.onboarded
-    } catch (error) {
+    } catch {
         throw new Error("Failed to check onboarded status")
     }
 }
@@ -523,8 +172,6 @@ export const searchUsers = async (
     uid: string | undefined
 ) => {
     try {
-        const idToken = await auth.currentUser?.getIdToken()
-
         if (!uid) {
             throw new Error("User not authenticated")
         }
@@ -532,10 +179,7 @@ export const searchUsers = async (
         const response = await api.get(
             `/api/user/${uid}/search?term=${searchTerm}`,
             {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
+                headers: jsonAuthHeaders(),
             }
         )
         return response.data
@@ -556,13 +200,8 @@ export const checkUsernameAvailability = async (
     username: string
 ): Promise<boolean> => {
     try {
-        const idToken = await auth.currentUser?.getIdToken()
-
         const response = await api.get(`/api/user/check-username/${username}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
+            headers: jsonAuthHeaders(),
         })
 
         return response.data.isAvailable
@@ -573,28 +212,16 @@ export const checkUsernameAvailability = async (
 }
 
 export const getUserData = async (uid?: string) => {
-    const idToken = await auth.currentUser?.getIdToken()
-
     const response = await api.get(`/api/user/${uid}`, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-        },
+        headers: jsonAuthHeaders(),
     })
-    console.log("response :: ", response.data)
     return response.data
 }
 
 export const getUserData_page = async (uid?: string) => {
-    const idToken = await auth.currentUser?.getIdToken()
-
     const response = await api.get(`/api/user/${uid}/other`, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-        },
+        headers: jsonAuthHeaders(),
     })
-    console.log("response :: ", response.data)
     return response.data
 }
 
@@ -603,24 +230,16 @@ export const fetchMovieToList = async (
     page: number,
     limit: number
 ) => {
-    const idToken = await auth.currentUser?.getIdToken()
     const response = await api.get(
         `/api/list/${uid}?page=${page}&limit=${limit}`,
         {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
+            headers: jsonAuthHeaders(),
         }
     )
-
-    console.log("response :: ", response.data)
     return response.data
 }
 
 export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
-    const idToken = await auth.currentUser?.getIdToken()
-    console.log("movie is : ", movie)
     const response = await api.post(
         `/api/list/${listId}/add-movie-in-list`,
         {
@@ -631,23 +250,16 @@ export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
             genre_ids: movie.genre_ids,
         },
         {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
+            headers: jsonAuthHeaders(),
         }
     )
     return response.data
 }
 
 export const removeMovieFromList = async (listId: string, movieId: string) => {
-    const idToken = await auth.currentUser?.getIdToken()
     const response = await api.delete(`/api/list/${listId}/remove-movie`, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-        },
-        data: { movie_id: movieId }, // Send movie_id in the request body
+        headers: jsonAuthHeaders(),
+        data: { movie_id: movieId },
     })
     return response.data
 }
@@ -657,20 +269,15 @@ export const updateProfileImage = async (
     profileImage: string
 ) => {
     try {
-        const idToken = await auth.currentUser?.getIdToken()
         const response = await api.put(
             `/api/user/${userId}/update-profile-image`,
             {
                 profileImage,
             },
             {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${idToken}`,
-                },
+                headers: jsonAuthHeaders(),
             }
         )
-        console.log("Profile image updated successfully:", response.data)
         return response.data
     } catch (error) {
         console.error("Error updating profile image:", error)

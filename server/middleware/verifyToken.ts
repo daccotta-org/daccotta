@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
-import { getAuth } from "firebase-admin/auth"
+import { fromNodeHeaders } from "better-auth/node"
+import { auth } from "../lib/auth"
 
 export const verifyToken = async (
     req: Request,
@@ -7,19 +8,22 @@ export const verifyToken = async (
     next: NextFunction
 ) => {
     try {
-        const authHeader = req.headers.authorization
-        const idToken = authHeader && authHeader.split("Bearer ")[1]
+        const session = await auth.api.getSession({
+            headers: fromNodeHeaders(req.headers),
+        })
 
-        if (!idToken) {
+        if (!session) {
             return res.status(401).json({ error: "No token provided" })
         }
-        const decodedToken = await getAuth().verifyIdToken(idToken)
-        // Attach the decoded token to the request object
-        req.user = decodedToken
+
+        req.user = {
+            uid: session.user.id,
+            email: session.user.email,
+        }
 
         next()
     } catch (error) {
-        console.error("Error verifying token:", error)
+        console.error("Error verifying session:", error)
         res.status(403).json({ error: "Unauthorized" })
     }
 }

@@ -65,7 +65,7 @@ also be a part of the community and join our [discord](https://discord.gg/R859pe
     - [🖥️ Frontend-Only Setup](#️-frontend-only-setup)
     - [🗂️ Setting Up Full Stack Daccotta](#️-setting-up-full-stack-daccotta-client--server)
         - [💾 Setting Up MongoDB Atlas](#setting-up-mongodb-atlas)
-        - [🔐 Setting Up Firebase](#setting-up-firebase)
+        - [🔐 Setting Up Auth (better-auth)](#setting-up-auth-better-auth)
         - [⚙️ Running the Full Stack Project](#running-the-full-stack-project)
 5. [❤️✨ Our Valuable Contributors](#our-valuable-contributors-️)
 6. [🤝 Contributing](#-contributing)
@@ -103,7 +103,7 @@ Daccotta is built using a modern and efficient tech stack to provide the best ex
 -   **Backend**: Node.js + Express
 -   **Package manager**: pnpm (workspaces)
 -   **Database**: MongoDB Atlas (Cloud)
--   **Authentication**: Firebase
+-   **Authentication**: better-auth (email + password)
 
 ---
 
@@ -156,17 +156,11 @@ If you only want to contribute to the frontend, follow these steps:
     pnpm install
     ```
 
-2. Create a `.env` file in the `client` directory and paste the following content:
+2. Create a `.env` file in the `client` directory:
 
     ```
-    VITE_ACCESS_KEY= "your tmdb key"
-    VITE_API_KEY=AIzaSyDp5LFFF9TU9W1LzB0Cus--lxBawNyBc5Q
-    VITE_AUTH_DOMAIN=mock-daccotta.firebaseapp.com
-    VITE_PROJECT_ID=mock-daccotta
-    VITE_STORAGE_BUCKET=mock-daccotta.appspot.com
-    VITE_MESSAGING_SENDER_ID=586345450139
-    VITE_APP_ID=1:586345450139:web:84f82ab90882cd0fe4143e
-    VITE_API_BASE_URL=https://daccotta-5loj.onrender.com
+    VITE_ACCESS_KEY=your_tmdb_key
+    VITE_API_BASE_URL=https://your-backend-url
     ```
 
 3. You still need to setup your tmdb account and get an API key from them , its free and takes just 5 mins. refer to their [docs](https://developer.themoviedb.org/docs/getting-started). if you still face any issues contact to the maintainers of the repo we may be able to provide you with a test key.
@@ -179,18 +173,11 @@ If you only want to contribute to the frontend, follow these steps:
 
 5. Your frontend should now be running at `http://localhost:5173`.
 
-#### Test Account Credentials
-
-You can use the following test account to log in:
-
--   Email: test1@gmail.com
--   Password: 12345678
-
 ### 🗂️ Setting Up Full Stack Daccotta (Client & Server)
 
 If you're setting up the full stack, continue with these steps:
 
-refer to .env.example files for env variables
+refer to `.env.example` files for env variables
 
 1. From the repo root, install all workspace dependencies:
 
@@ -208,34 +195,30 @@ refer to .env.example files for env variables
         mongodb+srv://<username>:<password>@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
         ```
     - Replace `<username>`, `<password>`, and `myFirstDatabase` with your actual MongoDB Atlas username, password, and the database name you wish to use.
-    - Set the `MONGO_URL` in your project's `.env` file with the copied connection string:
+    - Set the `MONGO_URL` in `server/.env`:
         ```bash
-        MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/daccotta?retryWrites=true&w=majority
+        MONGO_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/daccotta?retryWrites=true&w=majority
         ```
 
-3. **Setting Up Firebase**:
+3. **Setting Up Auth (better-auth)**:
 
-    - Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project. for sign in providers select - email/password.
-    - After registering your Node.js app, Firebase will provide your app's configuration object code. This code includes your API keys and other project-specific details.
-      ![image](https://github.com/user-attachments/assets/59ae730b-01da-440a-8e31-6d9aecb4b2b9)
+    Auth is self-hosted via [better-auth](https://www.better-auth.com/) (email + password). No Firebase project is required.
 
-    - In the Authentication section of your Firebase project in the console, ensure that you have enabled the Email/Password sign-in method under `Sign-in Method`.
+    In `server/.env`:
 
-    - Set the Firebase credentials in your `client/.env` file as above , refer to .env.example.:
+    ```bash
+    BETTER_AUTH_SECRET=   # openssl rand -base64 32
+    BETTER_AUTH_URL=http://localhost:8080
+    CLIENT_URL=http://localhost:5173
+    MONGO_URL=...
+    ```
 
-        ```
-        VITE_ACCESS_KEY= "your tmdb key"
-         VITE_API_KEY=
-         VITE_AUTH_DOMAIN=
-         VITE_PROJECT_ID=
-         VITE_STORAGE_BUCKET=
-         VITE_MESSAGING_SENDER_ID=
-         VITE_APP_ID=
-         VITE_API_BASE_URL=http://localhost:8080
-        ```
+    In `client/.env`:
 
--   After setting up, To access the service account, head over to your Firebase console, click on the Settings icon in the top-left corner of the developer console, and select Project Settings. Then, select the Service Account tab, and click on Generate new private key, rename that file to `firebases.json` and place it in your server folder.
-    ![image](https://github.com/user-attachments/assets/085081d6-3eb1-4018-99ad-cfcf8c7d1a83)
+    ```bash
+    VITE_ACCESS_KEY=your_tmdb_key
+    VITE_API_BASE_URL=http://localhost:8080
+    ```
 
 4. **Running the Full Stack Project**:
 

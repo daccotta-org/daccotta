@@ -1,13 +1,20 @@
 import { useMutation } from "@tanstack/react-query"
-import { signInWithEmailAndPassword } from "firebase/auth"
 import { toast } from "react-toastify"
-import { auth } from "@/lib/firebase"
+import { authClient } from "@/lib/auth-client"
 import { SignInFormData } from "@/lib/validation"
 
 export const useSignIn = (onSuccess?: () => void) => {
     return useMutation({
-        mutationFn: (data: SignInFormData) =>
-            signInWithEmailAndPassword(auth, data.email, data.password),
+        mutationFn: async (data: SignInFormData) => {
+            const result = await authClient.signIn.email({
+                email: data.email,
+                password: data.password,
+            })
+            if (result.error) {
+                throw new Error(result.error.message || "Failed to sign in")
+            }
+            return result.data
+        },
         onSuccess: () => {
             toast.success("Successfully signed in!")
             onSuccess?.()

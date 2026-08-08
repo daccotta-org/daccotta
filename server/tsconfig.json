@@ -21,6 +21,7 @@
     "config/**/*.ts",
     "connections/**/*.ts",
     "controllers/**/*.ts",
+    "lib/**/*.ts",
     "middleware/**/*.ts",
     "models/**/*.ts",
     "routes/**/*.ts",

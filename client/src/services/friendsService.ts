@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuth } from "@/hooks/useAuth"
 import { config } from "@/lib/config"
+import { authHeaders } from "@/lib/auth-client"
 
 const API_URL = `${config.api.baseUrl}/api`
 interface FriendMovie {
@@ -30,23 +31,21 @@ export function useFriends() {
         page: number
         limit: number
     }) => {
-        const idToken = await user?.getIdToken()
         const response = await axios.get(
             `${API_URL}/friends?page=${page}&limit=${limit}`,
             {
-                headers: { Authorization: `Bearer ${idToken}` },
+                headers: authHeaders(),
             }
         )
         return response.data
     }
 
     const sendFriendRequest = async (friendUserName: string) => {
-        const idToken = await user?.getIdToken()
         const response = await axios.post(
             `${API_URL}/friends/request`,
             { friendUserName },
             {
-                headers: { Authorization: `Bearer ${idToken}` },
+                headers: authHeaders(),
             }
         )
         return response.data
@@ -59,24 +58,22 @@ export function useFriends() {
         requestId: string
         action: "accept" | "reject"
     }) => {
-        const idToken = await user?.getIdToken()
         const response = await axios.post(
             `${API_URL}/friends/respond`,
             { requestId, action },
             {
-                headers: { Authorization: `Bearer ${idToken}` },
+                headers: authHeaders(),
             }
         )
         return response.data
     }
 
     const removeFriend = async (friendUserName: string) => {
-        const idToken = await user?.getIdToken()
         const response = await axios.post(
             `${API_URL}/friends/remove`,
             { friendUserName },
             {
-                headers: { Authorization: `Bearer ${idToken}` },
+                headers: authHeaders(),
             }
         )
         return response.data
@@ -89,23 +86,20 @@ export function useFriends() {
         page: number
         limit: number
     }) => {
-        const idToken = await user?.getIdToken()
         const response = await axios.get(
             `${API_URL}/friends/requests?page=${page}&limit=${limit}`,
             {
-                headers: { Authorization: `Bearer ${idToken}` },
+                headers: authHeaders(),
             }
         )
         return response.data
     }
 
-    // New function to get friend data
     const getFriendData = async (username: string) => {
-        const idToken = await user?.getIdToken()
         const response = await axios.get(
             `${API_URL}/friends/data/${username}`,
             {
-                headers: { Authorization: `Bearer ${idToken}` },
+                headers: authHeaders(),
             }
         )
         return response.data
@@ -159,11 +153,9 @@ export function useFriends() {
     }
 }
 
-const getFriendTopMovies = async (
-    idToken: string
-): Promise<FriendMoviesResponse[]> => {
+const getFriendTopMovies = async (): Promise<FriendMoviesResponse[]> => {
     const response = await axios.get(`${API_URL}/friends/top-movies`, {
-        headers: { Authorization: `Bearer ${idToken}` },
+        headers: authHeaders(),
     })
     return response.data
 }
@@ -174,9 +166,10 @@ export function useFriendTopMovies() {
     return useQuery({
         queryKey: ["friendTopMovies"],
         queryFn: async () => {
-            const idToken = await user?.getIdToken()
-            if (!idToken) throw new Error("No user token available")
-            return getFriendTopMovies(idToken)
+            if (!authHeaders().Authorization) {
+                throw new Error("No user token available")
+            }
+            return getFriendTopMovies()
         },
         enabled: !!user,
     })

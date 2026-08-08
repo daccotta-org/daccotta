@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { auth } from "../../lib/firebase"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
@@ -10,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { sendPasswordResetEmail } from "firebase/auth"
 
 import { signInSchema, SignInFormData } from "@/lib/validation"
 import { useEmailValidation } from "@/hooks/useEmailValidation"
@@ -38,20 +36,15 @@ const SignInPage2: React.FC = () => {
         signInMutation.mutate(data)
     }
 
+    // TODO: wire better-auth forgetPassword + email provider (Resend/SendGrid/SMTP)
     const resetPassword = async () => {
-        if (!email) {
-            toast.error("Please enter your email address.")
-            return
-        }
-        try {
-            await sendPasswordResetEmail(auth, email)
-            toast.success("Password reset email sent! Check your inbox.")
-        } catch (error) {
-            console.error("Failed to send password reset email:", error)
-            toast.error(
-                "Failed to send password reset email. Please try again."
-            )
-        }
+        toast.info("Password reset is not available yet. Check back soon.")
+        // await authClient.forgetPassword({ email, redirectTo: "/reset-password" })
+    }
+
+    // TODO: authClient.signIn.social({ provider: "google" })
+    const signInWithGoogle = () => {
+        toast.info("Google sign-in is coming soon.")
     }
 
     return (
@@ -122,12 +115,13 @@ const SignInPage2: React.FC = () => {
                                 </Button>
                             </div>
                         </form>
-                        {/* Reset Password Button */}
                         <div className="mt-4">
                             <Button
+                                type="button"
                                 onClick={resetPassword}
-                                className="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-400 hover:to-red-600"
-                                disabled={!emailValidation.isEmailExists}
+                                className="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-400 hover:to-red-600 opacity-60"
+                                disabled
+                                title="Coming soon"
                             >
                                 Forgot Password?
                             </Button>
@@ -142,6 +136,18 @@ const SignInPage2: React.FC = () => {
                                 </span>
                             </div>
                         </div>
+
+                        {/* TODO: enable when Google OAuth is configured */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full opacity-60"
+                            disabled
+                            onClick={signInWithGoogle}
+                            title="Coming soon"
+                        >
+                            Continue with Google
+                        </Button>
 
                         <p className="mt-2 text-center text-sm text-gray-300">
                             New User?{" "}

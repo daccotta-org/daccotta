@@ -36,34 +36,16 @@ Do **not** use the root `Dockerfile` for production. It builds the client but th
 
 ## Prerequisites (code changes before deploy)
 
-### 1. Firebase Admin credentials on Railway
+### 1. better-auth env vars on Railway
 
-Today `server/main.ts` loads Firebase like this:
+Auth uses [better-auth](https://www.better-auth.com/) (no Firebase). Set on the **backend** service:
 
-- `NODE_ENV=development` → reads `server/firebases.json`
-- otherwise → reads `/etc/secrets/firebases.json` (Render-specific)
-
-Railway has no `/etc/secrets/...` by default. Before production deploy, update Firebase loading to prefer an env var:
-
-```ts
-// Preferred order for Railway
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-} else if (process.env.NODE_ENV === "development") {
-  serviceAccount = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
-  )
-} else {
-  // optional fallback
-  serviceAccount = JSON.parse(
-    fs.readFileSync("/etc/secrets/firebases.json", "utf8")
-  )
-}
-```
-
-Then on Railway, set `FIREBASE_SERVICE_ACCOUNT` to the **entire JSON** of your Firebase service account (one line / minified is fine).
-
-Never commit `firebases.json` to git.
+| Variable | Notes |
+| -------- | ----- |
+| `BETTER_AUTH_SECRET` | `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | Public backend URL, e.g. `https://<backend>.up.railway.app` |
+| `CLIENT_URL` | Public frontend URL, e.g. `https://<frontend>.up.railway.app` |
+| `MONGO_URL` | Mongo connection string |
 
 ### 2. Frontend API URL
 
@@ -71,7 +53,7 @@ Client uses `VITE_API_BASE_URL` (see `client/src/lib/config.ts`). Set this to th
 
 ### 3. CORS
 
-Server currently uses open `cors()`. Fine for first deploy. Later, restrict to the frontend Railway domain.
+Server CORS is restricted to `CLIENT_URL` and exposes `set-auth-token` for bearer sessions.
 
 ---
 
@@ -107,7 +89,6 @@ node_modules
 .env
 .git
 *.md
-firebases.json
 ```
 
 ### `client/Dockerfile` (for static frontend)
@@ -129,21 +110,9 @@ COPY . .
 
 # Railway passes these as Docker build args → Vite bake-in
 ARG VITE_ACCESS_KEY
-ARG VITE_API_KEY
-ARG VITE_AUTH_DOMAIN
-ARG VITE_PROJECT_ID
-ARG VITE_STORAGE_BUCKET
-ARG VITE_MESSAGING_SENDER_ID
-ARG VITE_APP_ID
 ARG VITE_API_BASE_URL
 
 ENV VITE_ACCESS_KEY=$VITE_ACCESS_KEY \
-    VITE_API_KEY=$VITE_API_KEY \
-    VITE_AUTH_DOMAIN=$VITE_AUTH_DOMAIN \
-    VITE_PROJECT_ID=$VITE_PROJECT_ID \
-    VITE_STORAGE_BUCKET=$VITE_STORAGE_BUCKET \
-    VITE_MESSAGING_SENDER_ID=$VITE_MESSAGING_SENDER_ID \
-    VITE_APP_ID=$VITE_APP_ID \
     VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 RUN pnpm run build
@@ -243,12 +212,14 @@ Use Railway’s internal hostname for that service.
 
 **Environment variables**
 
-| Variable                   | Value                                      |
-| -------------------------- | ------------------------------------------ |
-| `MONGO_URL`                | `${{MongoDB.MONGO_URL}}` (or paste URL)    |
-| `NODE_ENV`                 | `production`                               |
-| `FIREBASE_SERVICE_ACCOUNT` | Full Firebase service-account JSON string  |
-| `PORT`                     | Leave unset (Railway sets it)              |
+| Variable             | Value                                   |
+| -------------------- | --------------------------------------- |
+| `MONGO_URL`          | `${{MongoDB.MONGO_URL}}` (or paste URL) |
+| `NODE_ENV`           | `production`                            |
+| `BETTER_AUTH_SECRET` | Random secret (`openssl rand -base64 32`) |
+| `BETTER_AUTH_URL`    | `https://<backend>.up.railway.app`      |
+| `CLIENT_URL`         | `https://<frontend>.up.railway.app`     |
+| `PORT`               | Leave unset (Railway sets it)           |
 
 **Start command:** already in Dockerfile → `pnpm start`
 
@@ -277,16 +248,10 @@ https://<backend>.up.railway.app/api/hello
 
 **Build args / variables** (must be available at **build** time)
 
-| Variable                     | Example / notes                                      |
-| ---------------------------- | ---------------------------------------------------- |
-| `VITE_API_BASE_URL`          | `https://<backend>.up.railway.app` (no trailing `/`) |
-| `VITE_ACCESS_KEY`            | TMDB API key                                         |
-| `VITE_API_KEY`               | Firebase web API key                                 |
-| `VITE_AUTH_DOMAIN`           | `your-project.firebaseapp.com`                       |
-| `VITE_PROJECT_ID`            | Firebase project id                                  |
-| `VITE_STORAGE_BUCKET`        | `your-project.appspot.com`                           |
-| `VITE_MESSAGING_SENDER_ID`   | Firebase sender id                                   |
-| `VITE_APP_ID`                | Firebase app id                                      |
+| Variable            | Example / notes                                      |
+| ------------------- | ---------------------------------------------------- |
+| `VITE_API_BASE_URL` | `https://<backend>.up.railway.app` (no trailing `/`) |
+| `VITE_ACCESS_KEY`   | TMDB API key                                         |
 
 On Railway Dockerfile deploys, mark these as available for build (or pass as Docker build args). After changing `VITE_API_BASE_URL`, **redeploy frontend**.
 
@@ -340,21 +305,19 @@ docker run -d --name daccotta-mongo -p 27017:27017 mongo:7
 ```env
 MONGO_URL=mongodb://127.0.0.1:27017/daccotta
 NODE_ENV=development
+BETTER_AUTH_SECRET=dev-secret-change-me
+BETTER_AUTH_URL=http://localhost:8080
+CLIENT_URL=http://localhost:5173
 ```
-
-Keep using local `firebases.json` in development.
 
 ---
 
-## Firebase checklist
+## Auth checklist (better-auth)
 
-1. Firebase Console → Project Settings → Service accounts → Generate new private key.
-2. Paste JSON into Railway `FIREBASE_SERVICE_ACCOUNT` (backend only).
-3. Enable Email/Password auth.
-4. Put web config into frontend `VITE_*` vars.
-5. Add authorized domains in Firebase Authentication for:
-   - `localhost`
-   - your frontend Railway domain (e.g. `*.up.railway.app` / custom domain)
+1. Generate `BETTER_AUTH_SECRET` (`openssl rand -base64 32`).
+2. Set `BETTER_AUTH_URL` to the public backend URL.
+3. Set `CLIENT_URL` to the public frontend URL (CORS + trustedOrigins).
+4. Frontend only needs `VITE_API_BASE_URL` + `VITE_ACCESS_KEY` at build time.
 
 ---
 
@@ -363,7 +326,7 @@ Keep using local `firebases.json` in development.
 1. Backend: `api.yourdomain.com` → backend service.
 2. Frontend: `yourdomain.com` → frontend service.
 3. Update `VITE_API_BASE_URL` to `https://api.yourdomain.com` and redeploy frontend.
-4. Add both domains to Firebase authorized domains.
+4. Update `BETTER_AUTH_URL` / `CLIENT_URL` on the backend to match.
 
 ---
 
@@ -372,7 +335,6 @@ Keep using local `firebases.json` in development.
 | Item                         | Why                                      |
 | ---------------------------- | ---------------------------------------- |
 | Root `Dockerfile` as one app | Builds client but never serves it        |
-| `firebases.json` in image    | Secret leak risk                         |
 | Public Mongo port            | Unnecessary exposure                     |
 | Atlas URL on Railway         | Optional; Railway Mongo is enough        |
 
@@ -402,7 +364,7 @@ Keep using local `firebases.json` in development.
 
 ## Minimal implementation todo (in repo)
 
-1. ~~Update `server/main.ts` to load `FIREBASE_SERVICE_ACCOUNT` from env.~~ Done  
+1. ~~Migrate auth from Firebase to better-auth.~~ Done  
 2. ~~Replace/tighten `server/Dockerfile` + add `.dockerignore`.~~ Done  
 3. ~~Add `client/Dockerfile`, `client/nginx.conf`, `client/.dockerignore`.~~ Done  
 4. (Optional) Delete or ignore root `Dockerfile` for Railway docs to avoid confusion.  
