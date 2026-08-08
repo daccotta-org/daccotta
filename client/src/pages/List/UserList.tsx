@@ -125,20 +125,29 @@ const UserLists: React.FC = () => {
     }
 
     return (
-        <div className="w-full max-h-screen overflow-auto scrollbar-hide text-gray-100 min-h-screen p-4">
+        <div className="w-full max-h-screen overflow-auto scrollbar-hide text-foreground min-h-screen p-4 md:p-8 bg-background">
             <div className="max-w-6xl mx-auto">
-                <header className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">LISTS</h1>
+                <header className="flex justify-between items-end mb-10 gap-4">
+                    <div>
+                        <p className="text-xs uppercase tracking-[0.2em] text-electric mb-2">
+                            Your Collections
+                        </p>
+                        <h1 className="font-heading text-4xl font-bold tracking-tight">
+                            Lists
+                        </h1>
+                    </div>
                     <div className="flex items-center space-x-2">
                         <DropdownMenu>
-                            <DropdownMenuLabel>Row:</DropdownMenuLabel>
+                            <DropdownMenuLabel className="text-muted-foreground">
+                                Row:
+                            </DropdownMenuLabel>
                                 <DropdownMenuTrigger asChild>
-                                    <Button className="w-fit bg-gray-800 text-white hover:bg-gray-700">
+                                    <Button variant="outline" className="w-fit">
                                         {pagination.limit || "Row Limit"}
                                         <ChevronDown className="ml-2 h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                            <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-gray-800 text-white">
+                            <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
                                 {
                                     _limit.map((lim, index) => (
                                         <DropdownMenuItem
@@ -152,25 +161,22 @@ const UserLists: React.FC = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <Button
-                            variant="outline"
-                            className="rounded-full"
                             onClick={handleCreateList}
                         >
                             <Plus className="h-5 w-5 mr-2" />
-                            <span className="text-white">New List</span>
+                            New List
                         </Button>
                         <Button
-                            variant="ghost"
-                            className="rounded-full"
+                            variant="outline"
+                            size="icon"
                             onClick={handleSearchToggle}
                         >
                             <Search className="h-5 w-5" />
                         </Button>
-                        {/* <span>Sort by WHEN UPDATED</span>
-                        <Eye className="w-5 h-5" /> */}
                     </div>
                 </header>
-                <div className="space-y-8">
+                <div className="h-px bg-border mb-8" />
+                <div className="space-y-6">
                     {isSearchVisible && (
                         <div className="mt-4 w-full">
                             <Input
@@ -178,26 +184,26 @@ const UserLists: React.FC = () => {
                                 placeholder="Search lists..."
                                 value={searchQuery}
                                 onChange={handleSearchChange}
-                                className="rounded-full border pl-5 pr-5 py-2 bg-white bg-opacity-10 text-white focus:ring focus:outline-none w-full"
+                                className="pl-5 pr-5 py-2"
                             />
                         </div>
                     )}
                     {filteredLists.map((list: List) => (
                         <div
                             key={list.list_id}
-                            className="relative bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-colors hover:bg-gray-700"
+                            className="relative bg-card border border-border rounded-[4px] overflow-hidden cursor-pointer transition-colors hover:border-muted-foreground/40"
                             onClick={() => handleListClick(list.list_id)}
                         >
-                            <div className="absolute top-2 right-2">
+                            <div className="absolute top-3 right-3 z-10">
                                 {list.name !== "Top 5 Movies" &&
                                     list.name !== "Favourites" &&
                                     list.name !== "WatchList" && (
                                         <button
                                             onClick={(e) => {
-                                                e.stopPropagation() // Prevents triggering list click
-                                                handleDeleteList(list.list_id) // Call delete function
+                                                e.stopPropagation()
+                                                handleDeleteList(list.list_id)
                                             }}
-                                            className="text-gray-400 hover:text-red-500"
+                                            className="text-muted-foreground hover:text-primary transition-colors"
                                         >
                                             <Trash className="w-5 h-5" />
                                         </button>
@@ -208,7 +214,7 @@ const UserLists: React.FC = () => {
                                     {list.movies.slice(0, 4).map((movie) => (
                                         <div
                                             key={movie.id}
-                                            className="relative w-24 h-36 md:w-full md:h-48  md:mr-0"
+                                            className="relative w-24 h-36 md:w-full md:h-48  md:mr-0 rounded-[4px] overflow-hidden"
                                         >
                                             {movie.poster_path ? (
                                                 <img
@@ -217,8 +223,8 @@ const UserLists: React.FC = () => {
                                                     className="w-full h-full object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-gray-800 flex items-center justify-center rounded">
-                                                    <span className="text-sm text-gray-400">
+                                                <div className="w-full h-full bg-surface flex items-center justify-center border border-border">
+                                                    <span className="text-sm text-muted-foreground">
                                                         No poster
                                                     </span>
                                                 </div>
@@ -226,15 +232,20 @@ const UserLists: React.FC = () => {
                                         </div>
                                     ))}
                                 </div>
-                                <div className="p-4 flex-grow">
-                                    <h2 className="text-xl font-bold mb-2">
+                                <div className="p-4 md:p-6 flex-grow">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="text-[10px] uppercase tracking-wider border border-primary/60 text-primary px-2 py-0.5 rounded-[4px]">
+                                            Collection
+                                        </span>
+                                        <span className="text-[10px] uppercase tracking-wider text-warning border border-warning/40 px-2 py-0.5 rounded-[4px]">
+                                            {list.movies.length} items
+                                        </span>
+                                    </div>
+                                    <h2 className="font-heading text-xl font-bold mb-2">
                                         {list.name}
                                     </h2>
-                                    <div className="flex items-center space-x-4 text-sm text-gray-400 mb-2">
-                                        <span>{list.movies.length} films</span>
-                                    </div>
-                                    <p className="text-white">
-                                        {`Description: ${list.description}` ||
+                                    <p className="text-muted-foreground text-sm leading-relaxed">
+                                        {list.description ||
                                             "No description available."}
                                     </p>
                                 </div>

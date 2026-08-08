@@ -237,17 +237,22 @@ const JournalPage: React.FC = () => {
     }
 
     return (
-        <div
-            className="min-h-screen text-white p-8 max-h-screen overflow-auto scrollbar-hide w-full"
-            style={{ backgroundColor: "black" }}
-        >
+        <div className="min-h-screen text-foreground p-8 max-h-screen overflow-auto scrollbar-hide w-full bg-background">
             <div className="max-w-6xl mx-auto">
-                <div className="flex justify-between w-full items-center mb-6">
-                    <h1 className="text-4xl font-bold">My Movie Journal</h1>
-                    <div className="flex items-center">
+                <div className="flex justify-between w-full items-start mb-10 gap-4">
+                    <div>
+                        <h1 className="font-heading text-4xl font-bold tracking-tight">
+                            Journal
+                        </h1>
+                        <p className="text-muted-foreground mt-2 text-sm">
+                            A chronicled observation of cinematic structure and
+                            narrative void.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
                         <Popover>
                             <PopoverTrigger asChild>
-                                <div className="flex items-center p-2">
+                                <div className="flex items-center">
                                     <Button
                                         variant="outline"
                                         className={cn(
@@ -260,7 +265,7 @@ const JournalPage: React.FC = () => {
                                         {filterDate ? (
                                             format(filterDate, "MMMM yyyy")
                                         ) : (
-                                            <span>filter</span>
+                                            <span>Filter</span>
                                         )}
                                     </Button>
                                 </div>
@@ -278,7 +283,7 @@ const JournalPage: React.FC = () => {
                                     <Button
                                         variant="outline"
                                         onClick={() => setFilterDate(undefined)}
-                                        className="mt-2 w-full text-red-500"
+                                        className="mt-2 w-full text-primary"
                                     >
                                         Clear
                                     </Button>
@@ -291,15 +296,9 @@ const JournalPage: React.FC = () => {
                             onOpenChange={setIsAddingEntry}
                         >
                             <DialogTrigger asChild>
-                                <Button
-                                    size="icon"
-                                    variant="outline"
-                                    className="rounded-full w-10 h-10 text-white"
-                                >
-                                    <Plus className="h-6 w-6" />
-                                    <span className="sr-only">
-                                        Add journal entry
-                                    </span>
+                                <Button className="rounded-[4px]">
+                                    <Plus className="h-4 w-4" />
+                                    New Entry
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className=" xs:w-[400px] sm:max-w-[400px] max-w-[400px]">
@@ -469,15 +468,15 @@ const JournalPage: React.FC = () => {
                     </div>
                 </div>
                 {Object.entries(sortedEntries).map(([monthYear, entries]) => (
-                    <div key={monthYear} className="mb-8">
-                        <h2 className="text-xl font-semibold mb-4">
+                    <div key={monthYear} className="mb-12">
+                        <h2 className="font-heading text-sm font-bold mb-6 uppercase tracking-[0.2em] text-muted-foreground">
                             {monthYear}
                         </h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                             {(entries as JournalEntry[]).map((entry: any) => (
                                 <div
                                     key={entry._id}
-                                    className="relative w-full h-full group"
+                                    className="relative w-full h-full group border border-border rounded-[4px] overflow-hidden"
                                     onMouseEnter={() =>
                                         setHoveredEntry(entry._id)
                                     }
@@ -486,31 +485,31 @@ const JournalPage: React.FC = () => {
                                     <img
                                         src={`https://image.tmdb.org/t/p/w500${entry.movie.poster_path}`}
                                         alt={`${entry.movie.title} poster`}
-                                        className="w-full h-full rounded-lg shadow-lg cursor-pointer"
+                                        className="w-full h-full cursor-pointer"
                                         onClick={() =>
                                             handleClick(entry.movie.movie_id)
                                         }
                                     />
 
                                     <motion.div
-                                        className={`absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-4 transition-opacity duration-300
+                                        className={`absolute inset-0 bg-gradient-to-t from-[#0A0A0B] to-transparent flex flex-col justify-end p-4 transition-opacity duration-300
                                 ${hoveredEntry === entry._id ? "opacity-100" : "opacity-100 md:opacity-0 group-hover:opacity-100"}`}
                                     >
-                                        <h3 className="text-lg font-bold">
+                                        <h3 className="font-heading text-lg font-bold">
                                             {entry.movie.title}
                                         </h3>
-                                        <p className="text-sm text-gray-300">
+                                        <p className="text-sm text-muted-foreground">
                                             Watched:{" "}
                                             {format(
                                                 new Date(entry.dateWatched),
                                                 "PPP"
                                             )}
                                         </p>
-                                        <p className="text-sm text-gray-300">
+                                        <p className="text-sm text-muted-foreground">
                                             Times Watched: {entry.rewatches}
                                         </p>
-                                        <p className="text-sm text-gray-300">
-                                            Rating: {entry.rating}
+                                        <p className="text-sm text-warning">
+                                            Rating: {entry.rating}/5
                                         </p>
 
                                         {/* Delete button visible on hover for desktop, always visible on mobile */}

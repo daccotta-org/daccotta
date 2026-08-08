@@ -82,7 +82,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     return (
         <>
             <motion.div
-                className="relative w-full mx-auto sm:max-w-40 md:max-w-48 lg:max-w-56 h-60 sm:h-60 md:h-72 lg:h-84 rounded-lg overflow-hidden shadow-lg cursor-pointer group"
+                className="relative w-full mx-auto sm:max-w-40 md:max-w-48 lg:max-w-56 h-60 sm:h-60 md:h-72 lg:h-84 rounded-[4px] overflow-hidden border border-transparent cursor-pointer group hover:border-primary transition-colors duration-300"
                 onClick={handleClick}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -95,14 +95,14 @@ const MovieCard: React.FC<MovieCardProps> = ({
                     className="w-full h-full object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-110"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 flex flex-col items-center">
                         <div className="flex items-center space-x-2 text-xs sm:text-sm mb-1">
-                            <span className="text-gray-300">
+                            <span className="text-muted-foreground">
                                 {release_date?.split("-")[0]}
                             </span>
                         </div>
-                        <h3 className="text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl mb-1 sm:mb-2 line-clamp-2">
+                        <h3 className="font-heading text-foreground font-bold text-sm sm:text-base md:text-lg lg:text-xl mb-1 sm:mb-2 line-clamp-2">
                             {title}
                         </h3>
                     </div>

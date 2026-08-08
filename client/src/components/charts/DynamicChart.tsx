@@ -43,7 +43,7 @@
 // const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
 //     return (
 
-//         <Card className="mt-2 pt-2 bg-gradient-to-tr from-gray-900 to-gray-700 border-0">
+//         <Card className="mt-2 pt-2 bg-card border border-border border-0">
 //             <CardDescription className="text-gray-300 text-center">
 //                 current month
 //             </CardDescription>
@@ -130,7 +130,7 @@ const chartConfig: ChartConfig = {
 
 const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
     return (
-        <Card className="mt-2 pt-2 bg-gradient-to-tr from-gray-900 to-gray-700 border-0">
+        <Card className="mt-2 pt-2 bg-card border border-border border-0">
             <CardDescription className="text-gray-300 text-center">
                 Last 6 months
             </CardDescription>

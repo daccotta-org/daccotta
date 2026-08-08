@@ -126,8 +126,13 @@ const MovieList: React.FC<MovieListProps> = ({
         const containerId = `movie-list-${title.replace(/\s+/g, "-").toLowerCase()}`
 
         return (
-            <div className="w-full flex flex-col justify-start my-6 gap-1 items-start px-4">
-                <h2 className="text-xl font-semibold mb-2">{title}</h2>
+            <div className="w-full flex flex-col justify-start my-8 gap-1 items-start px-4 md:px-6">
+                <div className="flex w-full items-center gap-4 mb-4">
+                    <h2 className="font-heading text-xl font-bold tracking-tight shrink-0">
+                        {title}
+                    </h2>
+                    <div className="h-px flex-1 bg-border" />
+                </div>
                 <div
                     className="w-full relative"
                     onMouseEnter={() => setHoveredList(containerId)}

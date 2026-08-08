@@ -10,7 +10,7 @@ import {
 
 const navItems = [
     { to: "/", label: "Home", icon: Home },
-    { to: "/search-movie", label: "Search", icon: Search },
+    { to: "/search", label: "Search", icon: Search },
     { to: "/friends", label: "Friends", icon: Users },
 ] as const
 

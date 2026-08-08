@@ -37,7 +37,7 @@ const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 max-w-md w-full relative">
+            <div className="bg-card border border-border rounded-[4px] p-6 max-w-md w-full relative">
                 <button
                     onClick={onClose}
                     aria-label="Close Avatar Selection"

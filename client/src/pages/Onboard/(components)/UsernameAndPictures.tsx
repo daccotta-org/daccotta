@@ -59,7 +59,7 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
                     </div>
                 </div>
             </div>
-            <div className="hidden lg:flex lg:col-span-3 bg-[#FF204E] items-center justify-center">
+            <div className="hidden lg:flex lg:col-span-3 bg-primary items-center justify-center">
                 <img
                     src="/profile_page.svg"
                     alt="Sign Up Illustration"

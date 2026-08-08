@@ -12,7 +12,7 @@ import UserLists from "./pages/List/UserList"
 import MovieDetailPage from "./pages/MoviePage/MovieDetailPage"
 import OnboardingForm from "./pages/Onboard/Onboard"
 import Profile from "./pages/Profile/Profile"
-import SearchMovie from "./pages/SearchMovie/SearchMovie"
+import SearchPage from "./pages/Search/SearchPage"
 import StatsPage2 from "./pages/Stats/StatsPage2"
 import StatsPageFriends from "./pages/Stats/statsPageFriend"
 import UserDescriptivePage from "./pages/UserDescriptive/UserDescriptive"
@@ -50,8 +50,13 @@ export const router = createBrowserRouter([
                     { path: "/", element: <HomePage /> },
                     { path: "/profile", element: <Profile /> },
                     { path: "/friends", element: <FriendsSearch /> },
-                    { path: "/search-movie", element: <SearchMovie /> },
-                    // {path:"create-list",element:<CreateList/>},
+                    { path: "/search", element: <SearchPage /> },
+                    {
+                        path: "/search-movie",
+                        element: (
+                            <Navigate to="/search?type=movies" replace />
+                        ),
+                    },
                     { path: "/movie/:id", element: <MovieDetailPage /> },
                     { path: "/lists", element: <UserLists /> },
                     { path: "/list/:listId", element: <MovieList /> },

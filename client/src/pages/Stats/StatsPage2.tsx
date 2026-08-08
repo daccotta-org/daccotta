@@ -95,13 +95,13 @@ const StatsPage2: React.FC = () => {
         className?: string
     }> = ({ title, description, icon, children, className }) => (
         <div
-            className={`bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 flex flex-col ${className}`}
+            className={`bg-card border border-border rounded-[4px] p-6 flex flex-col ${className}`}
         >
             <div className="flex items-center space-x-2 mb-4">
                 {icon}
                 <h3 className="text-xl font-semibold">{title}</h3>
             </div>
-            <p className="text-gray-400 mb-4">{description}</p>
+            <p className="text-muted-foreground mb-4">{description}</p>
             <div className="flex-grow">{children}</div>
         </div>
     )
@@ -112,7 +112,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Total Movies Watched"
                     description="Your lifetime movie count"
-                    icon={<Clapperboard className="h-6 w-6 text-blue-400" />}
+                    icon={<Clapperboard className="h-6 w-6 text-electric" />}
                 >
                     <div className="text-4xl font-bold text-center">
                         {stats.totalWatched}
@@ -122,7 +122,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Monthly Trend"
                     description="Your movie watching pattern"
-                    icon={<BarChart3 className="h-6 w-6 text-green-400" />}
+                    icon={<BarChart3 className="h-6 w-6 text-electric" />}
                     className="md:col-span-1 row-span-1"
                 >
                     <ChartContainer config={chartConfig}>
@@ -175,7 +175,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Top 3 Genres"
                     description="Your most watched genres"
-                    icon={<List className="h-6 w-6 text-yellow-400" />}
+                    icon={<List className="h-6 w-6 text-warning" />}
                 >
                     <ul className="space-y-2">
                         {stats.topGenres.map((genre, index) => (
@@ -190,7 +190,7 @@ const StatsPage2: React.FC = () => {
                 <BentoGridItem
                     title="Genre Distribution"
                     description="Breakdown of your watched genres"
-                    icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
+                    icon={<BarChart3 className="h-6 w-6 text-primary" />}
                     className="md:col-span-2"
                 >
                     <ChartContainer
@@ -259,7 +259,7 @@ const StatsPage2: React.FC = () => {
                         <div className="text-4xl font-bold mb-2">
                             {stats?.topDecade?.decade}
                         </div>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-sm text-muted-foreground">
                             {stats?.topDecade?.count} movies watched
                         </p>
                     </div>

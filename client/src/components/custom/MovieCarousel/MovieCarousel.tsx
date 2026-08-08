@@ -172,7 +172,7 @@ const MovieCarousel: React.FC = () => {
 
 const SkeletonLoader = () => {
     return (
-        <div className="w-full h-full bg-gradient-to-r from-gray-800 to-gray-900 flex items-center">
+        <div className="w-full h-full bg-surface border border-border flex items-center">
             <div className="w-full max-w-4xl mx-auto px-4 flex">
                 <div className="w-1/3 aspect-[2/3] bg-gray-700 rounded-lg animate-pulse"></div>
                 <div className="w-2/3 pl-8 flex flex-col justify-center">
