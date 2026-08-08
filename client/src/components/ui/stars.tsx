@@ -15,7 +15,7 @@ const Stars: React.FC<StarsProps> = ({ rating, onRatingChange }) => {
                     key={star}
                     onClick={() => onRatingChange(star)}
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`w-6 h-6 cursor-pointer ${rating !== null && rating >= star ? 'text-yellow-500' : 'text-gray-400'}`}
+                    className={`w-6 h-6 cursor-pointer ${rating !== null && rating >= star ? 'text-warning' : 'text-muted-foreground'}`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                 >

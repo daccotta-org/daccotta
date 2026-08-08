@@ -1,40 +1,42 @@
-import { IoHome } from "react-icons/io5"
-import { IoSearch } from "react-icons/io5"
-import { FaUserFriends } from "react-icons/fa"
+import { Home, Search, Users } from "lucide-react"
 import { Link } from "react-router-dom"
-import "../../../index.css"
+import { Button } from "@/components/ui/button"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+const navItems = [
+    { to: "/", label: "Home", icon: Home },
+    { to: "/search", label: "Search", icon: Search },
+    { to: "/friends", label: "Friends", icon: Users },
+] as const
 
 const TopNavbar = () => {
     return (
-        <div className="flex flex-col h-full w-full items-center p-2 justify-center gap-4 text-white">
-            <Link to="/">
-                <button
-                    className="tooltip tooltip-right flex flex-col items-center gap-1"
-                    data-tip="home"
-                >
-                    <IoHome size="1.4rem" />
-                    <div className="text-xs">Home</div>
-                </button>
-            </Link>
-            <Link to="/search-movie">
-                <button
-                    className="tooltip tooltip-right flex flex-col items-center gap-1"
-                    data-tip="search"
-                >
-                    <IoSearch size="1.4rem" />
-                    <div className="text-xs">Search</div>
-                </button>
-            </Link>
-            <Link to="/friends">
-                <button
-                    className="tooltip tooltip-right flex flex-col items-center gap-1"
-                    data-tip="friends"
-                >
-                    <FaUserFriends size="1.4rem" />
-                    <div className="text-xs">Friends</div>
-                </button>
-            </Link>
-        </div>
+        <TooltipProvider delayDuration={200}>
+            <nav className="flex h-full w-full flex-col items-center justify-center gap-4 p-2 text-foreground">
+                {navItems.map(({ to, label, icon: Icon }) => (
+                    <Tooltip key={to}>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                asChild
+                                className="h-auto flex-col gap-1 px-2 py-2"
+                            >
+                                <Link to={to}>
+                                    <Icon className="h-5 w-5" />
+                                    <span className="text-xs">{label}</span>
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">{label}</TooltipContent>
+                    </Tooltip>
+                ))}
+            </nav>
+        </TooltipProvider>
     )
 }
 

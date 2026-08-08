@@ -4,14 +4,8 @@ import { useFriends } from "@/services/friendsService"
 import { useJournal } from "@/services/journalService"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
-import {
-    IconChartBar,
-    IconList,
-    IconMovie,
-    IconUser,
-} from "@tabler/icons-react"
+import { Award, BarChart3, Clapperboard, List, User, Users } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Award, Users } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -83,13 +77,13 @@ const UserDescriptivePage: React.FC = () => {
         className?: string
     }> = ({ title, description, icon, children, className }) => (
         <div
-            className={`bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 flex flex-col ${className}`}
+            className={`bg-card border border-border rounded-[4px] p-6 flex flex-col ${className}`}
         >
             <div className="flex items-center space-x-2 mb-4">
                 {icon}
                 <h3 className="text-xl font-semibold">{title}</h3>
             </div>
-            <p className="text-gray-400 mb-4">{description}</p>
+            <p className="text-muted-foreground mb-4">{description}</p>
             <div className="flex-grow">{children}</div>
         </div>
     )
@@ -105,11 +99,11 @@ const UserDescriptivePage: React.FC = () => {
                 <h2 className="text-3xl font-bold">{userData?.userName}</h2>
                 <div className="flex flex-col items-center">
                     <div className="flex gap-1 items-center justify-center ">
-                        <Users className="w-4 mr-2 text-blue-400  font-bold" />
+                        <Users className="w-4 mr-2 text-electric  font-bold" />
                         <p className="">{userData?.friends.length}</p>
                     </div>
                     <div className="flex gap-1 items-center justify-center">
-                        <Award className="w-4 h-4 mr-2 text-yellow-400" />
+                        <Award className="w-4 h-4 mr-2 text-warning" />
                         <p className="">{userData?.badges.length}</p>
                     </div>
                 </div>
@@ -139,14 +133,14 @@ const UserDescriptivePage: React.FC = () => {
                 <BentoGridItem
                     title="Profile Info"
                     description="User profile details and stats"
-                    icon={<IconUser className="h-6 w-6 text-blue-400" />}
+                    icon={<User className="h-6 w-6 text-electric" />}
                 >
                     <ProfileInfo />
                 </BentoGridItem>
                 <BentoGridItem
                     title="User's Lists"
                     description="View and explore user's movie lists"
-                    icon={<IconList className="h-6 w-6 text-green-400" />}
+                    icon={<List className="h-6 w-6 text-electric" />}
                 >
                     <div className="space-y-2 h-12 overflow-auto ">
                         {userData.lists.map((item: any, index: number) => (
@@ -154,7 +148,7 @@ const UserDescriptivePage: React.FC = () => {
                                 key={index}
                                 className={`p-2 w-full rounded-md text-left transition-all duration-300 ${
                                     activeIndex === index
-                                        ? "bg-gradient-to-tr from-gray-900 to-gray-800"
+                                        ? "bg-surface border border-border"
                                         : "bg-gray-700 hover:bg-gray-600"
                                 }`}
                                 onClick={() => setActiveIndex(index)}
@@ -167,7 +161,7 @@ const UserDescriptivePage: React.FC = () => {
                 <BentoGridItem
                     title="User Stats"
                     description="View user's movie watching statistics"
-                    icon={<IconChartBar className="h-6 w-6 text-yellow-400" />}
+                    icon={<BarChart3 className="h-6 w-6 text-warning" />}
                     className="md:row-span-2"
                 >
                     <h2
@@ -181,7 +175,7 @@ const UserDescriptivePage: React.FC = () => {
                 <BentoGridItem
                     title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
                     description={`Movies in ${userData.lists[activeIndex]?.name || "selected list"}`}
-                    icon={<IconMovie className="h-6 w-6 text-purple-400" />}
+                    icon={<Clapperboard className="h-6 w-6 text-primary" />}
                     className="md:col-span-2"
                 >
                     <AnimatePresence>
@@ -206,7 +200,7 @@ const UserDescriptivePage: React.FC = () => {
                                         userData.lists[activeIndex].list_id
                                     )
                                 }
-                                className="mt-4 text-blue-400 hover:text-blue-300 transition-colors"
+                                className="mt-4 text-electric hover:text-electric/80 transition-colors"
                             >
                                 View Full List
                             </button> */}

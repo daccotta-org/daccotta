@@ -91,7 +91,6 @@ const SignUp: React.FC = () => {
                                 errors={errors}
                                 username={username}
                                 usernameValidation={usernameValidation}
-                                variant="shadcn"
                             />
                             
                             <EmailAvailabilityField
@@ -99,7 +98,6 @@ const SignUp: React.FC = () => {
                                 errors={errors}
                                 email={email}
                                 emailAvailability={emailAvailability}
-                                variant="shadcn"
                             />
 
                             <div>
@@ -159,7 +157,7 @@ const SignUp: React.FC = () => {
                         <div>
                             <Button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600"
+                                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                                 disabled={createUser.isPending}
                             >
                                 {createUser.isPending
@@ -195,7 +193,7 @@ const SignUp: React.FC = () => {
                         Already have an account?{" "}
                         <Link
                             to="/signin"
-                            className="font-medium text-blue-400 hover:text-blue-300"
+                            className="font-medium text-electric hover:text-electric/80"
                         >
                             Sign In
                         </Link>
@@ -203,7 +201,7 @@ const SignUp: React.FC = () => {
                 </div>
             </div>
 
-            <div className="hidden lg:flex lg:col-span-3 bg-[#FF204E] items-center justify-center">
+            <div className="hidden lg:flex lg:col-span-3 bg-primary items-center justify-center">
                 <img
                     src="/movie_signup.svg"
                     alt="Sign Up Illustration"

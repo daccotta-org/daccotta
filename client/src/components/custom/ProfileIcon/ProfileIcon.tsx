@@ -1,9 +1,9 @@
-import SimpleDialogDemo from "@/components/ui/dialog_mui"
+import ProfileMenu from "@/components/ui/profile-menu"
 
 const ProfileIcon = () => {
     return (
-        <div className="item-center ">
-            <SimpleDialogDemo />
+        <div className="item-center">
+            <ProfileMenu />
         </div>
     )
 }

@@ -1,13 +1,10 @@
+import { LucideIcon } from "lucide-react"
+import { IUser } from "./User"
 
-import { IconType } from "react-icons";
-import { IUser } from "./User";
-
-
-export type IGroup=
-{
-    id:string,
-    description?:string,
-    icon:IconType,
-    name?:string,
-    members?:IUser[],
+export type IGroup = {
+    id: string
+    description?: string
+    icon: LucideIcon
+    name?: string
+    members?: IUser[]
 }

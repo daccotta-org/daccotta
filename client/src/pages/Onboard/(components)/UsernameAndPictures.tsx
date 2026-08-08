@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { avatars } from "../../../assets/avatars"
+import { Button } from "@/components/ui/button"
 
 interface UsernameAndAvatarProps {
     onNext: () => void
@@ -47,18 +48,18 @@ const UsernameAndAvatar: React.FC<UsernameAndAvatarProps> = ({ onNext }) => {
                         ))}
                     </div>
                     <div>
-                        <button
-                            type="button" // Change to button type
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                        <Button
+                            type="button"
+                            className="w-full"
                             disabled={!profileUrl}
-                            onClick={handleNext} // Use the new handler
+                            onClick={handleNext}
                         >
                             Next
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
-            <div className="hidden lg:flex lg:col-span-3 bg-[#FF204E] items-center justify-center">
+            <div className="hidden lg:flex lg:col-span-3 bg-primary items-center justify-center">
                 <img
                     src="/profile_page.svg"
                     alt="Sign Up Illustration"

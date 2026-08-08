@@ -1,4 +1,4 @@
-import { CopyIcon } from "@radix-ui/react-icons"
+import { Copy } from "lucide-react"
 
 import {
     Dialog,
@@ -29,7 +29,7 @@ export function DialogCloseButton() {
                     <div className="grid flex-1 gap-2"></div>
                     <Button type="submit" size="sm" className="px-3">
                         <span className="sr-only">Copy</span>
-                        <CopyIcon className="h-4 w-4" />
+                        <Copy className="h-4 w-4" />
                     </Button>
                 </div>
                 <DialogFooter className="sm:justify-start">

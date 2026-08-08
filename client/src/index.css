@@ -1,8 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@400;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 @import "tailwindcss";
-@plugin "daisyui";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -11,8 +9,10 @@
   --font-noto: "Noto Sans", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
   --font-roboto: "Roboto", sans-serif;
+  --font-inter: "Inter", sans-serif;
   --font-matemasie: "Matemasie", sans-serif;
-  --font-sans: "Montserrat", "Lato", sans-serif;
+  --font-sans: "Inter", "Roboto", system-ui, sans-serif;
+  --font-heading: "Montserrat", sans-serif;
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -33,10 +33,15 @@
   --color-popover-foreground: hsl(var(--popover-foreground));
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
+  /* Zen Weaver accents */
+  --color-electric: hsl(var(--electric));
+  --color-warning: hsl(var(--warning));
+  --color-surface: hsl(var(--surface));
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  /* ROUND_FOUR — precise industrial 4px */
+  --radius-lg: 0.25rem;
+  --radius-md: 0.25rem;
+  --radius-sm: 0.125rem;
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
@@ -83,54 +88,100 @@
 }
 
 @layer base {
+  /*
+   * Zen Weaver — Minimalist Spider-Man / Japanese Minimalism
+   * 80/20 rule: 80% deep black, 20% functional accents
+   */
   :root {
-    --background: 294 55% 98%;
-    --foreground: 294 67% 3%;
-    --muted: 264 35% 86%;
-    --muted-foreground: 264 15% 36%;
-    --popover: 294 55% 98%;
-    --popover-foreground: 294 67% 3%;
-    --card: 0 0% 5%;
-    --card-foreground: 294 67% 3%;
-    --border: 294 3% 93%;
-    --input: 294 3% 93%;
-    --primary: 294 85% 45%;
+    /* Light mode — high-contrast inversion of noir tokens */
+    --background: 0 0% 98%;
+    --foreground: 240 6% 4%;
+    --muted: 240 5% 90%;
+    --muted-foreground: 240 5% 40%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 4%;
+    --border: 240 4% 84%;
+    --input: 240 4% 84%;
+    /* Spider-Red */
+    --primary: 357 78% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 5%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 324 85% 45%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 21 87% 38%;
+    /* Surface fill for secondary actions */
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 6% 10%;
+    --accent: 240 5% 94%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 357 78% 45%;
     --destructive-foreground: 0 0% 100%;
-    --ring: 294 85% 45%;
-    --radius: 0.5rem;
+    --ring: 190 100% 40%;
+    /* Electric Blue — nav / active states */
+    --electric: 190 100% 42%;
+    /* Sense Yellow — ratings / badges */
+    --warning: 48 96% 45%;
+    /* Surface-low */
+    --surface: 0 0% 96%;
+    --radius: 0.25rem;
   }
 
   .dark {
-    --background: 294 44% 3%;
-    --foreground: 294 23% 98%;
-    --muted: 264 35% 14%;
-    --muted-foreground: 264 15% 64%;
-    --popover: 294 44% 3%;
-    --popover-foreground: 294 23% 98%;
-    --card: 294 44% 3%;
-    --card-foreground: 294 23% 98%;
-    --border: 294 3% 10%;
-    --input: 294 3% 10%;
-    --primary: 294 85% 45%;
+    /* Deep ink black #0A0A0B */
+    --background: 240 5% 4%;
+    /* High-contrast white #FAFAFA */
+    --foreground: 0 0% 98%;
+    /* Ultra-thin border tone #27272A as muted fill */
+    --muted: 240 4% 16%;
+    /* Muted gray #A1A1AA */
+    --muted-foreground: 240 5% 65%;
+    /* Surface-low #141313 */
+    --popover: 0 3% 8%;
+    --popover-foreground: 0 0% 98%;
+    --card: 0 3% 8%;
+    --card-foreground: 0 0% 98%;
+    /* Outline #27272A */
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    /* Spider-Red #E31C25 */
+    --primary: 357 78% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 5%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 324 85% 45%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 21 87% 46%;
-    --destructive-foreground: 0 0% 100%;
-    --ring: 294 85% 45%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Secondary surface */
+    --secondary: 0 3% 8%;
+    --secondary-foreground: 0 0% 98%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 357 70% 42%;
+    --destructive-foreground: 0 0% 98%;
+    --ring: 190 100% 50%;
+    /* Electric Blue #00D4FF */
+    --electric: 190 100% 50%;
+    /* Sense Yellow #FACC15 */
+    --warning: 48 96% 53%;
+    /* Surface-low #141313 */
+    --surface: 0 3% 8%;
+    --chart-1: 190 100% 50%;
+    --chart-2: 357 78% 50%;
+    --chart-3: 48 96% 53%;
+    --chart-4: 240 5% 65%;
+    --chart-5: 0 0% 98%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -156,13 +207,14 @@
 }
 
 .font-heading {
-  font-family: "Montserrat", serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
   font-style: normal;
+  letter-spacing: -0.01em;
 }
 
 .font-body {
-  font-family: "Roboto", system-ui;
+  font-family: "Inter", "Roboto", system-ui, sans-serif;
   font-weight: 400;
   font-style: normal;
 }
