@@ -166,8 +166,10 @@ export default function SimplePopoverDemo() {
                     vertical: "top",
                     horizontal: "right",
                 }}
-                PaperProps={{
-                    className: "w-[200px] rounded-md bg-background shadow-lg",
+                slotProps={{
+                    paper: {
+                        className: "w-[200px] rounded-md bg-background shadow-lg",
+                    },
                 }}
             >
                 <SimplePopover

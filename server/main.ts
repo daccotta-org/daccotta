@@ -1,7 +1,11 @@
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
-import admin from "firebase-admin"
+import {
+    initializeApp,
+    cert,
+    type ServiceAccount,
+} from "firebase-admin/app"
 import connectDatabase from "./connections/connectToDB"
 import { PORT } from "./config"
 
@@ -26,38 +30,65 @@ console.log("console log ho bhi rha h ya nhi ?")
 app.use(cors())
 app.use(express.json())
 
-let serviceAccount
+function loadFirebaseServiceAccount(): ServiceAccount {
+    // Railway / production: prefer env var with the full service-account JSON
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        try {
+            const account = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+            console.log(
+                "Firebase configuration loaded from FIREBASE_SERVICE_ACCOUNT"
+            )
+            return account
+        } catch (error) {
+            console.error(
+                "Error parsing FIREBASE_SERVICE_ACCOUNT env var:",
+                error
+            )
+            process.exit(1)
+        }
+    }
 
-if (process.env.NODE_ENV === "development") {
-    // Path for the secret file in Render
+    // Local development: server/firebases.json
+    if (process.env.NODE_ENV === "development") {
+        try {
+            const account = JSON.parse(
+                fs.readFileSync(
+                    path.join(__dirname, "firebases.json"),
+                    "utf8"
+                )
+            )
+            console.log("Firebase configuration loaded from local file")
+            return account
+        } catch (error) {
+            console.error("Error reading local firebases.json:", error)
+            process.exit(1)
+        }
+    }
+
+    // Render-style secret mount fallback
+    const secretPath = "/etc/secrets/firebases.json"
     try {
-        serviceAccount = JSON.parse(
-            fs.readFileSync(path.join(__dirname, "firebases.json"), "utf8")
-        )
-        console.log("Firebase configuration loaded from local file")
+        const account = JSON.parse(fs.readFileSync(secretPath, "utf8"))
+        console.log("Firebase configuration loaded from secret file")
+        return account
     } catch (error) {
-        console.error("Error reading local firebases.json:", error)
+        console.error(
+            "Error reading Firebase credentials. Set FIREBASE_SERVICE_ACCOUNT, use firebases.json in development, or mount /etc/secrets/firebases.json:",
+            error
+        )
         process.exit(1)
     }
-} else {
-    // Local development: use the file from the project directory
-    const secretPath = "/etc/secrets/firebases.json"
 
-    try {
-        serviceAccount = JSON.parse(fs.readFileSync(secretPath, "utf8"))
-        console.log("Firebase configuration loaded from Render secret file")
-    } catch (error) {
-        console.error("Error reading Render secret file:", error)
-        process.exit(1) // Exit the process if we can't read the configuration
-    }
+    // Unreachable — satisfies TypeScript after process.exit
+    throw new Error("Firebase credentials not configured")
 }
+
+const serviceAccount = loadFirebaseServiceAccount()
 
 try {
     console.log("Initializing Firebase Admin SDK")
-    admin.initializeApp({
-        credential: admin.credential.cert(
-            serviceAccount as admin.ServiceAccount
-        ),
+    initializeApp({
+        credential: cert(serviceAccount),
     })
     console.log("Firebase Admin SDK initialized successfully")
 } catch (error) {
@@ -71,11 +102,11 @@ app.use("/api/list", listRoutes)
 app.use("/api/friends", friendRoutes)
 app.use("/api/journal", journalRoutes)
 
-app.get("/api/hello", (req, res) => {
+app.get("/api/hello", (_req, res) => {
     res.send("Hello World!")
 })
 
-app.get("/ping", (req, res) => {
+app.get("/ping", (_req, res) => {
     res.send("Server is alive")
 })
 app.listen(PORT, () => {

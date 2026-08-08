@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express"
 import User from "../models/User"
-import admin from "firebase-admin"
+import { getAuth } from "firebase-admin/auth"
 import mongoose from "mongoose"
 
 /**
@@ -13,7 +13,7 @@ export const checkUsernameAvailability = async (
     res: Response
 ) => {
     try {
-        const { userName } = req.params
+        const userName = req.params.userName as string
 
         const existingUser = await User.findOne({
             userName: userName.toLowerCase(),
@@ -276,7 +276,7 @@ export const createUser = async (req: Request, res: Response) => {
         }
 
         console.log("token decode")
-        const decodedToken = await admin.auth().verifyIdToken(idToken)
+        const decodedToken = await getAuth().verifyIdToken(idToken)
         console.log("decoded token ", decodedToken)
         console.log("user ")
 

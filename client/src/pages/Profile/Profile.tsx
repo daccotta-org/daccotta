@@ -292,12 +292,11 @@ const Profile: React.FC = () => {
                                     ))}
                                 </div>
                                 <button
-                                    onClick={() =>
-                                        handleSelectList(
-                                            userData?.lists[activeIndex]
-                                                .list_id!
-                                        )
-                                    }
+                                    onClick={() => {
+                                        const listId =
+                                            userData?.lists[activeIndex]?.list_id
+                                        if (listId) handleSelectList(listId)
+                                    }}
                                     className="mt-4 text-purple-400 hover:text-purple-700 transition-colors"
                                 >
                                     View Full List

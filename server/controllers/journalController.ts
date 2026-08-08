@@ -114,7 +114,7 @@ export const updateJournalEntry = async (req: Request, res: Response) => {
 
 export const deleteJournalEntry = async (req: Request, res: Response) => {
     try {
-        const { entryId } = req.params
+        const entryId = req.params.entryId as string
         const userId = req.user?.uid
 
         if (!userId) {

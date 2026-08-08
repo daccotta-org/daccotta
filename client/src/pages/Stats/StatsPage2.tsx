@@ -40,7 +40,6 @@ const StatsPage2: React.FC = () => {
         if (journalEntries) {
             const movieStats = calculateStats(journalEntries)
             setStats(movieStats)
-        } else {
         }
     }, [journalEntries])
     if (isLoading) {

@@ -44,10 +44,20 @@ export const useGetRecommendedMovies = (year: any, genre: any) => {
 }
 
 export const getRecommendedMovies = async (year: number, genre: number) => {
-    const url = `${DISCOVER_MOVIE_URL}?api_key=${TMDB_TOKEN}&primary_release_year=${year}&with_genres=${genre}&language=en-US&sort_by=release_date.desc&page=1`
-
     try {
-        const response = await axios.get(url)
+        const response = await axios.get(DISCOVER_MOVIE_URL, {
+            params: {
+                primary_release_year: year,
+                with_genres: genre,
+                language: "en-US",
+                sort_by: "release_date.desc",
+                page: 1,
+            },
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${TMDB_TOKEN}`,
+            },
+        })
         return response.data.results.map((movie: TMDBMovie) => ({
             id: movie.id.toString(),
             title: movie.title,
@@ -131,36 +141,34 @@ export const searchMovies = async (
     language?: string
 ): Promise<SimpleMovie[]> => {
     if (query.length < 3) return []
-    let url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`
-
-    if (year) {
-        url += `&year=${year}`
-    }
-
-    if (genreId) {
-        url += `&with_genres=${genreId}`
-    }
-
-    if (language) {
-        url += `&language=${language}`
-    }
 
     try {
-        const { data } = await axios.get(url, {
+        const { data } = await axios.get(`${BASE_URL}/search/movie`, {
             params: {
-                api_key: TMDB_TOKEN,
-                query: query,
+                query,
+                ...(year && { year }),
+                ...(language && { language }),
             },
             headers: {
                 accept: "application/json",
                 Authorization: `Bearer ${TMDB_TOKEN}`,
             },
         })
-        return data.results.map((movie: TMDBMovie) => ({
+
+        let results: TMDBMovie[] = data.results
+
+        if (genreId) {
+            results = results.filter((movie) =>
+                movie.genre_ids?.includes(genreId)
+            )
+        }
+
+        return results.map((movie: TMDBMovie) => ({
+            movie_id: movie.id.toString(),
             id: movie.id.toString(),
             title: movie.title,
             poster_path: movie.poster_path,
-            release_date: movie.release_date,
+            release_date: movie.release_date ?? "",
             genre_ids: movie.genre_ids,
         }))
     } catch (error) {

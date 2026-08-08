@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MONGO_URL } from "../config";
+import { MONGO_URL } from "../config/index";
 
 export default async function connectDatabase() {
   try {

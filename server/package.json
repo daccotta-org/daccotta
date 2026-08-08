@@ -1,34 +1,28 @@
 {
   "name": "server",
-  "module": "main.ts",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch main.ts",
-    "build": "bun main.ts",
-    "start": "bun main.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/uuid": "^10.0.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "dev": "tsx watch main.ts",
+    "build": "tsc -p tsconfig.json --noEmit",
+    "start": "tsx main.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/mongodb": "^4.0.7",
-    "@types/mongoose": "^5.11.97",
-    "axios": "^1.7.7",
+    "axios": "^1.11.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "firebase-admin": "^12.3.0",
-    "mongodb": "^6.8.0",
-    "mongoose": "^8.5.1",
-    "server": ".",
-    "uuid": "^10.0.0",
-    "uuid4": "^2.0.3",
-    "uuidv4": "^6.2.13"
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "firebase-admin": "^14.2.0",
+    "mongodb": "^7.5.0",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
   }
 }

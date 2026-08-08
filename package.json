@@ -1,40 +1,51 @@
 {
-  "dependencies": {
-    "@fontsource/ibm-plex-mono": "^5.0.14",
-    "@fontsource/lato": "^5.0.22",
-    "@fontsource/matemasie": "^5.0.1",
-    "@fontsource/montserrat": "^5.0.19",
-    "@fontsource/noto-sans": "^5.0.22",
-    "@fontsource/roboto": "^5.0.14",
-    "daccotta": ".",
-    "eslint": "^9.9.1",
-    "react-loading-skeleton": "^3.5.0",
-    "react-toastify": "^10.0.6"
+  "name": "daccotta",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.4.1",
+  "engines": {
+    "node": ">=22"
   },
   "scripts": {
-    "start:client": "cd client && bunx --bun vite",
-    "start:server": " cd server && bun --watch main.ts",
-    "start:all": "concurrently \"bun start:client\" \"bun start:server\"",
-    "lint": "eslint 'client/**/*.{ts,tsx,js,jsx}' 'server/**/*.{ts,js}'",
-    "format": "prettier --write 'client/**/*.{ts,tsx,js,jsx,json,css,md}' 'server/**/*.{ts,js,json,css,md}'",
-    "build": "cd client && bun install && bunx --bun vite build",
-    "start": "cd server && bun install && bun main.ts"
+    "start:client": "pnpm --filter client dev",
+    "start:server": "pnpm --filter server dev",
+    "start:all": "concurrently -n client,server -c cyan,magenta \"pnpm start:client\" \"pnpm start:server\"",
+    "dev": "pnpm start:all",
+    "lint": "eslint \"client/**/*.{ts,tsx,js,jsx}\" \"server/**/*.{ts,js}\"",
+    "format": "prettier --write \"client/**/*.{ts,tsx,js,jsx,json,css,md}\" \"server/**/*.{ts,js,json,css,md}\"",
+    "build": "pnpm -r --filter client --filter server build",
+    "build:client": "pnpm --filter client build",
+    "build:server": "pnpm --filter server build",
+    "start": "pnpm --filter server start"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.6",
+    "@fontsource/lato": "^5.2.6",
+    "@fontsource/matemasie": "^5.2.6",
+    "@fontsource/montserrat": "^5.2.6",
+    "@fontsource/noto-sans": "^5.2.8",
+    "@fontsource/roboto": "^5.2.6",
+    "react-loading-skeleton": "^3.5.0",
+    "react-toastify": "^11.1.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.1",
-    "@types/bun": "latest",
-    "concurrently": "^8.2.2",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.35.2",
-    "globals": "^15.9.0",
-    "prettier": "^3.3.3",
-    "typescript-eslint": "^8.4.0"
+    "@eslint/js": "^9.33.0",
+    "concurrently": "^9.2.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0"
   },
-  "name": "daccotta",
-  "module": "index.ts",
-  "type": "module",
-  "peerDependencies": {
-    "typescript": "^5.5.4"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@clerk/shared",
+      "@firebase/util",
+      "protobufjs"
+    ]
   }
 }

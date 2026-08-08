@@ -65,7 +65,7 @@ export interface Group {
     lists: List[]
 }
 
-interface Users extends Document {
+interface Users extends Omit<Document, "_id"> {
     _id: string
     userName: string
     age: number

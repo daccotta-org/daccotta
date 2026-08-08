@@ -1,31 +1,43 @@
-# Use the official Bun image
-FROM oven/bun:1
+FROM node:22-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if available)
-COPY package*.json ./
+RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 
-# Install dependencies
-RUN bun install
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY client/package.json ./client/
+COPY server/package.json ./server/
 
-# Copy the rest of your app's source code
+RUN pnpm install --frozen-lockfile
+
 COPY . .
-RUN echo "VITE_ACCESS_KEY=$VITE_ACCESS_KEY" >> ./client/.env
-RUN echo "VITE_ACCESS_TOKEN_SECRET=$VITE_ACCESS_TOKEN_SECRET" >> ./client/.env
-RUN echo "VITE_TMDB_API=$VITE_TMDB_API" >> ./client/.env
-RUN echo "VITE_API_KEY=$VITE_API_KEY" >> ./client/.env
-RUN echo "VITE_AUTH_DOMAIN=$VITE_AUTH_DOMAIN" >> ./client/.env
-RUN echo "VITE_PROJECT_ID=$VITE_PROJECT_ID" >> ./client/.env
-RUN echo "VITE_STORAGE_BUCKET=$VITE_STORAGE_BUCKET" >> ./client/.env
-RUN echo "VITE_MESSAGING_SENDER_ID=$VITE_MESSAGING_SENDER_ID" >> ./client/.env
-RUN echo "VITE_APP_ID=$VITE_APP_ID" >> ./client/.env
-# Build your app
-RUN bun run build
 
-# Expose the port your app runs on
+# Optional Vite env bake-in for combined image builds
+ARG VITE_ACCESS_KEY
+ARG VITE_ACCESS_TOKEN_SECRET
+ARG VITE_TMDB_API
+ARG VITE_API_KEY
+ARG VITE_AUTH_DOMAIN
+ARG VITE_PROJECT_ID
+ARG VITE_STORAGE_BUCKET
+ARG VITE_MESSAGING_SENDER_ID
+ARG VITE_APP_ID
+
+RUN printf '%s\n' \
+  "VITE_ACCESS_KEY=${VITE_ACCESS_KEY}" \
+  "VITE_ACCESS_TOKEN_SECRET=${VITE_ACCESS_TOKEN_SECRET}" \
+  "VITE_TMDB_API=${VITE_TMDB_API}" \
+  "VITE_API_KEY=${VITE_API_KEY}" \
+  "VITE_AUTH_DOMAIN=${VITE_AUTH_DOMAIN}" \
+  "VITE_PROJECT_ID=${VITE_PROJECT_ID}" \
+  "VITE_STORAGE_BUCKET=${VITE_STORAGE_BUCKET}" \
+  "VITE_MESSAGING_SENDER_ID=${VITE_MESSAGING_SENDER_ID}" \
+  "VITE_APP_ID=${VITE_APP_ID}" \
+  > ./client/.env
+
+RUN pnpm --filter client build
+
+ENV NODE_ENV=production
 EXPOSE 8080
 
-# Start the app
-CMD [ "bun", "run", "start" ]
+CMD ["pnpm", "--filter", "server", "start"]
