@@ -21,7 +21,7 @@ connectDatabase()
 app.use(
     cors({
         origin: clientUrl,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
         exposedHeaders: ["set-auth-token"],
         credentials: true,

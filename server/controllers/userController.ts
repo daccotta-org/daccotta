@@ -369,25 +369,8 @@ export const createUser = async (req: Request, res: Response) => {
             userName: username,
             email: resolvedEmail,
             age,
-            groups: [
-                {
-                    name: "test", // Initialize with an empty name or other properties as needed
-                    members: [],
-                    admin: "test",
-                    lists: [
-                        {
-                            list_id: new mongoose.Types.ObjectId().toString(),
-                            name: "Favorite Movies",
-                            list_type: "user",
-                            movies: [],
-                            members: [],
-                            date_created: new Date(),
-                            description: "A list of favorite movies.",
-                            isPublic: true,
-                        },
-                    ],
-                },
-            ],
+            groups: [],
+            groupIds: [],
             badges: ["New User"],
             lists: [fakeTop5MoviesList],
             actor: [],

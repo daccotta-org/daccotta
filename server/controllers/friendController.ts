@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express"
-import User, { FriendRequest } from "../models/User"
+import User from "../models/User"
 
 /**
  * 
@@ -70,24 +70,24 @@ export const getAllFriendRequests = async (req: Request, res: Response, next: Ne
         }
 
         const startIndex = (page - 1) * limit;
-        const endIndex = page * limit;
 
-        const result = await FriendRequest.aggregate([
-            {
-                $match: {
-                    id: req.user?.uid,
-                    status: "pending"
-                }
-            },
+        // Friend requests are embedded on the User document (receiver),
+        // not stored in a separate FriendRequest collection.
+        const result = await User.aggregate([
+            { $match: { _id: req.user?.uid } },
+            { $project: { friendRequests: 1 } },
+            { $unwind: "$friendRequests" },
+            { $match: { "friendRequests.status": "pending" } },
             {
                 $facet: {
-                    meta: [{ $count: "totalCount" }], // Count total pending friend requests
+                    meta: [{ $count: "totalCount" }],
                     data: [
-                        { $skip: startIndex }, // Skip documents based on pagination
-                        { $limit: limit }, // Limit to the specified page size
-                    ]
-                }
-            }
+                        { $skip: startIndex },
+                        { $limit: limit },
+                        { $replaceRoot: { newRoot: "$friendRequests" } },
+                    ],
+                },
+            },
         ]);
 
         const pendingRequests = result[0]?.data || [];

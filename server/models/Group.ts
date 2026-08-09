@@ -1,22 +1,44 @@
-import mongoose, { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, model, type Document } from "mongoose"
 
-interface Groups {
-  name: string;
-  members: Schema.Types.ObjectId[];
-  lists: Schema.Types.ObjectId[];
-  group_icon: string;
-  stats: Schema.Types.ObjectId[];
+export type GroupRole = "admin" | "member"
+
+export interface GroupMember {
+    user_id: string
+    role: GroupRole
+    joined_at: Date
 }
 
-const groupSchema = new Schema<Groups>({
+export interface GroupDoc extends Document {
+    name: string
+    description?: string
+    group_icon?: string
+    members: GroupMember[]
+    list_ids: string[]
+    created_by: string
+    created_at: Date
+}
 
-  name: { type: String, required: true },
-  members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  lists: [{ type: Schema.Types.ObjectId, ref: 'List' }],
-  group_icon: { type: String },
-  stats: [{ type: Schema.Types.ObjectId, ref: 'Stat' }]
-});
+const groupMemberSchema = new Schema<GroupMember>(
+    {
+        user_id: { type: String, required: true },
+        role: { type: String, enum: ["admin", "member"], required: true },
+        joined_at: { type: Date, default: Date.now },
+    },
+    { _id: false }
+)
 
-const Group = model<Groups>('Group', groupSchema);
+const groupSchema = new Schema<GroupDoc>({
+    name: { type: String, required: true },
+    description: { type: String },
+    group_icon: { type: String },
+    members: { type: [groupMemberSchema], default: [] },
+    list_ids: { type: [String], default: [] },
+    created_by: { type: String, required: true },
+    created_at: { type: Date, default: Date.now },
+})
 
-export default Group;
+groupSchema.index({ "members.user_id": 1 })
+
+const Group = model<GroupDoc>("Group", groupSchema)
+
+export default Group

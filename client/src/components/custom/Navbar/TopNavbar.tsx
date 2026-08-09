@@ -1,4 +1,4 @@
-import { Home, Search, Users } from "lucide-react"
+import { Home, Search, Users, Group } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +12,7 @@ const navItems = [
     { to: "/", label: "Home", icon: Home },
     { to: "/search", label: "Search", icon: Search },
     { to: "/friends", label: "Friends", icon: Users },
+    { to: "/groups", label: "Groups", icon: Group },
 ] as const
 
 const TopNavbar = () => {
