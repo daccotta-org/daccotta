@@ -34,7 +34,7 @@ Hey movie lovers! Welcome to **Daccotta**, a web app designed to simplify your m
 ---
 
 ![daccotta](https://github.com/user-attachments/assets/120ce0eb-7009-448c-a5da-f4b7432db6e0)
-also be a part of the community and join our [discord](https://discord.gg/R859peEW) .
+also be a part of the community and join our [discord](https://discord.gg/wR5GtndH) .
 
 <img src="https://raw.githubusercontent.com/alo7lika/daccotta/refs/heads/dev/Images/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
