@@ -1,0 +1,71 @@
+import { type Request, type Response } from "express"
+import User from "../../models/User"
+import mongoose from "mongoose"
+import type { MovieInList } from "../../models/movie"
+
+export const addJournalEntry = async (req: Request, res: Response) => {
+    try {
+        const { movie, dateWatched, rewatches, rating } = req.body;
+        const userId = req.user?.uid;
+
+        console.log("userId is: ", userId);
+        console.log("req.user is: ", req.user);
+        console.log("req.body is: ", req.body);
+
+        if (!userId) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const movieData: MovieInList = {
+            movie_id: movie.movie_id,
+            title: movie.title,
+            poster_path: movie.poster_path,
+            release_date: movie.release_date,
+            genre_ids: movie.genre_ids,
+        };
+
+        const existingEntry = await User.findOne({
+            _id: userId,
+            journal: {
+                $elemMatch: {
+                    "movie.movie_id": movie.movie_id,
+                    dateWatched: {
+                        $gte: new Date(dateWatched).setHours(0, 0, 0, 0),
+                        $lt: new Date(dateWatched).setHours(23, 59, 59, 999),
+                    },
+                },
+            },
+        });
+
+        if (existingEntry) {
+            return res.status(400).json({ error: "Duplicate entry for same day" });
+        }
+
+        const newJournalEntry = {
+            _id: new mongoose.Types.ObjectId(),
+            movie: movieData,
+            dateWatched: new Date(dateWatched),
+            rewatches: rewatches || 1,
+            rating: rating
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $push: { journal: newJournalEntry } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(201).json({
+            message: "Journal entry added successfully",
+            journalEntry: newJournalEntry,
+            user: updatedUser,
+        });
+    } catch (error) {
+        console.error("Error adding journal entry:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
