@@ -1,6 +1,5 @@
 import mongoose, { Schema, model, Document } from "mongoose"
 import { movieInListSchema, type MovieInList } from "./movie"
-import Person from "./Person"
 import { directorSchema, type Directors } from "./Director"
 
 export interface Journal {
@@ -15,6 +14,7 @@ export interface List extends Document {
     list_id: string
     name: string
     list_type: "user" | "group"
+    group_id?: string
     movies: MovieInList[]
     members: {
         user_id: string
@@ -38,6 +38,7 @@ const listSchema = new Schema<List>({
         enum: ["user", "group"],
         required: true,
     },
+    group_id: { type: String },
     movies: [movieInListSchema],
     members: [
         {
@@ -58,19 +59,14 @@ export interface FriendRequest {
     createdAt: Date
 }
 
-export interface Group {
-    name: string
-    members: string[]
-    admin: string
-    lists: List[]
-}
-
 interface Users extends Omit<Document, "_id"> {
     _id: string
     userName: string
     age: number
     email: string
-    groups: Group[]
+    /** Legacy embedded groups — ignored by new Groups feature */
+    groups?: unknown[]
+    groupIds: string[]
     badges: string[]
     lists: List[]
     actor: Schema.Types.ObjectId[]
@@ -101,13 +97,6 @@ const friendRequestSchema = new Schema<FriendRequest>({
     createdAt: { type: Date, default: Date.now },
 })
 
-const groupSchema = new Schema<Group>({
-    name: { type: String, required: true },
-    members: [{ type: String, required: true }],
-    admin: { type: String, required: true },
-    lists: [listSchema],
-})
-
 const userSchema = new Schema<Users>({
     _id: {
         type: String,
@@ -117,7 +106,8 @@ const userSchema = new Schema<Users>({
     userName: { type: String, required: true, unique: true },
     email: { type: String, required: true },
     age: { type: Number },
-    groups: [groupSchema],
+    groups: { type: [Schema.Types.Mixed], default: [] },
+    groupIds: { type: [String], default: [] },
     badges: [{ type: String }],
     lists: [listSchema],
     actor: [{ type: Schema.Types.ObjectId, ref: "Person" }],
@@ -130,7 +120,10 @@ const userSchema = new Schema<Users>({
 })
 
 const User = model<Users>("User", userSchema)
-const FriendRequest = model<FriendRequest>("FriendRequest", friendRequestSchema);
+const FriendRequest = model<FriendRequest>(
+    "FriendRequest",
+    friendRequestSchema
+)
 
-export { FriendRequest };
+export { FriendRequest }
 export default User

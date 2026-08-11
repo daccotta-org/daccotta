@@ -33,7 +33,7 @@ const CarouselCard: React.FC<SimpleMovie> = ({
             id={movie_id}
             className="carousel-item relative w-full aspect-[21/9] min-h-[280px] max-h-[620px] bg-cover bg-center overflow-hidden cursor-pointer"
             style={{
-                backgroundImage: `linear-gradient(to top, rgba(10, 10, 11, 1) 0%, rgba(10, 10, 11, 0.75) 40%, rgba(10, 10, 11, 0.2) 70%, transparent 100%), url(${IMAGE_URL}/w1280${backdrop_path})`,
+                backgroundImage: `linear-gradient(to top, rgba(10, 10, 11, 1) 0%, rgba(10, 10, 11, 0.75) 40%, rgba(10, 10, 11, 0.2) 70%, transparent 100%), url(${IMAGE_URL}/w1280${backdrop_path || poster_path})`,
             }}
             onClick={handleClick}
             whileHover={{ scale: 1.02 }}

@@ -6,11 +6,11 @@ import connectDatabase from "./connections/connectToDB"
 import { PORT } from "./config"
 import { auth } from "./lib/auth"
 
-import { userRoutes } from "./routes/userRoutes"
-import { groupRoutes } from "./routes/groupRoutes"
-import { listRoutes } from "./routes/listRoutes"
-import { friendRoutes } from "./routes/friendRoutes"
-import { journalRoutes } from "./routes/journalRoutes"
+import { userRoutes } from "./routes/user"
+import { groupRoutes } from "./routes/group"
+import { listRoutes } from "./routes/list"
+import { friendRoutes } from "./routes/friend"
+import { journalRoutes } from "./routes/journal"
 import { keepAlive } from "./utils/keepAlive"
 
 const app = express()
@@ -21,7 +21,7 @@ connectDatabase()
 app.use(
     cors({
         origin: clientUrl,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
         exposedHeaders: ["set-auth-token"],
         credentials: true,

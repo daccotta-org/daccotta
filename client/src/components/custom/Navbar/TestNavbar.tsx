@@ -1,6 +1,14 @@
 import { FC, useState, type MouseEvent } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { Home, Search, Users, NotebookPen, List, LogOut } from "lucide-react"
+import {
+    Home,
+    Search,
+    Users,
+    Group,
+    NotebookPen,
+    List,
+    LogOut,
+} from "lucide-react"
 import logo from "../../../assets/logo_light.svg"
 import { useAuth } from "../../../hooks/useAuth"
 import { useGlobalSearch } from "@/context/GlobalSearchContext"
@@ -28,13 +36,17 @@ const Navbar: FC = () => {
 
     const navItems = [
         { path: "/friends", icon: Users, tip: "Friends" },
+        { path: "/groups", icon: Group, tip: "Groups" },
         { path: "/lists", icon: List, tip: "Lists" },
     ]
 
     const journalItem = { path: "/journal", icon: NotebookPen, tip: "Journal" }
     const logOutItem = { path: "/", icon: LogOut, tip: "Sign Out" }
 
-    const isActive = (path: string) => location.pathname === path
+    const isActive = (path: string) =>
+        path === "/groups"
+            ? location.pathname.startsWith("/groups")
+            : location.pathname === path
     const searchActive = searchOpen || location.pathname === "/search"
     const { signOut } = useAuth()
 

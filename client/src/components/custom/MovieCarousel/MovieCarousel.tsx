@@ -24,26 +24,30 @@ const MovieCarousel: React.FC = () => {
     const carouselRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (friendMoviesData && friendMoviesData.length > 0) {
-            const movies = friendMoviesData.flatMap((friendData) =>
+        const MAX_SLIDES = 5
+        const isValidMovie = (movie: SimpleMovie) =>
+            Boolean(movie?.movie_id && movie?.title && movie?.poster_path)
+
+        const friendMovies =
+            friendMoviesData?.flatMap((friendData) =>
                 friendData.movies.slice(0, 2).map((movie) => ({
                     ...movie,
                     friend: friendData.friend,
                 }))
-            )
+            ) ?? []
 
-            if (movies.length > 0) {
-                setCarouselMovies(movies)
-            } else if (topMovies) {
-                setCarouselMovies(
-                    topMovies.map((movie) => ({ ...movie, friend: "" }))
-                )
-            }
-        } else if (topMovies) {
-            setCarouselMovies(
-                topMovies.map((movie) => ({ ...movie, friend: "" }))
-            )
-        }
+        const popularMovies =
+            topMovies?.map((movie) => ({ ...movie, friend: "" })) ?? []
+
+        const seen = new Set<string>()
+        const movies = [...friendMovies, ...popularMovies].filter((movie) => {
+            if (!isValidMovie(movie) || seen.has(movie.movie_id)) return false
+            seen.add(movie.movie_id)
+            return true
+        })
+
+        setCarouselMovies(movies.slice(0, MAX_SLIDES))
+        setCurrentSlide(0)
     }, [friendMoviesData, topMovies])
 
     const updateSlide = useCallback(
@@ -112,14 +116,18 @@ const MovieCarousel: React.FC = () => {
         return (
             <>
                 <div
-                    className="flex transition-transform duration-300 ease-out"
+                    className="flex w-full transition-transform duration-300 ease-out"
                     style={{
                         transform: `translateX(calc(-${currentSlide * 100}% + ${dragOffset}px))`,
-                        width: `${carouselMovies.length * 100}%`,
                     }}
                 >
                     {carouselMovies.map((movie) => (
-                        <CarouselCard key={movie.movie_id} {...movie} />
+                        <div
+                            key={movie.movie_id}
+                            className="w-full flex-shrink-0"
+                        >
+                            <CarouselCard {...movie} />
+                        </div>
                     ))}
                 </div>
 
