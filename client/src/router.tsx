@@ -18,6 +18,9 @@ import StatsPageFriends from "./pages/Stats/statsPageFriend"
 import UserDescriptivePage from "./pages/UserDescriptive/UserDescriptive"
 import SignUpPage from "./pages/auth/SignUpPage"
 import SignInPage from "./pages/auth/SignInPage"
+import GroupsPage from "./pages/Groups/GroupsPage"
+import GroupDetailPage from "./pages/Groups/GroupDetailPage"
+import GroupListPage from "./pages/Groups/GroupListPage"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate()
@@ -61,6 +64,12 @@ export const router = createBrowserRouter([
                     { path: "/lists", element: <UserLists /> },
                     { path: "/list/:listId", element: <MovieList /> },
                     { path: "/journal", element: <JournalPage /> },
+                    { path: "/groups", element: <GroupsPage /> },
+                    { path: "/groups/:groupId", element: <GroupDetailPage /> },
+                    {
+                        path: "/groups/:groupId/lists/:listId",
+                        element: <GroupListPage />,
+                    },
                     { path: "/stats", element: <StatsPage2 /> },
                     { path: "/stats/:userName", element: <StatsPageFriends /> },
                     {
