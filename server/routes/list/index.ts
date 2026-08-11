@@ -1,4 +1,5 @@
 import { Router } from "express"
+import getListById from "./getListById"
 import getMoveList from "./getMoveList"
 import createList from "./createList"
 import removeList from "./removeList"
@@ -8,6 +9,8 @@ import addMovieInList from "./addMovieInList"
 
 const router = Router()
 
+// /id/:listId must be registered before /:uid
+router.use(getListById)
 router.use(getMoveList)
 router.use(createList)
 router.use(removeList)

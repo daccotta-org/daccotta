@@ -239,6 +239,22 @@ export const fetchMovieToList = async (
     return response.data
 }
 
+export const getListById = async (listId: string) => {
+    const response = await api.get(`/api/list/id/${listId}`, {
+        headers: jsonAuthHeaders(),
+    })
+    return response.data as {
+        list: {
+            list_id: string
+            name: string
+            movies: SimpleMovie[]
+            description?: string
+        }
+        ownerUserName: string | null
+        isOwner: boolean
+    }
+}
+
 export const addMovieToList = async (listId: string, movie: SimpleMovie) => {
     const response = await api.post(
         `/api/list/${listId}/add-movie-in-list`,

@@ -1,213 +1,279 @@
-import DynamicBarChart from "@/components/charts/DynamicChart"
-import { calculateStats, MovieStats } from "@/lib/stats"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import FullPageLoader from "@/components/ui/FullPageLoader"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { calculateStats } from "@/lib/stats"
 import { useFriends } from "@/services/friendsService"
 import { useJournal } from "@/services/journalService"
 import { fetchMoviesByIds } from "@/services/movieService"
 import { SimpleMovie } from "@/Types/Movie"
-import { Award, BarChart3, Clapperboard, List, User, Users } from "lucide-react"
-import { AnimatePresence, motion } from "framer-motion"
-import React, { useEffect, useState } from "react"
+import { AlertTriangle, Award, List, Users } from "lucide-react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { toast } from "react-toastify"
+import FriendOverview, {
+    FriendJournalEntry,
+    FriendList,
+} from "./tabs/FriendOverview"
+import FriendListsTab from "./tabs/FriendListsTab"
+import FriendStatsTab from "./tabs/FriendStatsTab"
+import FriendJournalTab from "./tabs/FriendJournalTab"
+
+type FriendTab = "overview" | "lists" | "stats" | "journal"
+
+function pickPreviewList(lists: FriendList[]): FriendList | null {
+    if (!lists.length) return null
+    const byName =
+        lists.find((l) => /top\s*5/i.test(l.name)) ||
+        lists.find((l) => /favorite|favourite|top/i.test(l.name))
+    return byName || lists[0]
+}
 
 const UserDescriptivePage: React.FC = () => {
     const { userName } = useParams<{ userName: string }>()
-    const [activeIndex, setActiveIndex] = useState<number>(0)
-    const [movieData, setMovieData] = useState<SimpleMovie[]>([])
     const navigate = useNavigate()
-    const { useGetFriendData } = useFriends()
+    const [activeTab, setActiveTab] = useState<FriendTab>("overview")
+    const [previewMovies, setPreviewMovies] = useState<SimpleMovie[]>([])
+    const [isRemoveOpen, setIsRemoveOpen] = useState(false)
+    const [removeLoading, setRemoveLoading] = useState(false)
+
+    const { useGetFriendData, useGetFriends, useRemoveFriend } = useFriends()
     const {
         data: userData,
         isLoading,
         error,
     } = useGetFriendData(userName || "")
+    const { data: friendsData } = useGetFriends({ page: 1, limit: 100 })
+    const removeFriendMutation = useRemoveFriend()
+
     const { useGetFriendJournalEntries } = useJournal()
-    const { data: journalEntries, isLoading: isJournalLoading } =
-        useGetFriendJournalEntries(userName!)
-    const [stats, setStats] = useState<MovieStats | null>(null)
+    const { data: journalEntries = [], isLoading: isJournalLoading } =
+        useGetFriendJournalEntries(userName || "")
+
+    const lists: FriendList[] = userData?.lists ?? []
+    const previewList = useMemo(() => pickPreviewList(lists), [lists])
+
+    const entries = journalEntries as FriendJournalEntry[]
+    const stats = useMemo(
+        () => (entries.length ? calculateStats(entries as any) : null),
+        [entries]
+    )
+
+    const filmsThisYear = useMemo(() => {
+        const year = new Date().getFullYear()
+        return entries.filter(
+            (e) => new Date(e.dateWatched).getFullYear() === year
+        ).length
+    }, [entries])
+
+    const totalWatched = stats?.totalWatched ?? entries.length
+    const topGenre = stats?.topGenres?.[0]?.genre ?? ""
+
+    const isFriend = Boolean(
+        userName && friendsData?.friends?.includes(userName)
+    )
 
     useEffect(() => {
-        const fetchMovies = async () => {
-            if (userData?.lists[activeIndex]?.movies) {
-                const movieIds = userData.lists[activeIndex].movies.map(
-                    (m: any) => m.movie_id
-                )
-                try {
-                    const movies = await fetchMoviesByIds(movieIds)
-                    setMovieData(movies)
-                } catch (error) {
-                    console.error("Error fetching movie data:", error)
-                }
+        const loadPreview = async () => {
+            if (!previewList?.movies?.length) {
+                setPreviewMovies([])
+                return
+            }
+            try {
+                const ids = previewList.movies
+                    .map((m) => m.movie_id)
+                    .filter(Boolean)
+                    .slice(0, 5)
+                const movies = await fetchMoviesByIds(ids)
+                setPreviewMovies(movies)
+            } catch (err) {
+                console.error("Error fetching preview movies:", err)
+                setPreviewMovies([])
             }
         }
-        if (journalEntries) {
-            const movieStats = calculateStats(journalEntries)
-            setStats(movieStats)
-        }
+        loadPreview()
+    }, [previewList])
 
-        fetchMovies()
-    }, [userData, activeIndex, journalEntries])
-    if (isJournalLoading) {
-        ;<div>Loading...</div>
+    const handleRemoveFriend = () => {
+        if (!userName) return
+        setRemoveLoading(true)
+        removeFriendMutation.mutate(userName, {
+            onSuccess: () => {
+                toast.success("Friend removed successfully.")
+                setIsRemoveOpen(false)
+                navigate("/friends")
+            },
+            onError: () => {
+                toast.error("Failed to remove friend. Please try again.")
+            },
+            onSettled: () => setRemoveLoading(false),
+        })
     }
-    if (error || !stats) {
-        return <div>Error loading stats. Please try again later.</div>
+
+    if (isLoading || isJournalLoading) {
+        return <FullPageLoader message="Loading profile..." />
     }
-    const monthlyWatchedData = stats.monthlyWatched.map((item) => ({
-        month: item.month,
-        desktop: item.count,
-    }))
 
-    const MoviePreview = ({ movie }: { movie: SimpleMovie }) => (
-        <div className="flex items-center space-x-2">
-            <img
-                src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
-                alt={movie.title}
-                className="w-12 h-16 object-cover rounded"
-                onClick={() => navigate(`/movie/${movie.id}`)}
-            />
-            <span className="text-sm font-medium">{movie.title}</span>
-        </div>
-    )
-
-    const BentoGridItem: React.FC<{
-        title: string
-        description: string
-        icon: React.ReactNode
-        children: React.ReactNode
-        className?: string
-    }> = ({ title, description, icon, children, className }) => (
-        <div
-            className={`bg-card border border-border rounded-[4px] p-6 flex flex-col ${className}`}
-        >
-            <div className="flex items-center space-x-2 mb-4">
-                {icon}
-                <h3 className="text-xl font-semibold">{title}</h3>
-            </div>
-            <p className="text-muted-foreground mb-4">{description}</p>
-            <div className="flex-grow">{children}</div>
-        </div>
-    )
-
-    const ProfileInfo = () => (
-        <div className="flex flex-row items-center justify-center gap-3 space-y-2">
-            <img
-                src={userData?.profile_image}
-                alt={userData?.userName}
-                className="w-24 h-24 rounded-full"
-            />
-            <div className="text-center flex flex-col">
-                <h2 className="text-3xl font-bold">{userData?.userName}</h2>
-                <div className="flex flex-col items-center">
-                    <div className="flex gap-1 items-center justify-center ">
-                        <Users className="w-4 mr-2 text-electric  font-bold" />
-                        <p className="">{userData?.friends.length}</p>
-                    </div>
-                    <div className="flex gap-1 items-center justify-center">
-                        <Award className="w-4 h-4 mr-2 text-warning" />
-                        <p className="">{userData?.badges.length}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-
-    if (isLoading) {
+    if (error) {
         return (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="border-4 border-white border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+            <div className="flex min-h-screen items-center justify-center text-muted-foreground">
+                Error loading user data
             </div>
         )
     }
 
-    if (error) {
-        return <div>Error loading user data</div>
-    }
-
     if (!userData) {
-        return <div>User not found</div>
+        return (
+            <div className="flex min-h-screen items-center justify-center text-muted-foreground">
+                User not found
+            </div>
+        )
     }
 
     return (
-        <div className="max-h-screen overflow-auto scrollbar-hide px-12 lg:mt-0 lg:pt-2 pt-10 pb-6 text-white">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full scrollbar-hide mx-auto">
-                <BentoGridItem
-                    title="Profile Info"
-                    description="User profile details and stats"
-                    icon={<User className="h-6 w-6 text-electric" />}
-                >
-                    <ProfileInfo />
-                </BentoGridItem>
-                <BentoGridItem
-                    title="User's Lists"
-                    description="View and explore user's movie lists"
-                    icon={<List className="h-6 w-6 text-electric" />}
-                >
-                    <div className="space-y-2 h-12 overflow-auto ">
-                        {userData.lists.map((item: any, index: number) => (
-                            <button
-                                key={index}
-                                className={`p-2 w-full rounded-md text-left transition-all duration-300 ${
-                                    activeIndex === index
-                                        ? "bg-surface border border-border"
-                                        : "bg-gray-700 hover:bg-gray-600"
-                                }`}
-                                onClick={() => setActiveIndex(index)}
-                            >
-                                {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </BentoGridItem>
-                <BentoGridItem
-                    title="User Stats"
-                    description="View user's movie watching statistics"
-                    icon={<BarChart3 className="h-6 w-6 text-warning" />}
-                    className="md:row-span-2"
-                >
-                    <h2
-                        className="hover:cursor-pointer hover:text-gray-300"
-                        onClick={() => navigate(`/stats/${userData.userName}`)}
-                    >
-                        view user stats
-                    </h2>
-                    <DynamicBarChart data={monthlyWatchedData} />
-                </BentoGridItem>
-                <BentoGridItem
-                    title={`${userData?.lists[activeIndex]?.name || "Selected List"} Preview`}
-                    description={`Movies in ${userData.lists[activeIndex]?.name || "selected list"}`}
-                    icon={<Clapperboard className="h-6 w-6 text-primary" />}
-                    className="md:col-span-2"
-                >
-                    <AnimatePresence>
-                        <motion.div
-                            key={activeIndex}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <div className="space-y-3 max-h-40 overflow-auto scrollbar-hide">
-                                {movieData.map((movie) => (
-                                    <MoviePreview
-                                        key={movie.id}
-                                        movie={movie}
-                                    />
-                                ))}
-                            </div>
-                            {/* <button
-                                onClick={() =>
-                                    handleSelectList(
-                                        userData.lists[activeIndex].list_id
-                                    )
+        <div className="min-h-screen max-h-screen w-full overflow-auto bg-background px-6 py-8 text-foreground scrollbar-hide md:px-10 md:py-10 lg:px-14">
+            <div className="mx-auto w-full max-w-6xl">
+                {/* Profile header */}
+                <header className="mb-8 flex flex-wrap items-start justify-between gap-5">
+                    <div className="flex min-w-0 items-start gap-4 md:gap-5">
+                        <Avatar className="h-20 w-20 shrink-0 rounded-[4px] md:h-24 md:w-24">
+                            <AvatarImage
+                                src={
+                                    userData.profile_image ||
+                                    `/api/avatar/${userData.userName}`
                                 }
-                                className="mt-4 text-electric hover:text-electric/80 transition-colors"
-                            >
-                                View Full List
-                            </button> */}
-                        </motion.div>
-                    </AnimatePresence>
-                </BentoGridItem>
+                                alt={userData.userName}
+                                className="rounded-[4px] object-cover"
+                            />
+                            <AvatarFallback className="rounded-[4px] bg-surface font-heading text-lg">
+                                {userData.userName.substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 pt-1">
+                            <h1 className="font-heading text-3xl font-bold tracking-tight md:text-4xl">
+                                {userData.userName}
+                            </h1>
+                            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                                <span className="inline-flex items-center gap-1.5">
+                                    <Users className="h-3.5 w-3.5 text-electric" />
+                                    {userData.friends?.length ?? 0} Friends
+                                </span>
+                                <span className="inline-flex items-center gap-1.5">
+                                    <List className="h-3.5 w-3.5 text-electric" />
+                                    {lists.length} Lists
+                                </span>
+                                <span className="inline-flex items-center gap-1.5">
+                                    <Award className="h-3.5 w-3.5 text-warning" />
+                                    {userData.badges?.length ?? 0} Badges
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {isFriend ? (
+                        <Button
+                            variant="outline"
+                            className="shrink-0"
+                            onClick={() => setIsRemoveOpen(true)}
+                        >
+                            Unfriend
+                        </Button>
+                    ) : null}
+                </header>
+
+                <Tabs
+                    value={activeTab}
+                    onValueChange={(v) => setActiveTab(v as FriendTab)}
+                >
+                    <TabsList className="mb-6 gap-6">
+                        <TabsTrigger value="overview" className="px-0">
+                            Overview
+                        </TabsTrigger>
+                        <TabsTrigger value="lists" className="px-0">
+                            Lists
+                        </TabsTrigger>
+                        <TabsTrigger value="stats" className="px-0">
+                            Stats
+                        </TabsTrigger>
+                        <TabsTrigger value="journal" className="px-0">
+                            Journal
+                        </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="overview" className="mt-0">
+                        <FriendOverview
+                            userName={userData.userName}
+                            lists={lists}
+                            previewMovies={previewMovies}
+                            previewList={previewList}
+                            journalEntries={entries}
+                            filmsThisYear={filmsThisYear}
+                            totalWatched={totalWatched}
+                            topGenre={topGenre}
+                            onOpenListsTab={() => setActiveTab("lists")}
+                            onOpenJournalTab={() => setActiveTab("journal")}
+                        />
+                    </TabsContent>
+
+                    <TabsContent value="lists" className="mt-0">
+                        <FriendListsTab lists={lists} />
+                    </TabsContent>
+
+                    <TabsContent value="stats" className="mt-0">
+                        <FriendStatsTab
+                            userName={userData.userName}
+                            filmsThisYear={filmsThisYear}
+                            totalWatched={totalWatched}
+                            topGenre={topGenre}
+                        />
+                    </TabsContent>
+
+                    <TabsContent value="journal" className="mt-0">
+                        <FriendJournalTab entries={entries} />
+                    </TabsContent>
+                </Tabs>
             </div>
+
+            <Dialog open={isRemoveOpen} onOpenChange={setIsRemoveOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 font-heading">
+                            <AlertTriangle className="h-5 w-5 text-primary" />
+                            Remove Friend
+                        </DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm text-muted-foreground">
+                        Are you sure you want to remove{" "}
+                        <span className="font-medium text-foreground">
+                            {userData.userName}
+                        </span>
+                        ? This action cannot be undone.
+                    </p>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsRemoveOpen(false)}
+                            disabled={removeLoading}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={handleRemoveFriend}
+                            disabled={removeLoading}
+                        >
+                            {removeLoading ? "Removing..." : "Remove Friend"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
