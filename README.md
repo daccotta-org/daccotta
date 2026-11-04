@@ -58,7 +58,8 @@ also be a part of the community and join our [discord](https://discord.gg/R859pe
 2. [🔑 Key Features](#-key-features)
     - [🚧 Coming Soon Features](#coming-soon)
 3. [🛠️ Tech Stack](#️-tech-stack)
-4. [🚀 Getting Started](#-getting-started)
+4. [📁 Project Structure](#-project-structure)
+5. [🚀 Getting Started](#-getting-started)
     - [🗂️ Setting Up Daccotta Repository](#️-setting-up-daccotta-repository)
     - [🔧 Installing Node.js + pnpm](#installing-nodejs--pnpm)
         - [🍎 For macOS](#for-macos)
@@ -68,10 +69,10 @@ also be a part of the community and join our [discord](https://discord.gg/R859pe
         - [💾 Setting Up MongoDB Atlas](#setting-up-mongodb-atlas)
         - [🔐 Setting Up Auth (better-auth)](#setting-up-auth-better-auth)
         - [⚙️ Running the Full Stack Project](#running-the-full-stack-project)
-5. [❤️✨ Our Valuable Contributors](#our-valuable-contributors-️)
-6. [🤝 Contributing](#-contributing)
-7. [📧 Contact](#-contact)
-8. [⚠️ Attribution](#️-attribution)
+6. [❤️✨ Our Valuable Contributors](#our-valuable-contributors-️)
+7. [🤝 Contributing](#-contributing)
+8. [📧 Contact](#-contact)
+9. [⚠️ Attribution](#️-attribution)
 
 ## 🎬 What is Daccotta?
 
@@ -107,6 +108,66 @@ Daccotta is built using a modern and efficient tech stack to provide the best ex
 -   **Authentication**: better-auth (email + password)
 
 ---
+## 📁 Project Structure
+
+Daccotta follows a monorepo structure with separate client and server applications managed through pnpm workspaces.
+
+```text
+daccotta/
+├── .github/                  # GitHub workflows and configuration
+├── Images/                   # Project images and visual assets
+├── client/                   # Frontend application (React + TypeScript)
+│   ├── public/               # Static assets
+│   └── src/
+│       ├── assets/           # Frontend assets
+│       ├── components/       # Reusable UI components
+│       │   ├── auth/         # Authentication components
+│       │   ├── charts/       # Chart components
+│       │   ├── custom/       # Custom application components
+│       │   ├── magicui/      # Animated UI components
+│       │   └── ui/           # Shared UI components
+│       ├── context/          # React context
+│       ├── data/             # Application data
+│       ├── hooks/            # Custom React hooks
+│       ├── layouts/          # Shared page layouts
+│       ├── lib/              # Shared libraries and utilities
+│       ├── pages/            # Application pages
+│       ├── services/         # API and feature-related services
+│       ├── Types/            # TypeScript type definitions
+│       ├── main.tsx          # Frontend entry point
+│       └── router.tsx        # Application routing
+│
+├── server/                   # Backend application (Node.js + Express)
+│   ├── config/               # Application configuration
+│   ├── connections/          # Database connection setup
+│   ├── controllers/          # Request handlers
+│   ├── lib/                  # Authentication and MongoDB utilities
+│   ├── middleware/           # Request verification middleware
+│   ├── models/               # MongoDB models
+│   ├── routes/               # API route definitions
+│   ├── utils/                # Utility functions
+│   └── main.ts               # Backend entry point
+│
+├── package.json              # Root scripts and dependencies
+├── pnpm-workspace.yaml       # pnpm workspace configuration
+├── pnpm-lock.yaml            # Dependency lockfile
+├── Dockerfile                # Docker configuration
+├── eslint.config.mjs         # ESLint configuration
+├── prettier.config.mjs       # Prettier configuration
+├── tsconfig.json             # TypeScript configuration
+├── CONTRIBUTING.md           # Contribution guidelines
+└── README.md                 # Project documentation
+```
+
+### Key Directories
+
+* **client/src/pages:** Contains the main application pages, including Home, Profile, Friends, Journal, Search, Lists and Stats.
+* **client/src/components:** Contains reusable components organised by purpose.
+* **client/src/services:** Contains feature-specific services for movies, users, friends, journals, directors and TMDB.
+* **server/controllers:** Handles backend request logic for application features.
+* **server/models:** Defines the MongoDB data models.
+* **server/routes:** Defines the backend API routes.
+
 
 ## 🚀 Getting Started
 
